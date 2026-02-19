@@ -1,0 +1,10 @@
+global using DPK.Mosavabat.Common;
+global using DPK.Foundation.Dependency;
+global using DPK.Foundation.Modules;
+global using DPK.Foundation.PrimitiveCore;
+global using DPK.Foundation.Reflection.Extensions;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.Extensions.Configuration;
+global using System;
+global using System.IO;
+global using System.Linq;

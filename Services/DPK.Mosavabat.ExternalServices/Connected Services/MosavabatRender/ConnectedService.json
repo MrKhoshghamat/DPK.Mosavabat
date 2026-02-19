@@ -1,0 +1,17 @@
+{
+  "ExtendedData": {
+    "inputs": [
+      //"http://172.16.21.36/mosavabat/webservices/RenderSOA.asmx?wsdl",
+      "http://crs.bsi.ir/MosavabatDev/webservices/RenderSOA.asmx?wsdl"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, MosavabatRender"
+    ],
+    "targetFramework": "net6.0",
+    "typeReuseMode": "All"
+  }
+}

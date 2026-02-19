@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>DPK.Mosavabat.Api</RootNamespace>
+		<PreserveCompilationReferences>true</PreserveCompilationReferences>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>0.0.1</Version>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Remove="wwwroot\swagger\ui\index.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="wwwroot\swagger\ui\index.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.1" />
+		<PackageReference Include="DPK.Foundation.AspNetCore" Version="8.1.2" />
+		<PackageReference Include="DPK.Foundation.AspNetCore.OData" Version="8.1.2" />
+		<PackageReference Include="DPK.Foundation.Castle.Log4Net" Version="8.1.2" />
+		<PackageReference Include="DPK.Foundation.PrimitiveCore" Version="8.1.2" />
+		<PackageReference Include="Dpk.Framework.Component.Stimulsoft" Version="5.0.0" />
+		<PackageReference Include="Duende.IdentityServer.Storage" Version="7.0.8" />
+		<PackageReference Include="Duende.IdentityServer" Version="7.0.8" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.2.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="8.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.16">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\DomainEntities\DPK.Mosavabat.Common\DPK.Mosavabat.Common.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\DPK.Mosavabat.EntityFrameworkCore\DPK.Mosavabat.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\..\Services\DPK.Mosavabat.BusinessServices\DPK.Mosavabat.BusinessServices.csproj" />
+		<ProjectReference Include="..\..\Services\DPK.Mosavabat.GeneralServices\DPK.Mosavabat.GeneralServices.csproj" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<Folder Include="App_Data\Logs\" />
+		<Folder Include="Controllers\" />
+
+	</ItemGroup>
+
+</Project>

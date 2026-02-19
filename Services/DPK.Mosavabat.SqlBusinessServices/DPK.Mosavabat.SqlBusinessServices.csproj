@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+	 
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.16" />
+		<PackageReference Include="DPK.Foundation.Dapper" Version="8.1.2" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\DomainEntities\DPK.Mosavabat.DomainEntities\DPK.Mosavabat.DomainEntities.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\DPK.Mosavabat.EntityFrameworkCore\DPK.Mosavabat.EntityFrameworkCore.csproj" />
+	  <ProjectReference Include="..\DPK.Mosavabat.Models\DPK.Mosavabat.Models.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="AccountBalanceAverage\Contract\" />
+	  <Folder Include="ApprovalRequests\Contract\" />
+	  <Folder Include="ApprovalRequests\Service\" />
+	  <Folder Include="Lcp\Contract\" />
+	  <Folder Include="Abstractions\" />
+	  <Folder Include="RequestFacilities\Contract\" />
+	  <Folder Include="RequestFacilities\Service\" />
+	</ItemGroup>
+</Project>

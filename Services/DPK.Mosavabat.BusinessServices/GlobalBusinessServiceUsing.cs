@@ -1,0 +1,12 @@
+global using DPK.Mosavabat.Common;
+global using DPK.Mosavabat.ExternalServices;
+global using DPK.Mosavabat.GeneralServices;
+global using DPK.Mosavabat.Models;
+global using DPK.Mosavabat.SqlBusinessServices;
+global using DPK.Mosavabat.ValidationServices;
+global using DPK.Foundation.AgGrid;
+global using DPK.Foundation.Application.Services;
+global using DPK.Foundation.Modules;
+global using DPK.Foundation.Reflection.Extensions;
+global using System;
+global using System.Transactions;

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Features\RoleManagment\**" />
+    <EmbeddedResource Remove="Features\RoleManagment\**" />
+    <None Remove="Features\RoleManagment\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DomainEntities\DPK.Mosavabat.DomainEntities\DPK.Mosavabat.DomainEntities.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.ExternalServices\DPK.Mosavabat.ExternalServices.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.GeneralServices\DPK.Mosavabat.GeneralServices.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.SqlBusinessServices\DPK.Mosavabat.SqlBusinessServices.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.ValidationServices\DPK.Mosavabat.ValidationServices.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\CreditProcesses\UseCases\Commands\CalculateCustomerDebtBalance\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetPaymentPermissions\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\IsLcpRequest\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetCustomerContractsPastDebt\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\IsAllowedRecalculateAccountBalanceAverage\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetDailyReceivedContractsTransactionsAmounts\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetDailyPaidContractsTransactionsAmounts\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetCuContracts\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetLiveApprovalRequestsAmountsSum\" />
+    <Folder Include="Features\CreditProcesses\UseCases\Queries\GetSubjectTypeByMosavabeNo\" />
+    <Folder Include="Features\LogManagement\Contract\" />
+    <Folder Include="Features\LogManagement\Service\" />
+    <Folder Include="Features\LogManagement\Service\" />
+    <Folder Include="Features\SettingManagment\Contract\" />
+    <Folder Include="Features\SettingManagment\Service\" />
+    <Folder Include="Features\UseManager\Contract\" />
+    <Folder Include="Features\UseManager\Service\" />
+    <Folder Include="Services\LoanBills\LoanBillProcessing\Service\" />
+  </ItemGroup>
+
+</Project>

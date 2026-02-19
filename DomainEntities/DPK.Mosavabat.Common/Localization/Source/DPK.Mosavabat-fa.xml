@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="fa">
+	<texts>
+		<text name="Tasks" value="اقدامات  " />
+		<text name="TaskSystem" value="اقدامات سیستم" />
+		<text name="TaskList" value="لیست اقدامات" />
+		<text name="NewTask" value="اقدام جدید" />
+		<text name="Xtasks" value="{0} اقدامات" />
+		<text name="CompletedTasks" value="اقدامات تکمیل شده" />
+		<text name="EmailWelcomeMessage">
+			سلام,
+			به زیر ساخت شرکت خوش آمدید
+			محتوای ایمیل
+		</text>
+		<text name="Reports" value="گزارشات" />
+		<text name="Administration"  value="مدیر سیستم" />
+		<text name="UserManagement"  value="مدیریت کاربران" />
+		<text name="RoleManagement"  value="مدیریت نقشها" />
+	</texts>
+</localizationDictionary>
