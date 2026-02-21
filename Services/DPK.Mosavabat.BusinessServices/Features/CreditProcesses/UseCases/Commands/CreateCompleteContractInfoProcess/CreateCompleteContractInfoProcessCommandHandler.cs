@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using DPK.Foundation.UI;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
 using DPK.Mosavabat.Common.Consts.General;
+using DPK.Mosavabat.Common.Extensions;
 using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Bizagi.WorkFlowEngine;
 using DPK.Mosavabat.Models.Commands.CreditProcesses;
@@ -10,17 +10,15 @@ using DPK.Mosavabat.Models.DataModels.Bizagi;
 using DPK.Mosavabat.Models.DataModels.CreditProcesses;
 using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
 using DPK.Mosavabat.SqlBusinessServices.CreditProcesses.Contract;
-using Microsoft.Extensions.Logging;
 
 namespace DPK.Mosavabat.BusinessServices.Features.CreditProcesses.UseCases.Commands.CreateCompleteContractInfoProcess;
 
 /// <summary>
-/// هندلر سرویس ساخت فرایند تکمیل اطلاعات قرارداد
+/// هندلر سرویس ساخت فرایند تکمیل اطلاعات قرارداد 
 /// </summary>
 internal class CreateCompleteContractInfoProcessCommandHandler(
     ICreditProcessSqlService creditProcessSqlService,
-    IWorkflowEngineService workflowEngineService,
-    ILogger<CreateCompleteContractInfoProcessCommandHandler> logger)
+    IWorkflowEngineService workflowEngineService)
     : ICommandHandler<
         CreateCompleteContractInfoProcessCommand,
         Result<CreateCompleteContractInfoProcessDto>>
@@ -28,105 +26,149 @@ internal class CreateCompleteContractInfoProcessCommandHandler(
     private const string ProcessName = "MainProcess";
     private const string EntityName = "CU_Contract";
 
+    public record PipelineContext(
+        CreateCompleteContractInfoProcessCommand Command,
+        string BranchCode = "",
+        string Username = "",
+        string AccNo = "",
+        DateTime DateG = default,
+        string C16 = "",
+        long CaseId = 0,
+        string RadNumber = "");
+
     public async Task<Result<CreateCompleteContractInfoProcessDto>> Handle(
         CreateCompleteContractInfoProcessCommand command,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("شروع درخواست ایجاد فرایند تکمیل قرارداد برای C13: {C13}", command.C13);
+        var initialContext = new PipelineContext(command);
 
+        return await Result.Success(initialContext)
+            .Bind(context => FetchBranchCodeAsync(context, cancellationToken))
+            .Bind(context => FetchResponsibleUserAsync(context, cancellationToken))
+            .Bind(context => FetchAdditionalContractDataParallelAsync(context, cancellationToken))
+            .Bind(CreateBizagiCaseAsync)
+            .Bind(context => UpdateLocalDatabaseSafeAsync(context, cancellationToken))
+            .Map(CreateFinalResponse);
+    }
+
+    private async Task<Result<PipelineContext>> FetchBranchCodeAsync(
+        PipelineContext context, CancellationToken cancellationToken)
+    {
         var branchDto = await creditProcessSqlService.GetBranchCodeByC13(
-            new GetBranchCodeByC13Dm(command.C13), cancellationToken);
+            new GetBranchCodeByC13Dm(context.Command.C13), cancellationToken);
 
-        if (!int.TryParse(branchDto.BranchCode, out var branchCodeInt))
-            throw new UserFriendlyException("کد شعبه نامعتبر است.");
+        return !int.TryParse(branchDto.BranchCode, out _)
+            ? Result.Failure<PipelineContext>(
+                new Error(
+                    "InvalidBranchCode",
+                    "کد شعبه نامعتبر است."))
+            : Result.Success(context with { BranchCode = branchDto.BranchCode });
+    }
 
+    private async Task<Result<PipelineContext>> FetchResponsibleUserAsync(
+        PipelineContext context, CancellationToken cancellationToken)
+    {
         var userDto = await creditProcessSqlService.FindBranchManagerOrSupervisor(
-            new FindBranchManagerOrSupervisorDm(branchCodeInt, MosavabatClassName.CompleteContractInfo),
+            new FindBranchManagerOrSupervisorDm(int.Parse(context.BranchCode), MosavabatClassName.CompleteContractInfo),
             cancellationToken);
 
-        if (string.IsNullOrEmpty(userDto.Username))
+        return !string.IsNullOrEmpty(userDto.Username)
+            ? Result.Success(context with { Username = userDto.Username })
+            : Result.Failure<PipelineContext>(
+                new Error(
+                    "UserNotFound",
+                    "کاربر مسئول یافت نشد."));
+    }
+
+    private async Task<Result<PipelineContext>> FetchAdditionalContractDataParallelAsync(
+        PipelineContext context, CancellationToken cancellationToken)
+    {
+        var accNoTask = creditProcessSqlService.GetAccNoByC13(new GetAccNoByC13Dm(context.Command.C13), cancellationToken);
+        var dateGTask = creditProcessSqlService.GetDateGByC13(new GetDateGByC13Dm(context.Command.C13), cancellationToken);
+        var c16Task = creditProcessSqlService.GetC16ByC13(new GetC16ByC13Dm(context.Command.C13), cancellationToken);
+
+        await Task.WhenAll(
+            accNoTask,
+            dateGTask,
+            c16Task);
+
+        return Result.Success(context with
         {
-            logger.LogWarning("کاربر مسئول برای ایجاد فرایند یافت نشد. C13: {C13}", command.C13);
-            return new CreateCompleteContractInfoProcessDto(
-                0,
-                "0",
-                DateTime.Now,
-                "کاربر مسئول یافت نشد.");
-        }
+            AccNo = accNoTask.Result.AccNo,
+            DateG = dateGTask.Result.DateG,
+            C16 = c16Task.Result.C16
+        });
+    }
 
-        var accNoDto = await creditProcessSqlService.GetAccNoByC13(
-            new GetAccNoByC13Dm(
-                command.C13),
-            cancellationToken);
-
-        var dateGDto = await creditProcessSqlService.GetDateGByC13(
-            new GetDateGByC13Dm(
-                command.C13),
-            cancellationToken);
-
-        var c16Dto = await creditProcessSqlService.GetC16ByC13(
-            new GetC16ByC13Dm(
-                command.C13),
-            cancellationToken);
-
+    private async Task<Result<PipelineContext>> CreateBizagiCaseAsync(PipelineContext context)
+    {
         var bizagiPayload = new CompleteContractInfoBizagiDm
         {
-            MabAsl = command.MabAsl,
-            CuApprovalSubjectId = command.CuApprovalSubjectId,
-            C10 = command.C10,
-            Shob = branchDto.BranchCode,
-            C13 = command.C13,
-            C16 = c16Dto.C16,
-            DateG = dateGDto.DateG
+            MabAsl = context.Command.MabAsl,
+            CuApprovalSubjectId = context.Command.CuApprovalSubjectId,
+            C10 = context.Command.C10,
+            Shob = context.BranchCode,
+            C13 = context.Command.C13,
+            C16 = context.C16,
+            DateG = context.DateG
         };
-
-        logger.LogInformation(
-            "در حال ارسال درخواست به بیزاجی برای کاربر: {User}",
-            userDto.Username);
 
         var caseResult = await workflowEngineService.CreateCaseAsync(
             model: bizagiPayload,
             processName: ProcessName,
             entityName: EntityName,
-            userName: userDto.Username
+            userName: context.Username
         );
 
-        if (caseResult.CaseId == 0 || caseResult.RadNumber == "0")
+        if (caseResult.IsFailure)
         {
-            logger.LogError("خطا در ایجاد کیس بیزاجی. نتیجه نامعتبر.");
-            return new CreateCompleteContractInfoProcessDto(
-                0,
-                "0",
-                DateTime.Now,
-                "خطا در ایجاد فرایند در سامانه مصوبات.");
+            return Result.Failure<PipelineContext>(caseResult.Error);
         }
 
+        if (caseResult.Value.CaseId == 0 || caseResult.Value.RadNumber == "0")
+        {
+            return Result.Failure<PipelineContext>(
+                new Error("BizagiError", "خطا در ایجاد فرایند در سامانه مصوبات. خروجی نامعتبر است."));
+        }
+
+        return Result.Success(context with
+        {
+            CaseId = caseResult.Value.CaseId,
+            RadNumber = caseResult.Value.RadNumber
+        });
+    }
+
+    private async Task<Result<PipelineContext>> UpdateLocalDatabaseSafeAsync(
+        PipelineContext context, CancellationToken cancellationToken)
+    {
         try
         {
-            var customerEkDto = await creditProcessSqlService
-                .GetCustomerEk(
-                    new GetCustomerEkDm(
-                        accNoDto.AccNo),
-                    cancellationToken);
+            var customerEkDto = await creditProcessSqlService.GetCustomerEk(
+                new GetCustomerEkDm(context.AccNo), cancellationToken);
 
             await creditProcessSqlService.UpdateCuCustomerInCuContract(
                 new UpdateCuCustomerInCuContractDm(
                     customerEkDto.IdCuCustomerEk,
-                    command.C13,
-                    c16Dto.C16),
+                    context.Command.C13,
+                    context.C16),
                 cancellationToken);
-
-            logger.LogInformation("اطلاعات قرارداد در دیتابیس داخلی بروزرسانی شد.");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            logger.LogError(ex, "کیس {CaseId} ایجاد شد اما بروزرسانی دیتابیس داخلی با خطا مواجه شد.", caseResult.CaseId);
+            // ignored
         }
 
+        return Result.Success(context);
+    }
+
+    private static CreateCompleteContractInfoProcessDto CreateFinalResponse(
+        PipelineContext context)
+    {
         return new CreateCompleteContractInfoProcessDto(
-            caseResult.CaseId,
-            caseResult.RadNumber,
+            context.CaseId,
+            context.RadNumber,
             DateTime.Now,
-            "فرایند با موفقیت ایجاد شد.");
+            "فرایند با موفقیت ایجاد شد."
+        );
     }
 }

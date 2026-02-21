@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Lcp.Contract;
 using DPK.Mosavabat.Models.Commands.Lcp;
 using DPK.Mosavabat.Models.DataModels.Lcp;
@@ -17,14 +19,16 @@ internal class CreateContractCommandHandler(
     IMapper mapper)
     : ICommandHandler<
         CreateContractCommand,
-        CreateLcpContractDto>
+        Result<CreateLcpContractDto>>
 {
-    public async Task<CreateLcpContractDto> Handle(
+    public async Task<Result<CreateLcpContractDto>> Handle(
         CreateContractCommand command,
         CancellationToken cancellationToken)
     {
-        return await lcpExternalService.CreateContract(
-            mapper.Map<CreateLcpContractDm>(command),
-            cancellationToken);
+        return await Result.Success(command)
+            .Map(mapper.Map<CreateLcpContractDm>)
+            .Bind(dm => lcpExternalService.CreateContract(
+                dm,
+                cancellationToken));
     }
 }

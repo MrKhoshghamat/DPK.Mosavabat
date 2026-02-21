@@ -29,9 +29,11 @@ public class ApprovalRequestApplicationService(
         CreateApprovalRequestVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<CreateApprovalRequestCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -44,9 +46,11 @@ public class ApprovalRequestApplicationService(
         GetApprovalRequestStatusesVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteQueryAsync(
+        var executionResult = await executionModule.ExecuteQueryAsync(
             ObjectMapper.Map<GetApprovalRequestStatusQuery>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -59,9 +63,11 @@ public class ApprovalRequestApplicationService(
         GetApprovalRequestsLastStatusVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteQueryAsync(
+        var executionResult = await executionModule.ExecuteQueryAsync(
             ObjectMapper.Map<GetApprovalRequestsLastStatusQuery>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -74,8 +80,10 @@ public class ApprovalRequestApplicationService(
         IsExistFacilitySubTypeCodeInGroupCreditPackageVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteQueryAsync(
+        var executionResult = await executionModule.ExecuteQueryAsync(
             ObjectMapper.Map<IsExistFacilitySubTypeCodeInGroupCreditPackageQuery>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

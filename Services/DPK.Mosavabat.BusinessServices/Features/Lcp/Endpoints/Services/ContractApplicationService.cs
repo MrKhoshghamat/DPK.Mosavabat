@@ -27,8 +27,10 @@ public class ContractApplicationService(
         CreateLcpContractVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<CreateContractCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

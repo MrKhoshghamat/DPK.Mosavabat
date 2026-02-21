@@ -26,8 +26,10 @@ public class TicketApplicationService(
         CreateTicketVm vm,
         CancellationToken cancellationToken)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<CreateTicketCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

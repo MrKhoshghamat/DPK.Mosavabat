@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
 
 namespace DPK.Mosavabat.Models.Commands.Lcp;
@@ -13,7 +14,7 @@ public class UpdateRequestFacilityRadNumberCommand(
     int caseId,
     int radNumber,
     int caseIdApprovalRequest) 
-    : CommandBase<UpdateLcpRequestFacilityRadNumberDto>
+    : CommandBase<Result<UpdateLcpRequestFacilityRadNumberDto>>
 {
     public int CaseId { get; } = caseId;
     public int RadNumber { get; } = radNumber;

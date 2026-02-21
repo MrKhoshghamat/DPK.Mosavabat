@@ -63,4 +63,8 @@ public interface IRequestFacilitySqlService
     Task<Result<GetRadNumberByCaseIdDto>> GetRadNumberByCaseId(
         GetRadNumberByCaseIdDm dm,
         CancellationToken cancellationToken = default);
+
+    Task<Result<AbortRequestFacilityCaseDto>> AbortRequestFacilityCase(
+        AbortRequestFacilityCaseDm dm,
+        CancellationToken cancellationToken = default);
 }

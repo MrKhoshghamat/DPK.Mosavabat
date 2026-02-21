@@ -45,6 +45,9 @@ public class UpdateRequestFacilityBizagiDm
     [XmlElement(ElementName = "LcpId")]
     public long LcpId { get; set; }
 
+    [XmlElement(ElementName = "LCP_ApprovelStatuse")]
+    public string LcpApprovalStatus { get; set; }
+
     [XmlElement(ElementName = "LegalName")]
     public string LegalName { get; set; }
     [XmlElement(ElementName = "LCP_EditHistoryLogs")] public LcpHistoryLogsBizagiDm LcpHistoryLogs { get; set; }

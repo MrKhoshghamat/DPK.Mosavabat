@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
-using DPK.Mosavabat.BusinessServices.Features.RequestFacilities.Factory.Contract;
 using DPK.Mosavabat.Common.Extensions;
 using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Bizagi.WorkFlowEngine;
 using DPK.Mosavabat.Models.Commands.RequestFacilities;
+using DPK.Mosavabat.Models.DataModels.Bizagi;
 using DPK.Mosavabat.Models.DataModels.RequestFacilities;
 using DPK.Mosavabat.Models.EntitiesDto.RequestFacilities;
 using DPK.Mosavabat.SqlBusinessServices.RequestFacilities.Contract;
@@ -15,55 +15,124 @@ namespace DPK.Mosavabat.BusinessServices.Features.RequestFacilities.UseCases.Com
 /// <summary>
 /// هندلر سرویس حذف درخواست از کارتابل
 /// </summary>
-internal class RemoveRequestFromCartableCommandHandler(
+internal sealed class RemoveRequestFromCartableCommandHandler(
     IRequestFacilitySqlService requestFacilitySqlService,
-    IWorkflowEngineService workflowEngineService,
-    IRequestFacilityFactory requestFacilityFactory)
-    : ICommandHandler<
-        RemoveRequestFromCartableCommand,
-        Result<RemoveRequestFromCartableDto>>
+    IWorkflowEngineService workflowEngineService)
+    : ICommandHandler<RemoveRequestFromCartableCommand, Result<RemoveRequestFromCartableDto>>
 {
-    public Task<Result<RemoveRequestFromCartableDto>> Handle(
+    public record PipelineContext(
+        RemoveRequestFromCartableCommand Command,
+        string Username = "",
+        string RadNumber = "",
+        int UserId = 0);
+
+    public async Task<Result<RemoveRequestFromCartableDto>> Handle(
         RemoveRequestFromCartableCommand command,
         CancellationToken cancellationToken)
     {
-        return requestFacilitySqlService
-            // 1️⃣ Load Username
-            .GetUserNameByCaseId(
-                new GetUserNameByCaseIdDm(command.CaseId),
-                cancellationToken)
+        var initialContext = new PipelineContext(command);
 
-            .Map(dm => dm.Username)
+        return await Result.Success(initialContext)
+            .Bind(context => FetchInitialCaseDetailsAsync(context, cancellationToken))
+            .Bind(context => FetchUserIdAsync(context, cancellationToken))
+            .Bind(AbortBizagiCaseAsync)
+            .Bind(context => AbortLocalDatabaseCaseAsync(context, cancellationToken))
+            .Map(CreateFinalResponse);
+    }
 
-            // 2️⃣ Load UserId
-            .Bind(username =>
-                requestFacilitySqlService.GetUserIdByUsername(
-                        new GetUserIdByUsernameDm(username),
-                        cancellationToken)
-                    .Map(dm => (username, dm.UserId)))
+    private async Task<Result<PipelineContext>> FetchInitialCaseDetailsAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var usernameTask = requestFacilitySqlService.GetUserNameByCaseId(
+            new GetUserNameByCaseIdDm(context.Command.CaseId),
+            cancellationToken);
 
-            // 3️⃣ Load RadNumber
-            .Bind(x =>
-                requestFacilitySqlService.GetRadNumberByCaseId(
-                        new GetRadNumberByCaseIdDm(command.CaseId),
-                        cancellationToken)
-                    .Map(dm => (x.username, x.UserId, dm.RadNumber)))
+        var radNumberTask = requestFacilitySqlService.GetRadNumberByCaseId(
+            new GetRadNumberByCaseIdDm(context.Command.CaseId),
+            cancellationToken);
 
-            // 4️⃣ Prepare Payload (Factory)
-            .Bind(x =>
-                requestFacilityFactory.PreparePayloadAsync(
-                    x.username,
-                    x.UserId,
-                    x.RadNumber))
+        await Task.WhenAll(usernameTask, radNumberTask);
 
-            // 5️⃣ Abort Case (External)
-            .Bind(workflowEngineService.AbortCaseAsync)
+        if (usernameTask.Result.IsFailure)
+            return Result.Failure<PipelineContext>(usernameTask.Result.Error);
 
-            // 6️⃣ Final DTO
-            .Map(_ =>
-                new RemoveRequestFromCartableDto(
-                    true,
-                    DateTime.Now,
-                    "درخواست با موفقیت از کارتابل حذف شد."));
+        if (radNumberTask.Result.IsFailure)
+            return Result.Failure<PipelineContext>(radNumberTask.Result.Error);
+
+        return Result.Success(context with
+        {
+            Username = usernameTask.Result.Value.Username,
+            RadNumber = radNumberTask.Result.Value.RadNumber.ToString()
+        });
+    }
+
+    private async Task<Result<PipelineContext>> FetchUserIdAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var userIdResult = await requestFacilitySqlService.GetUserIdByUsername(
+            new GetUserIdByUsernameDm(context.Username),
+            cancellationToken);
+
+        return userIdResult.IsFailure
+            ? Result.Failure<PipelineContext>(userIdResult.Error)
+            : Result.Success(context with { UserId = userIdResult.Value.UserId });
+    }
+
+    private async Task<Result<PipelineContext>> AbortBizagiCaseAsync(
+        PipelineContext context)
+    {
+        var abortCaseBizagiDm = new AbortCaseBizagiDm
+        {
+            UserName = context.Username,
+            UserId = context.UserId.ToString(),
+            Cases = new CasesBizagiDm
+            {
+                Entities =
+                [
+                    new CaseBizagiDm
+                    {
+                        RadNumber = context.RadNumber,
+                        AbortReason = "RemoveRequestFromCartable"
+                    }
+                ]
+            }
+        };
+
+        var bizagiResult = await workflowEngineService.AbortCaseAsync(abortCaseBizagiDm);
+
+        return bizagiResult.IsFailure
+            ? Result.Failure<PipelineContext>(bizagiResult.Error)
+            : Result.Success(context);
+    }
+
+    private async Task<Result<PipelineContext>> AbortLocalDatabaseCaseAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var localDbResult = await requestFacilitySqlService.AbortRequestFacilityCase(
+            new AbortRequestFacilityCaseDm(context.Command.CaseId),
+            cancellationToken);
+
+        if (localDbResult.IsFailure)
+            return Result.Failure<PipelineContext>(localDbResult.Error);
+
+        return !localDbResult.Value.IsAborted
+            ? Result.Failure<PipelineContext>(
+                new Error(
+                    "DatabaseUpdateFailed",
+                    "عملیات لغو در پایگاه داده محلی ناموفق بود."))
+            : Result.Success(context);
+    }
+
+    private static RemoveRequestFromCartableDto CreateFinalResponse(
+        PipelineContext context)
+    {
+        return new RemoveRequestFromCartableDto(
+            IsRemoved: true,
+            Message: "درخواست با موفقیت از کارتابل حذف و لغو گردید.",
+            ProcessDate: DateTime.Now
+        );
     }
 }

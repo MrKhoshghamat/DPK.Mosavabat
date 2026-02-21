@@ -31,10 +31,12 @@ public class CreditProcessApplicationService(
         [FromBody] AggregateDailyCustomerPaymentVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule
+        var executionResult = await executionModule
             .ExecuteCommandAsync(
                 ObjectMapper.Map<AggregateDailyCustomerPaymentCommand>(vm),
                 cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -48,10 +50,12 @@ public class CreditProcessApplicationService(
         [FromBody] CalculateApprovalRequestUnusedBalanceVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule
+        var executionResult = await executionModule
             .ExecuteCommandAsync(
                 ObjectMapper.Map<CalculateApprovalRequestUnusedBalanceCommand>(vm),
                 cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -65,10 +69,12 @@ public class CreditProcessApplicationService(
         [FromBody] CalculateCustomerTotalDebtVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule
+        var executionResult = await executionModule
             .ExecuteCommandAsync(
                 ObjectMapper.Map<CalculateCustomerTotalDebtCommand>(vm),
                 cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -99,10 +105,12 @@ public class CreditProcessApplicationService(
         [FromBody] InsertPaymentPermissionVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule
+        var executionResult = await executionModule
             .ExecuteCommandAsync(
                 ObjectMapper.Map<InsertPaymentPermissionCommand>(vm),
                 cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -116,9 +124,11 @@ public class CreditProcessApplicationService(
         [FromBody] UpdatePaymentPermissionVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<UpdatePaymentPermissionCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -132,9 +142,11 @@ public class CreditProcessApplicationService(
         [FromBody] CreateCompleteContractInfoProcessVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<CreateCompleteContractInfoProcessCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>

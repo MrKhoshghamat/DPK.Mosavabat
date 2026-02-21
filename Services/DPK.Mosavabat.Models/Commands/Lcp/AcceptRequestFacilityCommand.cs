@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
 using JetBrains.Annotations;
 
@@ -14,7 +15,7 @@ public class AcceptRequestFacilityCommand(
     int caseId,
     [CanBeNull] string requestFacilityStatus,
     [CanBeNull] string message)
-    : CommandBase<UpdateLcpRequestFacilityStatusDto>
+    : CommandBase<Result<UpdateLcpRequestFacilityStatusDto>>
 {
     public int CaseId { get; } = caseId;
     [CanBeNull] public string RequestFacilityStatus { get; } = requestFacilityStatus;

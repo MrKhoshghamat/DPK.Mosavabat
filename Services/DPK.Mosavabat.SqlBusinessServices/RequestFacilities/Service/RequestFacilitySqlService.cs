@@ -462,4 +462,32 @@ public class RequestFacilitySqlService(
 
         return result;
     }
+
+    public async Task<Result<AbortRequestFacilityCaseDto>> AbortRequestFacilityCase(
+        AbortRequestFacilityCaseDm dm,
+        CancellationToken cancellationToken = default)
+    {
+        const string commandText = "[dbo].[LCP_RequestFacilityAbortCase]";
+        var parameters = new
+        {
+            caseId = dm.CaseId
+        };
+
+        var rowsAffected = await ExecuteWithLoggingAsync(
+            commandText,
+            parameters,
+            async (connection) =>
+            {
+                var command = new CommandDefinition(
+                    commandText: commandText,
+                    parameters: parameters,
+                    commandType: CommandType.StoredProcedure,
+                    cancellationToken: cancellationToken
+                );
+
+                return await connection.ExecuteAsync(command);
+            }, cancellationToken);
+
+        return new AbortRequestFacilityCaseDto(rowsAffected > 0);
+    }
 }

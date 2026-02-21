@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
 
 namespace DPK.Mosavabat.Models.Commands.Lcp;
@@ -25,7 +26,7 @@ public class CreateTicketCommand(
     long number,
     string taskId,
     int requestFacilityId)
-    : CommandBase<CreateTicketDto>
+    : CommandBase<Result<CreateTicketDto>>
 {
     public bool HasSubjectFacilityId { get; } = hasSubjectFacilityId;
     public int SubjectFacilityId { get; } = subjectFacilityId;

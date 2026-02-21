@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
 
 namespace DPK.Mosavabat.Models.Commands.CreditProcesses;
@@ -9,7 +10,7 @@ namespace DPK.Mosavabat.Models.Commands.CreditProcesses;
 /// <param name="customerNo"> شماره مشتری </param>
 public class AggregateDailyCustomerPaymentCommand(
     string customerNo)
-    : CommandBase<AggregateDailyCustomerPaymentDto>
+    : CommandBase<Result<AggregateDailyCustomerPaymentDto>>
 {
     /// <summary>
     /// شماره مشتری

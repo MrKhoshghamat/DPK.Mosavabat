@@ -10,7 +10,6 @@ using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Collections.ObjectModel;
 using System.Data;
 using DPK.Mosavabat.Api.Middlewares.Logging;
 using DPK.Mosavabat.BusinessServices.Pipelines.Logging;

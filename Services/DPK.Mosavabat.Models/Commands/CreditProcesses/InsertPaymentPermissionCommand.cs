@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
 
 namespace DPK.Mosavabat.Models.Commands.CreditProcesses;
@@ -21,7 +22,7 @@ public class InsertPaymentPermissionCommand(
     int? subContractType,
     long contractAmount,
     long prepaidAmount)
-    : CommandBase<InsertPaymentPermissionDto>
+    : CommandBase<Result<InsertPaymentPermissionDto>>
 {
     /// <summary>
     /// شماره مصوبه

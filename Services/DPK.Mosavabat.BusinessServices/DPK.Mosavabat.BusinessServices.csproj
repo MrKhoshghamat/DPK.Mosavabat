@@ -46,8 +46,6 @@
     <Folder Include="Features\Lcp\UseCases\Commands\AcceptRequestFacility\" />
     <Folder Include="Features\Lcp\UseCases\Commands\CreateTicket\" />
     <Folder Include="Features\Lcp\UseCases\Queries\GetBoardMembers\" />
-    <Folder Include="Features\RequestFacilities\Factories\Abstractions\" />
-    <Folder Include="Features\RequestFacilities\Services\Models\" />
     <Folder Include="Features\RequestFacilities\UseCases\Commands\CreateRequestFacility\" />
     <Folder Include="Features\RequestFacilities\UseCases\Commands\UpdateRequestFacility\" />
   </ItemGroup>

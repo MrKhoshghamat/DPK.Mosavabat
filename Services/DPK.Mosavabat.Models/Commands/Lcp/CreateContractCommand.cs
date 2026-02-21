@@ -2,6 +2,7 @@
 using System;
 using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
+using DPK.Mosavabat.Common.Primitives;
 
 namespace DPK.Mosavabat.Models.Commands.Lcp;
 
@@ -75,7 +76,7 @@ public class CreateContractCommand(
     string paymentAmountSum,
     string amountSum,
     List<RequestDocumentMosavabatCommand> contractDocuments)
-    :CommandBase<CreateLcpContractDto>
+    :CommandBase<Result<CreateLcpContractDto>>
 {
     public int CaseId { get; } = caseId;
     public int CuApprovalSubjectId { get; } = cuApprovalSubjectId;

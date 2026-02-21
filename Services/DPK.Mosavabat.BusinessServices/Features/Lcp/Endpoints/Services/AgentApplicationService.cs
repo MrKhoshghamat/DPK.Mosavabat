@@ -26,8 +26,10 @@ public class AgentApplicationService(
         AcceptAgentVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<AcceptAgentCommand>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

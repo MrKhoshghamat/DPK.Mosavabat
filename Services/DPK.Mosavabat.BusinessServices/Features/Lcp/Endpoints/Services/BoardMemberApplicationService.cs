@@ -27,8 +27,10 @@ public class BoardMemberApplicationService(
         GetBoardMembersVm vm,
         CancellationToken cancellationToken = default)
     {
-        return await executionModule.ExecuteQueryAsync(
+        var executionResult = await executionModule.ExecuteQueryAsync(
             ObjectMapper.Map<GetBoardMembersQuery>(vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

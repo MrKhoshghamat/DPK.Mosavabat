@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Lcp.Contract;
 using DPK.Mosavabat.Models.Commands.Lcp;
 using DPK.Mosavabat.Models.DataModels.Lcp;
@@ -17,14 +19,16 @@ internal class AcceptRequestFacilityCommandHandler(
     IMapper mapper)
     : ICommandHandler<
         AcceptRequestFacilityCommand,
-        UpdateLcpRequestFacilityStatusDto>
+        Result<UpdateLcpRequestFacilityStatusDto>>
 {
-    public async Task<UpdateLcpRequestFacilityStatusDto> Handle(
+    public async Task<Result<UpdateLcpRequestFacilityStatusDto>> Handle(
         AcceptRequestFacilityCommand command,
         CancellationToken cancellationToken)
     {
-        return await lcpExternalService.UpdateLcpRequestFacilityStatus(
-            mapper.Map<UpdateLcpRequestFacilityStatusDm>(command),
-            cancellationToken);
+        return await Result.Success(command)
+            .Map(mapper.Map<UpdateLcpRequestFacilityStatusDm>)
+            .Bind(dm => lcpExternalService.UpdateLcpRequestFacilityStatus(
+                dm,
+                cancellationToken));
     }
 }

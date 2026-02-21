@@ -29,10 +29,12 @@ public class RequestFacilityApplicationService(
         CreateRequestFacilityVm vm,
         CancellationToken cancellationToken)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
                 ObjectMapper.Map<CreateRequestFacilityCommand>(
                     vm),
                 cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -46,10 +48,12 @@ public class RequestFacilityApplicationService(
         UpdateRequestFacilityVm vm,
         CancellationToken cancellationToken)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<UpdateRequestFacilityCommand>(
                 vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 
     /// <summary>
@@ -63,9 +67,11 @@ public class RequestFacilityApplicationService(
         UpdateRequestFacilityRadNumberVm vm,
         CancellationToken cancellationToken)
     {
-        return await executionModule.ExecuteCommandAsync(
+        var executionResult = await executionModule.ExecuteCommandAsync(
             ObjectMapper.Map<UpdateRequestFacilityRadNumberCommand>(
                 vm),
             cancellationToken);
+
+        return executionResult.Value;
     }
 }

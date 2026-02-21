@@ -1,141 +1,112 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using DPK.Foundation;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
+using DPK.Mosavabat.BusinessServices.Abstractions.Errors;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.ExternalServices.Lms.Contract;
+using DPK.Mosavabat.ExternalServices.Payam.Contract;
+using DPK.Mosavabat.Models.Commands.CreditProcesses;
+using DPK.Mosavabat.Models.DataModels.CreditProcesses;
+using DPK.Mosavabat.Models.DataModels.Payam;
+using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
+using DPK.Mosavabat.SqlBusinessServices.CreditProcesses.Contract;
 
 namespace DPK.Mosavabat.BusinessServices.Features.CreditProcesses.UseCases.Commands.ControlPaymentPermissionIssuance;
 
 /// <summary>
-/// خطاهای بیزینسی
+/// هندلر ایجاد شناسه پرداخت
 /// </summary>
-public sealed class BusinessRuleException : DpkException
+internal class InsertPaymentPermissionCommandHandler(
+    ICreditProcessSqlService creditProcessSqlService,
+    IPayamExternalService payamExternalService,
+    ICreditProcessMessageProvider messageProvider,
+    ILmsExternalService lmsExternalService,
+    IMapper mapper)
+    : ICommandHandler<
+        InsertPaymentPermissionCommand,
+        Result<InsertPaymentPermissionDto>>
 {
-    /// <summary>
-    /// کد
-    /// </summary>
-    public int Code { get; }
+    private record PipelineContext(
+        InsertPaymentPermissionCommand Command,
+        string? ControlIssuanceResult = null);
 
-    /// <summary>
-    /// پیام خطا
-    /// </summary>
-    public string ErrorMessage { get; }
-
-    /// <summary>
-    /// کلید خطا
-    /// </summary>
-    public string? ErrorKey { get; }
-
-    /// <summary>
-    /// لیست خطاها
-    /// </summary>
-    public IReadOnlyList<BusinessError> Errors { get; }
-
-    /// <summary>
-    /// اطلاعات تکمیلی
-    /// </summary>
-    public IReadOnlyDictionary<string, object?> Metadata { get; }
-
-    /// <summary>
-    /// سازنده کلاس
-    /// </summary>
-    /// <param name="code"></param>
-    /// <param name="message"></param>
-    /// <param name="errorKey"></param>
-    /// <param name="metadata"></param>
-    /// <param name="innerException"></param>
-    public BusinessRuleException(
-        int code,
-        string message,
-        string? errorKey = null,
-        IDictionary<string, object?>? metadata = null,
-        Exception? innerException = null)
-        : base(message, innerException)
+    public async Task<Result<InsertPaymentPermissionDto>> Handle(
+        InsertPaymentPermissionCommand command,
+        CancellationToken cancellationToken)
     {
-        Code = code;
-        ErrorMessage = message;
-        ErrorKey = errorKey;
-        Errors = [new BusinessError(code, message, errorKey)];
-        Metadata = NormalizeMetadata(metadata);
-        AttachMetadataToExceptionData(Metadata);
+        return await Result.Success(new PipelineContext(command))
+            .Bind(ctx => CheckPaymentPermissionIssuanceAsync(ctx, cancellationToken))
+            .Bind(ctx => CheckPayamInquiryAsync(ctx, cancellationToken))
+            .Bind(ctx => InsertPaymentPermissionInLmsAsync(ctx, cancellationToken));
     }
 
-    /// <summary>
-    /// سازنده کلاس
-    /// </summary>
-    /// <param name="errors"></param>
-    /// <param name="message"></param>
-    /// <param name="metadata"></param>
-    /// <param name="innerException"></param>
-    public BusinessRuleException(
-        IEnumerable<BusinessError> errors,
-        string? message = null,
-        IDictionary<string, object?>? metadata = null,
-        Exception? innerException = null)
-        : base(message ?? "خطای بیزینسی رخ داده است.", innerException)
+    private async Task<Result<PipelineContext>> CheckPaymentPermissionIssuanceAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
     {
-        var list = errors.ToList();
-        if (list.Count == 0)
-        {
-            list.Add(new BusinessError(-1, message ?? "خطای بیزینسی نامشخص"));
-        }
+        var command = context.Command;
 
-        Errors = list;
-        Code = list[0].Code;
-        ErrorMessage = message ?? list[0].Message;
-        ErrorKey = list[0].ErrorKey;
-        Metadata = NormalizeMetadata(metadata);
-        AttachMetadataToExceptionData(Metadata);
+        var response = await creditProcessSqlService.ControlPaymentPermissionIssuance(
+            new ControlPaymentPermissionIssuanceDm(
+                command.MosavabeNo,
+                command.ContractAmount,
+                command.PrepaidAmount,
+                command.SubContractType,
+                command.CustomerNo),
+            cancellationToken);
+
+        var validationResult = ValidateBusinessRule(response.Result);
+        return validationResult.IsFailure
+            ? Result.Failure<PipelineContext>(validationResult.Error)
+            : Result.Success(context with { ControlIssuanceResult = response.Result });
     }
 
-    /// <summary>
-    /// تکی
-    /// </summary>
-    /// <param name="code"></param>
-    /// <param name="message"></param>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public static BusinessRuleException Single(int code, string message, string? key = null)
-        => new(code, message, key);
-
-    /// <summary>
-    /// چندتایی
-    /// </summary>
-    /// <param name="errors"></param>
-    /// <param name="message"></param>
-    /// <returns></returns>
-    public static BusinessRuleException Multiple(IEnumerable<BusinessError> errors, string? message = null)
-        => new(errors, message);
-
-    /// <summary>
-    /// تفکیک اطلاعات تکمیلی
-    /// </summary>
-    /// <param name="metadata"></param>
-    /// <returns></returns>
-    public static IReadOnlyDictionary<string, object?> NormalizeMetadata(
-        IDictionary<string, object?>? metadata)
-        => metadata is null
-            ? []
-            : new Dictionary<string, object?>(metadata);
-
-    private void AttachMetadataToExceptionData(IReadOnlyDictionary<string, object?> metadata)
+    private async Task<Result<PipelineContext>> CheckPayamInquiryAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
     {
-        foreach (var kv in metadata)
+        var response = await payamExternalService.CheckInquiry(
+            new CheckInquiryDm(context.ControlIssuanceResult),
+            cancellationToken);
+
+        var validationResult = ValidateBusinessRule(response.BouncedCheckCount);
+        return validationResult.IsFailure
+            ? Result.Failure<PipelineContext>(validationResult.Error)
+            : Result.Success(context);
+    }
+
+    private async Task<Result<InsertPaymentPermissionDto>> InsertPaymentPermissionInLmsAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var dm = mapper.Map<InsertPaymentPermissionDm>(context.Command);
+
+        var response = await lmsExternalService.InsertPaymentPermission(
+            dm,
+            cancellationToken);
+
+        return Result.Success(response);
+    }
+
+    private Result ValidateBusinessRule(string? result)
+    {
+        if (string.IsNullOrEmpty(result) ||
+            result.Length > 5 ||
+            result.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+            result.Equals("false", StringComparison.OrdinalIgnoreCase))
         {
-            if (!Data.Contains(kv.Key))
-                Data[kv.Key] = kv.Value;
+            return Result.Success();
         }
+
+        if (!int.TryParse(result, out var code))
+        {
+            return Result.Success();
+        }
+
+        return messageProvider.TryGetMessage(code, out var message, out var errorEnum)
+            ? Result.Failure(new Error($"BusinessRule.{errorEnum}", message))
+            : Result.Success();
     }
 }
-
-/// <summary>
-/// خطاهای بیزینسی
-/// </summary>
-/// <param name="Code"></param>
-/// <param name="Message"></param>
-/// <param name="ErrorKey"></param>
-/// <param name="Target"></param>
-public record BusinessError(
-    int Code,
-    string Message,
-    string? ErrorKey = null,
-    string? Target = null
-);

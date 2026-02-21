@@ -8,6 +8,7 @@ public class SubjectFacilityCommand(
     string contractPeriodType,
     string description,
     string subjectContract,
+    string contractType,
     [CanBeNull] string subContractType,
     string facilityGroup,
     RequestDocumentsCommand requestDocuments,
@@ -19,6 +20,7 @@ public class SubjectFacilityCommand(
     public string ContractPeriodType { get; } = contractPeriodType;
     public string Description { get; } = description;
     public string SubjectContract { get; } = subjectContract;
+    public string ContractType { get; } = contractType;
     [CanBeNull] public string SubContractType { get; } = subContractType;
     public string FacilityGroup { get; } = facilityGroup;
     public RequestDocumentsCommand RequestDocuments { get; } = requestDocuments;

@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
 using JetBrains.Annotations;
 
@@ -16,7 +17,7 @@ public class AcceptAgentCommand(
     int caseId,
     bool isSuccess,
     [CanBeNull] string message)
-    : CommandBase<AcceptAgentDto>
+    : CommandBase<Result<AcceptAgentDto>>
 {
     public int AgentId { get; } = agentId;
     public int CaseId { get; } = caseId;

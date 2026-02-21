@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Lcp.Contract;
 using DPK.Mosavabat.Models.Commands.Lcp;
 using DPK.Mosavabat.Models.DataModels.Lcp;
@@ -17,14 +19,16 @@ internal class AcceptAgentCommandHandler(
     IMapper mapper)
     : ICommandHandler<
         AcceptAgentCommand,
-        AcceptAgentDto>
+        Result<AcceptAgentDto>>
 {
-    public async Task<AcceptAgentDto> Handle(
+    public async Task<Result<AcceptAgentDto>> Handle(
         AcceptAgentCommand command,
         CancellationToken cancellationToken)
     {
-        return await lcpExternalService.AcceptAgent(
-            mapper.Map<AcceptAgentDm>(command),
-            cancellationToken);
+        return await Result.Success(command)
+            .Map(mapper.Map<AcceptAgentDm>)
+            .Bind(dm => lcpExternalService.AcceptAgent(
+                dm,
+                cancellationToken));
     }
 }

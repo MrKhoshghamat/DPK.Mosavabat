@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Models.Abstractions.Commands;
+﻿using DPK.Mosavabat.Common.Primitives;
+using DPK.Mosavabat.Models.Abstractions.Commands;
 using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
 
 namespace DPK.Mosavabat.Models.Commands.CreditProcesses;
@@ -11,7 +12,7 @@ namespace DPK.Mosavabat.Models.Commands.CreditProcesses;
 public class CalculateCustomerTotalDebtCommand(
     string customerNo,
     long receivedDailyPaymentAmountsSum)
-    : CommandBase<CalculateCustomerTotalDebtDto>
+    : CommandBase<Result<CalculateCustomerTotalDebtDto>>
 {
     /// <summary>
     /// شماره مشتری

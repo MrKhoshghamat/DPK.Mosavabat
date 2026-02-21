@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Lcp.Contract;
 using DPK.Mosavabat.Models.Commands.Lcp;
 using DPK.Mosavabat.Models.DataModels.Lcp;
@@ -17,14 +19,16 @@ internal class UpdateRequestFacilityRadNumberCommandHandler(
     IMapper mapper)
     : ICommandHandler<
         UpdateRequestFacilityRadNumberCommand,
-        UpdateLcpRequestFacilityRadNumberDto>
+        Result<UpdateLcpRequestFacilityRadNumberDto>>
 {
-    public async Task<UpdateLcpRequestFacilityRadNumberDto> Handle(
+    public async Task<Result<UpdateLcpRequestFacilityRadNumberDto>> Handle(
         UpdateRequestFacilityRadNumberCommand command,
         CancellationToken cancellationToken)
     {
-        return await lcpExternalService.UpdateLcpRequestFacilityRadNumber(
-            mapper.Map<UpdateLcpRequestFacilityRadNumberDm>(command),
-            cancellationToken);
+        return await Result.Success(command)
+            .Map(mapper.Map<UpdateLcpRequestFacilityRadNumberDm>)
+            .Bind(dm => lcpExternalService.UpdateLcpRequestFacilityRadNumber(
+                dm,
+                cancellationToken));
     }
 }

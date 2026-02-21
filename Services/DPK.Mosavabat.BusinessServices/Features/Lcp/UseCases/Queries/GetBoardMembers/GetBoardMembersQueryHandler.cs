@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using DPK.Mosavabat.BusinessServices.Abstractions.Queries;
+using DPK.Mosavabat.Common.Extensions;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Lcp.Contract;
 using DPK.Mosavabat.Models.DataModels.Lcp;
 using DPK.Mosavabat.Models.EntitiesDto.Lcp;
@@ -18,14 +20,16 @@ internal class GetBoardMembersQueryHandler(
     IMapper mapper)
     : IQueryHandler<
         GetBoardMembersQuery,
-        List<BoardMemberDto>>
+        Result<List<BoardMemberDto>>>
 {
-    public async Task<List<BoardMemberDto>> Handle(
+    public async Task<Result<List<BoardMemberDto>>> Handle(
         GetBoardMembersQuery query,
         CancellationToken cancellationToken)
     {
-        return await lcpExternalService.GetBoardMembers(
-            mapper.Map<GetBoardMembersDm>(query),
-            cancellationToken);
+        return await Result.Success(query)
+            .Map(mapper.Map<GetBoardMembersDm>)
+            .Bind(dm => lcpExternalService.GetBoardMembers(
+                dm,
+                cancellationToken));
     }
 }
