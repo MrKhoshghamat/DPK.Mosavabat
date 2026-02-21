@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DPK.Foundation.AspNetCore.OData</id>
+    <version>8.1.2</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.AspNetCore.OData</description>
+    <tags>asp.net asp.net mvc application framework web framework framework domain driven design odata</tags>
+    <repository type="git" commit="bcd6dffb9e33c84508549ffe239d8469f8e25009" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="DPK.Foundation.AspNetCore" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.OData" version="9.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.OData.ModelBuilder" version="2.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Dpk.Foundation.Persian</id>
+    <version>1.1.6</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.Persian</description>
+    <tags>asp.net asp.net mvc boilerplate application framework web framework framework domain driven design Quartz background jobs</tags>
+    <dependencies>
+      <group targetFramework="net6.0" />
+    </dependencies>
+  </metadata>
+</package>

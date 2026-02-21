@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Dpk.Foundation.FileManagement</id>
+    <version>8.1.2</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.FileManagement</description>
+    <repository type="git" commit="982adbef24ce42334361d33e24c0436da577a4c9" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="DPK.Foundation.Web.Common" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="DPK.Foundation" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.2.5" exclude="Build,Analyzers" />
+        <dependency id="RestSharp" version="112.1.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

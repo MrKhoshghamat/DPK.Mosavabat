@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DPK.Saphra.Core.Service.Interface</id>
+    <version>1.0.0.10</version>
+    <authors>DPK.Saphra.Core.Service.Interface</authors>
+    <owners>DPK.Saphra.Core.Service.Interface</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework=".NETCoreApp2.1">
+        <dependency id="DPK.Infrastructure" version="1.0.0.11" exclude="Build,Analyzers" />
+        <dependency id="DPK.Infrastructure.core" version="1.0.0.11" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.App" version="2.1.1" exclude="Build,Analyzers" />
+        <dependency id="System.ServiceModel.Primitives" version="4.4.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DPK.Foundation.PrimitiveCore.EntityFrameworkCore</id>
+    <version>1.1.5</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.PrimitiveCore.EntityFrameworkCore</description>
+    <tags>asp.net asp.net mvc boilerplate application framework web framework framework domain driven design multitenancy user management role management identity entity framework core</tags>
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="DPK.Foundation.EntityFrameworkCore" version="1.1.5" exclude="Build,Analyzers" />
+        <dependency id="DPK.Foundation.Primitive.Common" version="1.1.5" exclude="Build,Analyzers" />
+        <dependency id="DPK.Foundation.PrimitiveCore" version="1.1.5" exclude="Build,Analyzers" />
+        <dependency id="DPK.Foundation" version="1.1.5" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

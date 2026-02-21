@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DPK.Foundation.EntityFrameworkCore.Batch</name>
+    </assembly>
+    <members>
+        <member name="T:DPK.Foundation.EntityFrameworkCore.Batch.DpkEntityFrameworkCoreEfPlusExtensions">
+            <summary>
+            ستورات بسته ایی
+            </summary>
+        </member>
+        <member name="M:DPK.Foundation.EntityFrameworkCore.Batch.DpkEntityFrameworkCoreEfPlusExtensions.BatchDeleteAsync``2(DPK.Foundation.Domain.Repositories.IRepository{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{Z.EntityFramework.Extensions.BatchDelete})">
+            <summary>
+            Deletes all matching entities permanently for given predicate
+            </summary>
+            <typeparam name="TEntity">Entity type</typeparam>
+            <typeparam name="TPrimaryKey">Primary key type</typeparam>
+            <param name="repository">Repository</param>
+            <param name="predicate">Predicate to filter entities</param>
+            <param name="batchDeleteBuilder">The batch delete builder to change default configuration.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DPK.Foundation.EntityFrameworkCore.Batch.DpkEntityFrameworkCoreEfPlusExtensions.BatchDeleteAsync``1(DPK.Foundation.Domain.Repositories.IRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{Z.EntityFramework.Extensions.BatchDelete})">
+            <summary>
+            Deletes all matching entities permanently for given predicate
+            </summary>
+            <typeparam name="TEntity">Entity type</typeparam>
+            <param name="repository">Repository</param>
+            <param name="predicate">Predicate to filter entities</param>
+            <param name="batchDeleteBuilder">The batch delete builder to change default configuration.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DPK.Foundation.EntityFrameworkCore.Batch.DpkEntityFrameworkCoreEfPlusExtensions.BatchUpdateAsync``2(DPK.Foundation.Domain.Repositories.IRepository{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,``0}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{Z.EntityFramework.Extensions.BatchUpdate})">
+            <summary>
+            Updates all matching entities using given updateExpression for given predicate
+            </summary>
+            <typeparam name="TEntity">Entity type</typeparam>
+            <typeparam name="TPrimaryKey">Primary key type</typeparam>
+            <param name="repository">Repository</param>
+            /// <param name="updateExpression">Update expression</param>
+            <param name="predicate">Predicate to filter entities</param>
+            <param name="batchUpdateBuilder">The batch delete builder to change default configuration.</param>
+            <returns></returns>
+        </member>
+        <member name="M:DPK.Foundation.EntityFrameworkCore.Batch.DpkEntityFrameworkCoreEfPlusExtensions.BatchUpdateAsync``1(DPK.Foundation.Domain.Repositories.IRepository{``0},System.Linq.Expressions.Expression{System.Func{``0,``0}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Action{Z.EntityFramework.Extensions.BatchUpdate})">
+            <summary>
+            Updates all matching entities using given updateExpression for given predicate
+            </summary>
+            <typeparam name="TEntity">Entity type</typeparam>
+            <param name="repository">Repository</param>
+            /// <param name="updateExpression">Update expression</param>
+            <param name="predicate">Predicate to filter entities</param>
+            <param name="batchUpdateBuilder">The batch delete builder to change default configuration.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

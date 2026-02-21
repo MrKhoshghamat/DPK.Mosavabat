@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DPK.IIP.SharedKernel</id>
+    <version>1.0.5</version>
+    <authors>IIP Team</authors>
+    <owners>IIP Team</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>file://tfs2013/DpkPackages/DPK.IIP.SharedKernel/icon.png</iconUrl>
+    <description>Common security business, contain Cryptography</description>
+    <tags>DPK IIP</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+    </dependencies>
+  </metadata>
+</package>

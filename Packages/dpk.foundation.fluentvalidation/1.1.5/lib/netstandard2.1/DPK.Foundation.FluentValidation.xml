@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DPK.Foundation.FluentValidation</name>
+    </assembly>
+    <members>
+        <member name="M:DPK.Foundation.FluentValidation.Configuration.DpkFluentValidationConfigurationExtensions.DpkFluentValidation(DPK.Foundation.Configuration.Startup.IModuleConfigurations)">
+            <summary>
+            Used to configure DPK.Foundation.FluentValidation module.
+            </summary>
+        </member>
+        <member name="P:DPK.Foundation.FluentValidation.Configuration.IDpkFluentValidationConfiguration.LocalizationSourceName">
+            <summary>
+            Name of the source name to get translations from.
+            </summary>
+        </member>
+    </members>
+</doc>

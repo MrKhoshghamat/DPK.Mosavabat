@@ -1,0 +1,1201 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dpk.Foundation.Captcha</name>
+    </assembly>
+    <members>
+        <member name="T:Dpk.Foundation.Captcha.CaptchaCryptoProvider">
+            <summary>
+                The default captcha protection provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaCryptoProvider.#ctor(Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                The default captcha protection provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaCryptoProvider.Hash(System.String)">
+            <summary>
+                Creates the hash of the message
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaCryptoProvider.Decrypt(System.String)">
+            <summary>
+                Decrypts the message
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaCryptoProvider.Encrypt(System.String)">
+            <summary>
+                Encrypts the message
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.CaptchaImageParams">
+            <summary>
+            Captcha's Image Params
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.Text">
+            <summary>
+            The encrypted text
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.RndDate">
+            <summary>
+            A random number
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.ForeColor">
+            <summary>
+            ForeColor of the captcha's text
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.BackColor">
+            <summary>
+            BackColor of the captcha's text
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.FontSize">
+            <summary>
+            FontSize of the captcha's text
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.CaptchaImageParams.FontName">
+            <summary>
+            FontName of the captcha's text
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.CaptchaImageProvider">
+            <summary>
+                The default captcha image provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaImageProvider.#ctor(Dpk.Foundation.Captcha.IRandomNumberProvider,Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                The default captcha image provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaImageProvider.DrawCaptcha(System.String,System.String,System.String,System.Single,System.String)">
+            <summary>
+                Creates the captcha image.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.CaptchaServiceCollectionExtensions">
+            <summary>
+             Captcha ServiceCollection Extensions
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CaptchaServiceCollectionExtensions.AddDNTCaptcha(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            Adds default DNTCaptcha providers.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider">
+            <summary>
+            Represents the default storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.CookieCaptchaStorageProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            Represents the storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.Add(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            Adds the specified token and its value to the storage.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.Contains(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Determines whether the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" /> contains a specific token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+            <returns>
+            <c>True</c> if the value is found in the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.GetValue(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Gets the value associated with the specified token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.Remove(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Removes the specified token from the storage.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.CookieCaptchaStorageProvider.getCookieOptions(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Expires at the end of the browser's session.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DigitGroup">
+            <summary>
+            Digit's groups
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DigitGroup.Ones">
+            <summary>
+            Ones group
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DigitGroup.Teens">
+            <summary>
+            Teens group
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DigitGroup.Tens">
+            <summary>
+            Tens group
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DigitGroup.Hundreds">
+            <summary>
+            Hundreds group
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DigitGroup.Thousands">
+            <summary>
+            Thousands group
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DisplayMode">
+            <summary>
+            Display mode of the captcha's text
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DisplayMode.NumberToWord">
+            <summary>
+            Display a numeric value using the equivalent text
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DisplayMode.ShowDigits">
+            <summary>
+            Show only digits
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DisplayMode.SumOfTwoNumbers">
+            <summary>
+            Display a numeric value as a sum of 2 numbers
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.DisplayMode.SumOfTwoNumbersToWords">
+            <summary>
+            Display a numeric value as a sum of 2 numbers using the equivalent text
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider">
+            <summary>
+            Represents a distributed cache storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Caching.Distributed.IDistributedCache,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            Represents the storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider.Add(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            Adds the specified token and its value to the storage.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider.Contains(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Determines whether the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" /> contains a specific token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+            <returns>
+            <c>True</c> if the value is found in the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider.GetValue(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Gets the value associated with the specified token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedCacheCaptchaStorageProvider.Remove(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Removes the specified token from the storage.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DistributedSerializationProvider">
+            <summary>
+            Distributed serialization provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedSerializationProvider.#ctor(Microsoft.Extensions.Caching.Distributed.IDistributedCache,Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.DistributedSerializationProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            Serialization Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedSerializationProvider.Serialize(System.Object)">
+            <summary>
+            Serialize the given data to an string.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DistributedSerializationProvider.Deserialize``1(System.String)">
+            <summary>
+            Deserialize the given string to an object.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaApiProvider">
+            <summary>
+            DNTCaptcha Api
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaApiProvider.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Dpk.Foundation.Captcha.IRandomNumberProvider,System.Func{Dpk.Foundation.Captcha.DisplayMode,Dpk.Foundation.Captcha.ICaptchaTextProvider},Dpk.Foundation.Captcha.ICaptchaStorageProvider,Dpk.Foundation.Captcha.ISerializationProvider,Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.AspNetCore.Mvc.IUrlHelper,Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            DNTCaptcha Api
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaApiProvider.CreateDNTCaptcha(Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes)">
+            <summary>
+            Creates DNTCaptcha
+            </summary>
+            <param name="captchaAttributes">captcha attributes</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaApiResponse">
+            <summary>
+            ApiProvider Response
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaApiResponse.DntCaptchaImgUrl">
+            <summary>
+            The captach's image url
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaApiResponse.DntCaptchaId">
+            <summary>
+            Captcha Id
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaApiResponse.DntCaptchaTextValue">
+            <summary>
+            Captcha's TextValue
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaApiResponse.DntCaptchaTokenValue">
+            <summary>
+            Captcha's TokenValue
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaComponent">
+            <summary>
+            Defines DNTCaptcha's input names
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaComponent.CaptchaHiddenInputName">
+            <summary>
+            The default hidden input name of the captcha.
+            Its default value is `DNTCaptchaText`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaComponent.CaptchaHiddenTokenName">
+            <summary>
+            The default hidden input name of the captcha's cookie token.
+            Its default value is `DNTCaptchaToken`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaComponent.CaptchaInputName">
+            <summary>
+            The default input name of the captcha.
+            Its default value is `DNTCaptchaInputText`.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaImageController">
+            <summary>
+            DNTCaptcha Image Controller
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaImageController.#ctor(Dpk.Foundation.Captcha.ICaptchaImageProvider,Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider,Dpk.Foundation.Captcha.ICaptchaStorageProvider,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.DNTCaptchaImageController},Dpk.Foundation.Captcha.ISerializationProvider)">
+            <summary>
+            DNTCaptcha Image Controller
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaImageController.ViewContext">
+            <summary>
+            The ViewContext Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaImageController.Refresh(System.String)">
+            <summary>
+            Refresh the captcha
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaImageController.Show(System.String)">
+            <summary>
+            Creates the captcha image.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaNoise">
+            <summary>
+            Defines options of the captcha's noise
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaNoise.NoisePixelsDensity">
+            <summary>
+            Defines density of the noise's pixels.
+            Its default value is 25.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaNoise.NoiseLinesCount">
+            <summary>
+            Defines the number of random noise's lines.
+            Its default value is 3.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaOptions">
+            <summary>
+            Defines DNTCaptcha's Options
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CaptchaNoise">
+            <summary>
+            Defines options of the captcha's noise
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.SameSiteMode">
+            <summary>
+            Gets or sets the value for the SameSite attribute of the cookie.
+            Its default value is `SameSiteMode.Strict`. If you are using CORS, set it to `None`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CaptchaStorageProvider">
+            <summary>
+            You can introduce a custom ICaptchaStorageProvider to be used as an StorageProvider.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CaptchaSerializationProvider">
+            <summary>
+            You can introduce a custom SerializationProvider here.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CustomFontPath">
+            <summary>
+            You can introduce a custom font here.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.EncryptionKey">
+            <summary>
+            The encryption key
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.AbsoluteExpirationMinutes">
+            <summary>
+            Gets or sets an absolute expiration date for the cache entry.
+            Its default value is 7.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.AllowThousandsSeparators">
+            <summary>
+            Shows thousands separators such as 100,100,100 in ShowDigits mode.
+            Its default value is true.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CaptchaComponent">
+            <summary>
+            Defines DNTCaptcha's input names
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaOptions.CaptchaClass">
+            <summary>
+            The CSS class name of the captcha's DIV.
+            Its default value is `dntCaptcha`.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.Identifier(System.String)">
+            <summary>
+            The CSS class name of the captcha's DIV.
+            Its default value is `dntCaptcha`.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.InputNames(Dpk.Foundation.Captcha.DNTCaptchaComponent)">
+            <summary>
+            Defines DNTCaptcha's input names.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.ShowThousandsSeparators(System.Boolean)">
+            <summary>
+            Shows thousands separators such as 100,100,100 in ShowDigits mode.
+            Its default value is true.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.AbsoluteExpiration(System.Int32)">
+            <summary>
+            Sets an absolute expiration date for the cache entry.
+            Its default value is 7.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.WithEncryptionKey(System.String)">
+            <summary>
+            The encryption key.
+            If you don't specify it, a random value will be used.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.WithNoise(System.Single,System.Int32)">
+            <summary>
+            Defines options of the captcha's noise.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseCustomFont(System.String)">
+            <summary>
+            You can introduce a custom font here.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseCustomStorageProvider``1">
+            <summary>
+            You can introduce a custom ICaptchaStorageProvider to be used as an StorageProvider.
+            </summary>
+            <typeparam name="T">Implements ICaptchaStorageProvider</typeparam>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseDistributedSerializationProvider">
+            <summary>
+            Using the IDistributedCache
+            Don't forget to configure your DistributedCache provider such as `services.AddStackExchangeRedisCache()` first.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseInMemorySerializationProvider">
+            <summary>
+            Using the IMemoryCache
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseSessionStorageProvider">
+            <summary>
+            Introduces the built-in `SessionCaptchaStorageProvider` to be used as an StorageProvider.
+            Don't forget to add `services.AddSession();` in ConfigureServices() method and `app.UseSession();` in Configure() method.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseCookieStorageProvider(Microsoft.AspNetCore.Http.SameSiteMode)">
+            <summary>
+            Introduces the built-in `CookieCaptchaStorageProvider` to be used as an StorageProvider.
+            </summary>
+            <param name="sameSite">
+            Sets the value for the SameSite attribute of the cookie.
+            Its default value is `SameSiteMode.Strict`. If you are using CORS, set it to `None`.
+            </param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseMemoryCacheStorageProvider">
+            <summary>
+            Introduces the built-in `CookieCaptchaStorageProvider` to be used as an StorageProvider.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaOptions.UseDistributedCacheStorageProvider">
+            <summary>
+            Introduces the built-in `DistributedCacheCaptchaStorageProvider` to be used as an StorageProvider.
+            Don't forget to configure your DistributedCache provider such as `services.AddStackExchangeRedisCache()` first.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaTagHelper">
+            <summary>
+            DNTCaptcha TagHelper
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Dpk.Foundation.Captcha.IRandomNumberProvider,System.Func{Dpk.Foundation.Captcha.DisplayMode,Dpk.Foundation.Captcha.ICaptchaTextProvider},Dpk.Foundation.Captcha.ICaptchaStorageProvider,Microsoft.AspNetCore.Antiforgery.IAntiforgery,Dpk.Foundation.Captcha.ISerializationProvider,Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+            DNTCaptcha TagHelper
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.Order">
+            <summary>
+            Default order is <c>0</c>.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.ViewContext">
+            <summary>
+            The current ViewContext.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.Init(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext)">
+            <summary>
+            Initializes the ITagHelperComponent with the given context. Additions to TagHelperContext.Items
+            should be done within this method to ensure they're added prior to executing the children.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.Process(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext,Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput)">
+            <summary>
+            Process the taghelper and generate the output.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.ProcessAsync(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext,Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput)">
+            <summary>
+            Asynchronously executes the <see cref="T:Microsoft.AspNetCore.Razor.TagHelpers.TagHelper"/> with the given <paramref name="context"/> and
+            <paramref name="output"/>.
+            </summary>
+            <param name="context">Contains information associated with the current HTML tag.</param>
+            <param name="output">A stateful HTML element used to generate an HTML tag.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that on completion updates the <paramref name="output"/>.</returns>
+            <remarks>By default this calls into <see cref="M:Dpk.Foundation.Captcha.DNTCaptchaTagHelper.Process(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext,Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput)"/>.</remarks>.
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes">
+            <summary>
+            Tag helper attributes
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.UseRelativeUrls">
+            <summary>
+            Create an absolute "fully qualified" url from an action and controller.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.BackColor">
+            <summary>
+            The back-color of the captcha. It's default value is string.Empty.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.FontName">
+            <summary>
+            The font-name of the captcha. It's default value is Tahoma.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.FontSize">
+            <summary>
+            The font-size of the captcha. It's default value is 12.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.ForeColor">
+            <summary>
+            The fore-color of the captcha. It's default value is #1B0172.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.Language">
+            <summary>
+            The language of the captcha. It's default value is Persian.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.DisplayMode">
+            <summary>
+            Display mode of the captcha's text. It's default value is NumberToWord.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.Max">
+            <summary>
+            The max value of the captcha. It's default value is 9000.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.Min">
+            <summary>
+            The min value of the captcha. It's default value is 1.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.Placeholder">
+            <summary>
+            The placeholder value of the captcha. It's default value is `کد امنیتی به رقم`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.Dir">
+            <summary>
+            The direction of the input box. It's default value is `ltr`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.TextBoxClass">
+            <summary>
+            The css class of the captcha. It's default value is `text-box single-line form-control col-md-4`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.TextBoxTemplate">
+            <summary>
+            The text-box-template of the captcha. It's default value is `<div class='input-group col-md-4'><span class='input-group-addon'><span class='glyphicon glyphicon-lock'></span></span>{0}</div>`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.ValidationErrorMessage">
+            <summary>
+            The validation-error-message of the captcha. It's default value is `لطفا کد امنیتی را به رقم وارد نمائید`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.ValidationMessageClass">
+            <summary>
+            The validation-message-class of the captcha. It's default value is `text-danger`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.RefreshButtonClass">
+            <summary>
+            The refresh-button-class of the captcha. It's default value is `glyphicon glyphicon-refresh btn-sm`.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.CaptchaToken">
+            <summary>
+            The Captcha Token
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes.ShowRefreshButton">
+            <summary>
+            Its default value is true.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.DNTCaptchaValidatorService">
+            <summary>
+                Validates the input number.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaValidatorService.#ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.DNTCaptchaValidatorService},Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Dpk.Foundation.Captcha.ICaptchaStorageProvider,System.Func{Dpk.Foundation.Captcha.DisplayMode,Dpk.Foundation.Captcha.ICaptchaTextProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                Validates the input number.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.DNTCaptchaValidatorService.HasRequestValidCaptchaEntry(Dpk.Foundation.Captcha.Language,Dpk.Foundation.Captcha.DisplayMode,Dpk.Foundation.Captcha.CaptchaBase)">
+            <summary>
+                Validates the input number.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.FakeView">
+            <summary>
+            A fake view provider for rendering tag helpers
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.FakeView.Path">
+            <summary>
+            Gets the path of the view as resolved by the Microsoft.AspNetCore.Mvc.ViewEngines.IViewEngine.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.FakeView.RenderAsync(Microsoft.AspNetCore.Mvc.Rendering.ViewContext)">
+            <summary>
+            A fake view provider for rendering tag helpers
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.HtmlHelperExtensions">
+            <summary>
+            Html Helper Extensions
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HtmlHelperExtensions.GetString(Microsoft.AspNetCore.Html.IHtmlContent)">
+            <summary>
+            Convert IHtmlContent/TagBuilder to string
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.HumanReadableIntegerProvider">
+            <summary>
+            Convert a number into words
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.GetText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.Int32,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.UInt32,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.Byte,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.Decimal,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.Double,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.HumanReadableIntegerProvider.NumberToText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ICaptchaCryptoProvider">
+            <summary>
+            The default captcha protection provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaCryptoProvider.Decrypt(System.String)">
+            <summary>
+            Decrypts the message
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaCryptoProvider.Encrypt(System.String)">
+            <summary>
+            Encrypts the message
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaCryptoProvider.Hash(System.String)">
+            <summary>
+            Creates the hash of the message
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ICaptchaImageProvider">
+            <summary>
+                Captcha Image Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaImageProvider.DrawCaptcha(System.String,System.String,System.String,System.Single,System.String)">
+            <summary>
+                Creates the captcha image.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider">
+            <summary>
+            Represents the storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaStorageProvider.Add(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            Adds the specified token and its value to the storage.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaStorageProvider.Contains(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Determines whether the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" /> contains a specific token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+            <returns>
+                <c>True</c> if the value is found in the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaStorageProvider.GetValue(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Gets the value associated with the specified token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaStorageProvider.Remove(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+             Removes the specified token from the storage.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ICaptchaTextProvider">
+            <summary>
+            Convert a number into text
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ICaptchaTextProvider.GetText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+            display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.IDNTCaptchaApiProvider">
+            <summary>
+            DNTCaptcha Api
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IDNTCaptchaApiProvider.CreateDNTCaptcha(Dpk.Foundation.Captcha.DNTCaptchaTagHelperHtmlAttributes)">
+            <summary>
+            Creates DNTCaptcha
+            </summary>
+            <param name="captchaAttributes">captcha attributes</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.IDNTCaptchaValidatorService">
+            <summary>
+            Validates the input number.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IDNTCaptchaValidatorService.HasRequestValidCaptchaEntry(Dpk.Foundation.Captcha.Language,Dpk.Foundation.Captcha.DisplayMode,Dpk.Foundation.Captcha.CaptchaBase)">
+            <summary>
+            Validates the input number.
+            </summary>
+            <param name="captchaGeneratorLanguage">The Number to word language.</param>
+            <param name="captchaGeneratorDisplayMode">Display mode of the captcha's text.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.InMemorySerializationProvider">
+            <summary>
+                In-memory serialization provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.InMemorySerializationProvider.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.InMemorySerializationProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                Serialization Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.InMemorySerializationProvider.Serialize(System.Object)">
+            <summary>
+                Serialize the given data to an string.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.InMemorySerializationProvider.Deserialize``1(System.String)">
+            <summary>
+                Deserialize the given string to an object.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.IRandomNumberProvider">
+            <summary>
+            Provides methods for generating cryptographically-strong random numbers.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IRandomNumberProvider.NextBytes(System.Byte[])">
+            <summary>
+            Fills an array of bytes with a cryptographically strong random sequence of values.
+            </summary>
+            <param name="randomBytes"></param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IRandomNumberProvider.NextNumber">
+            <summary>
+            Generates a random non-negative number.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IRandomNumberProvider.NextNumber(System.Int32)">
+            <summary>
+            Generates a random non-negative number less than or equal to max.
+            </summary>
+            <param name="max">The maximum possible value.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.IRandomNumberProvider.NextNumber(System.Int32,System.Int32)">
+            <summary>
+            Generates a random non-negative number bigger than or equal to min and less than or
+             equal to max.
+            </summary>
+            <param name="min">The minimum possible value.</param>
+            <param name="max">The maximum possible value.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ISerializationProvider">
+            <summary>
+            Serialization Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ISerializationProvider.Serialize(System.Object)">
+            <summary>
+            Serialize the given data to an string.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ISerializationProvider.Deserialize``1(System.String)">
+            <summary>
+            Deserialize the given string to an object.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.Language">
+            <summary>
+            Number to word languages
+            Kindly add more languages to the bottom only and don't rearrange to reorder the enum.
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.English">
+            <summary>
+            English Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Persian">
+            <summary>
+            Persian Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Norwegian">
+            <summary>
+            Norwegian Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Italian">
+            <summary>
+            Italian Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Turkish">
+            <summary>
+            Turkish Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Arabic">
+            <summary>
+            Arabic Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Russian">
+            <summary>
+            Russian Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Chinese">
+            <summary>
+            Chinese Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Spanish">
+            <summary>
+            Spanish Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.Portuguese">
+            <summary>
+            Spanish Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.French">
+            <summary>
+            French Language
+            </summary>
+        </member>
+        <member name="F:Dpk.Foundation.Captcha.Language.German">
+            <summary>
+            German Language
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider">
+            <summary>
+                Represents a memory cache storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider},Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                Represents the storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider.Add(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+                Adds the specified token and its value to the storage.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider.Contains(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+                Determines whether the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" /> contains a specific token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+            <returns>
+                <c>True</c> if the value is found in the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider.GetValue(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+                Gets the value associated with the specified token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.MemoryCacheCaptchaStorageProvider.Remove(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+                Removes the specified token from the storage.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.NumbersNormalizer.ToEnglishNumbers(System.String)">
+            <summary>
+                Converts Persian and Arabic digits of a given string to their equivalent English digits.
+            </summary>
+            <param name="data">Persian number</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.NumberWord">
+            <summary>
+            Equivalent names of a group
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.NumberWord.Group">
+            <summary>
+            Digit's group
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.NumberWord.Language">
+            <summary>
+            Number to word language
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.NumberWord.Names">
+            <summary>
+            Equivalent names
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ProvidersExtensions">
+            <summary>
+                Providers Extensions
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ProvidersExtensions.GetSalt(Microsoft.AspNetCore.Http.HttpContext,Dpk.Foundation.Captcha.ICaptchaCryptoProvider)">
+            <summary>
+                The cookie value's bindings.
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.RandomNumberProvider">
+            <summary>
+            Provides methods for generating cryptographically-strong random numbers.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.RandomNumberProvider.NextBytes(System.Byte[])">
+            <summary>
+            Fills an array of bytes with a cryptographically strong random sequence of values.
+            </summary>
+            <param name="randomBytes"></param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.RandomNumberProvider.NextNumber">
+            <summary>
+            Generates a random non-negative number.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.RandomNumberProvider.NextNumber(System.Int32)">
+            <summary>
+            Generates a random non-negative number less than or equal to max.
+            </summary>
+            <param name="max">The maximum possible value.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.RandomNumberProvider.NextNumber(System.Int32,System.Int32)">
+            <summary>
+            Generates a random non-negative number bigger than or equal to min and less than or
+             equal to max.
+            </summary>
+            <param name="min">The minimum possible value.</param>
+            <param name="max">The maximum possible value.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.RefreshData">
+            <summary>
+            Refresh Data
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.RefreshData.RndDate">
+            <summary>
+            Current Date
+            </summary>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider">
+            <summary>
+            Represents a session storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider.#ctor(Dpk.Foundation.Captcha.ICaptchaCryptoProvider,Microsoft.Extensions.Logging.ILogger{Dpk.Foundation.Captcha.SessionCaptchaStorageProvider})">
+            <summary>
+            Represents the storage to save the captcha tokens.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider.Add(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            Adds the specified token and its value to the storage.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider.Contains(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Determines whether the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" /> contains a specific token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+            <returns>
+            <c>True</c> if the value is found in the <see cref="T:Dpk.Foundation.Captcha.ICaptchaStorageProvider" />; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider.GetValue(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Gets the value associated with the specified token.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SessionCaptchaStorageProvider.Remove(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            Removes the specified token from the storage.
+            </summary>
+            <param name="context"></param>
+            <param name="token">The specified token.</param>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ShowDigitsProvider">
+            <summary>
+                display a numeric value using the equivalent text
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ShowDigitsProvider.#ctor(Microsoft.Extensions.Options.IOptions{Dpk.Foundation.Captcha.DNTCaptchaOptions})">
+            <summary>
+                display a numeric value using the equivalent text
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ShowDigitsProvider.GetText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+                display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.SumOfTwoNumbersProvider">
+            <summary>
+                SumOfTwoNumbers Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SumOfTwoNumbersProvider.#ctor(Dpk.Foundation.Captcha.IRandomNumberProvider)">
+            <summary>
+                SumOfTwoNumbers Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SumOfTwoNumbersProvider.GetText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+                display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.SumOfTwoNumbersToWordsProvider">
+            <summary>
+                SumOfTwoNumbersToWords Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SumOfTwoNumbersToWordsProvider.#ctor(Dpk.Foundation.Captcha.IRandomNumberProvider,Dpk.Foundation.Captcha.HumanReadableIntegerProvider)">
+            <summary>
+                SumOfTwoNumbersToWords Provider
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.SumOfTwoNumbersToWordsProvider.GetText(System.Int64,Dpk.Foundation.Captcha.Language)">
+            <summary>
+                display a numeric value using the equivalent text
+            </summary>
+            <param name="number">input number</param>
+            <param name="language">local language</param>
+            <returns>the equivalent text</returns>
+        </member>
+        <member name="T:Dpk.Foundation.Captcha.ValidateDNTCaptchaAttribute">
+            <summary>
+            Validate DNTCaptcha Attribute
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.ValidateDNTCaptchaAttribute.CaptchaGeneratorLanguage">
+            <summary>
+            The language of captcha generator. It's default value is Persian.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.ValidateDNTCaptchaAttribute.CaptchaGeneratorDisplayMode">
+            <summary>
+            The display mode of captcha generator. It's default value is NumberToWord.
+            </summary>
+        </member>
+        <member name="P:Dpk.Foundation.Captcha.ValidateDNTCaptchaAttribute.ErrorMessage">
+            <summary>
+            Validation error message. It's default value is `لطفا کد امنیتی را به رقم وارد نمائید`.
+            </summary>
+        </member>
+        <member name="M:Dpk.Foundation.Captcha.ValidateDNTCaptchaAttribute.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <summary>
+            Captcha validator.
+            </summary>
+        </member>
+    </members>
+</doc>

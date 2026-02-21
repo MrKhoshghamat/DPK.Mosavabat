@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Dpk.Foundation.Captcha</id>
+    <version>1.0.1</version>
+    <authors>Infrastructure</authors>
+    <description>Dpk.Foundation.Captcha</description>
+    <tags>asp.net asp.net mvc boilerplate application framework web framework framework domain driven design asp.net core</tags>
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="SkiaSharp" version="2.88.3" exclude="Build,Analyzers" />
+        <dependency id="SkiaSharp.HarfBuzz" version="2.88.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net6.0">
+        <frameworkReference name="Microsoft.AspNetCore.App" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+</package>

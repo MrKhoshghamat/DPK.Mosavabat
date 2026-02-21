@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DPK.Foundation.PrimitiveCore</id>
+    <version>8.1.2</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.PrimitiveCore</description>
+    <tags>asp.net asp.net mvc application framework web framework framework domain driven design multitenancy user management role management identity</tags>
+    <repository type="git" commit="bcd6dffb9e33c84508549ffe239d8469f8e25009" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="DPK.Foundation.Primitive.Common" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="IdentityServer4.AccessTokenValidation" version="3.0.1" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Authentication.JwtBearer" version="8.0.10" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Configuration.AzureKeyVault" version="3.1.24" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerGen" version="8.1.1" exclude="Build,Analyzers" />
+        <dependency id="Swashbuckle.AspNetCore.SwaggerUI" version="8.1.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net8.0">
+        <frameworkReference name="Microsoft.AspNetCore.App" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+</package>

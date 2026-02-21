@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Dpk.Framework.Common</id>
+    <version>5.0.2</version>
+    <authors>Infrastructure Team</authors>
+    <description>Common class like as Executer for AOP , exception handler, LoggerManager and Providers Contracts</description>
+    <releaseNotes>&gt;= .net 5</releaseNotes>
+    <repository url="http://upm.dpkharazmi.com/repository/floor3-nuget/" />
+    <dependencies>
+      <group targetFramework="net6.0">
+        <dependency id="Flurl" version="3.0.2" exclude="Build,Analyzers" />
+        <dependency id="Flurl.Http" version="3.2.0" exclude="Build,Analyzers" />
+        <dependency id="System.ComponentModel.Annotations" version="5.0.0" exclude="Build,Analyzers" />
+        <dependency id="YamlDotNet" version="11.2.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

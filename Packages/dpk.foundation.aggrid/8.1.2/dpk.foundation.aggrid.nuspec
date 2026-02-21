@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DPK.Foundation.AgGrid</id>
+    <version>8.1.2</version>
+    <authors>Infrastructure</authors>
+    <description>DPK.Foundation.AgGrid</description>
+    <tags>asp.net asp.net mvc application framework web framework framework domain driven design asp.net core</tags>
+    <repository type="git" commit="bcd6dffb9e33c84508549ffe239d8469f8e25009" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="Dpk.Foundation.DefaultGrid" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="DPK.Foundation" version="8.1.2" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Data.SqlClient" version="5.2.2" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

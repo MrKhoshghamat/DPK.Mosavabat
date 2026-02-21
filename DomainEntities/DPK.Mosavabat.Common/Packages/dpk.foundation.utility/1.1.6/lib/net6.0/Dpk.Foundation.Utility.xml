@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dpk.Foundation.Utility</name>
+    </assembly>
+    <members>
+        <member name="P:Dpk.Foundation.Utility.ITempFileCacheManager.CachMinutes">
+            <summary>
+            expire time by default by 1 minutes
+            </summary>
+        </member>
+    </members>
+</doc>

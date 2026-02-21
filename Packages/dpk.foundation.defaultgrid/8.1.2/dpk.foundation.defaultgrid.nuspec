@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Dpk.Foundation.DefaultGrid</id>
+    <version>8.1.2</version>
+    <authors>Infrastructure</authors>
+    <description>Dpk.Foundation.DefaultGrid</description>
+    <tags>asp.net asp.net mvc application framework web framework framework domain driven design asp.net core</tags>
+    <repository type="git" commit="bcd6dffb9e33c84508549ffe239d8469f8e25009" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
