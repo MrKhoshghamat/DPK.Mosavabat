@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using DPK.Mosavabat.BusinessServices.Abstractions.Commands;
 using DPK.Mosavabat.BusinessServices.Features.ApprovalRequests.Rules;
 using DPK.Mosavabat.Common.Consts.General;
@@ -12,9 +13,11 @@ using DPK.Mosavabat.Models.DataModels.ApprovalRequests;
 using DPK.Mosavabat.Models.DataModels.Bizagi;
 using DPK.Mosavabat.Models.DataModels.Lcp;
 using DPK.Mosavabat.Models.DataModels.RequestFacilities;
+using DPK.Mosavabat.Models.DataModels.Users;
 using DPK.Mosavabat.Models.EntitiesDto.ApprovalRequests;
 using DPK.Mosavabat.SqlBusinessServices.ApprovalRequests.Contract;
 using DPK.Mosavabat.SqlBusinessServices.RequestFacilities.Contract;
+using DPK.Mosavabat.SqlBusinessServices.Users.Contract;
 
 namespace DPK.Mosavabat.BusinessServices.Features.ApprovalRequests.UseCases.Commands.CreateApprovalRequest;
 
@@ -23,6 +26,7 @@ namespace DPK.Mosavabat.BusinessServices.Features.ApprovalRequests.UseCases.Comm
 /// </summary>
 internal sealed class CreateApprovalRequestCommandHandler(
     IApprovalRequestSqlService approvalRequestSqlService,
+    IUserSqlService userSqlService,
     IWorkflowEngineService workflowEngineService,
     IRequestFacilitySqlService requestFacilitySqlService,
     ILcpExternalService lcpExternalService)
@@ -33,88 +37,135 @@ internal sealed class CreateApprovalRequestCommandHandler(
     private const string ProcessName = "MainProcess";
     private const string EntityName = "approvalsRequest";
 
+    private record PipelineContext(
+        CreateApprovalRequestCommand Command,
+        string? Username = null,
+        int CaseId = 0,
+        int RadNumber = 0);
+
     public async Task<Result<CreateApprovalRequestDto>> Handle(
         CreateApprovalRequestCommand command,
         CancellationToken cancellationToken)
     {
-        return await approvalRequestSqlService
-            // 1️⃣ Load BranchCode DM
-            .GetBranchCodeByLcpRequestFacilityId(
-                new GetBranchCodeByLcpRequestFacilityIdDm(
-                    command.LcpRequestFacilityId),
-                cancellationToken)
+        return await Result.Success(new PipelineContext(command))
+            .Bind(ctx => FetchBranchCodeAndUsernameAsync(ctx, cancellationToken))
+            .Bind(CreateBizagiCaseSafeAsync)
+            .Bind(ctx => ExecuteParallelDatabaseUpdatesAsync(ctx, cancellationToken))
+            .Map(CreateFinalResponse);
+    }
 
-            // ✅ Extract primitive
-            .Map(dm => dm.BranchCode)
+    private async Task<Result<PipelineContext>> FetchBranchCodeAndUsernameAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var branchCodeResult = await approvalRequestSqlService.GetBranchCodeByLcpRequestFacilityId(
+            new GetBranchCodeByLcpRequestFacilityIdDm(context.Command.LcpRequestFacilityId),
+            cancellationToken);
 
-            // 2️⃣ Ensure BranchCode
-            .Bind(ApprovalRequestRules.ValidBranchCode)
+        if (branchCodeResult.IsFailure) return Result.Failure<PipelineContext>(branchCodeResult.Error);
 
-            // 3️⃣ Load Username
-            .Bind(branchCode =>
-                approvalRequestSqlService.GetUsernameByBranchCode(
-                    new GetUsernameByBranchCodeDm(
-                        branchCode,
-                        MosavabatClassName.ApprovalRequest2),
-                    cancellationToken))
+        var validBranchCodeResult = ApprovalRequestRules.ValidBranchCode(branchCodeResult.Value.BranchCode);
+        if (validBranchCodeResult.IsFailure) return Result.Failure<PipelineContext>(validBranchCodeResult.Error);
 
-            // ✅ Extract username
-            .Map(dm => dm.Username)
+        var branchCode = validBranchCodeResult.Value;
 
-            // 4️⃣ Ensure Username
-            .Bind(ApprovalRequestRules.UsernameExists)
+        var usernameResult = await userSqlService.GetUsernameByBranchCode(
+            new GetUsernameByBranchCodeDm(branchCode, MosavabatClassName.ApprovalRequest2),
+            cancellationToken);
 
-            // 5️⃣ Create Bizagi Case
-            .Bind(username =>
-                workflowEngineService.CreateCaseAsync(
-                    new CreateApprovalRequestBizagiDm
-                    {
-                        ApprovalRequestGroup = "1",
-                        RequestTypeDetail = "1"
-                    },
-                    processName: ProcessName,
-                    entityName: EntityName,
-                    userName: username))
+        if (usernameResult.IsFailure) return Result.Failure<PipelineContext>(usernameResult.Error);
 
-            // 6️⃣ Ensure Bizagi Result
-            .Bind(ApprovalRequestRules.ValidBizagiCase)
+        var validUsernameResult = ApprovalRequestRules.UsernameExists(usernameResult.Value.Username);
+        if (validUsernameResult.IsFailure) return Result.Failure<PipelineContext>(validUsernameResult.Error);
 
-            // 7️⃣ Side‑Effect: Update RAD Number (External)
-            .Tap(caseResult =>
-                lcpExternalService.UpdateLcpRequestFacilityRadNumber(
-                    new UpdateLcpRequestFacilityRadNumberDm(
-                        command.LcpRequestFacilityIdCase,
-                        Convert.ToInt32(caseResult.CaseId),
-                        Convert.ToInt32(caseResult.CaseId)),
-                    cancellationToken))
+        return Result.Success(context with
+        {
+            Username = validUsernameResult.Value
+        });
+    }
 
-            // 8️⃣ Side‑Effect: Update Request Facility (SQL)
-            .Tap(caseResult =>
-                requestFacilitySqlService.UpdateLcpRequestFacility(
-                    new UpdateLcpRequestFacilityDm(
-                        command.LcpRequestFacilityIdCase,
-                        command.LcpRequestFacilityRadNumber,
-                        Convert.ToInt32(caseResult.CaseId),
-                        Convert.ToInt32(caseResult.RadNumber),
-                        command.LcpRequestFacilityId,
-                        command.GuidLcpRequestFacility),
-                    cancellationToken))
+    private async Task<Result<PipelineContext>> CreateBizagiCaseSafeAsync(
+        PipelineContext context)
+    {
+        var caseResult = await workflowEngineService.CreateCaseAsync(
+            new CreateApprovalRequestBizagiDm
+            {
+                ApprovalRequestGroup = "1",
+                RequestTypeDetail = "1"
+            },
+            processName: ProcessName,
+            entityName: EntityName,
+            userName: context.Username!);
 
-            // 9️⃣ Side‑Effect: Mapping RF → ApprovalRequest
-            .Tap(caseResult =>
-                requestFacilitySqlService.MapLcpRequestFacilityToApprovalRequest(
-                    new MapLcpRequestFacilityToApprovalRequestDm(
-                        command.LcpRequestFacilityId,
-                        Convert.ToInt32(caseResult.CaseId),
-                        command.LcpRequestFacilityIdCase),
-                    cancellationToken))
+        if (caseResult.IsFailure) return Result.Failure<PipelineContext>(caseResult.Error);
 
-            // 🔟 Final DTO
-            .Map(caseResult =>
-                new CreateApprovalRequestDto(
-                    caseResult.CaseId,
-                    caseResult.RadNumber,
-                    DateTime.Now,
-                    "فرایند با موفقیت ایجاد شد"));
+        var validCaseResult = ApprovalRequestRules.ValidBizagiCase(caseResult.Value);
+        if (validCaseResult.IsFailure) return Result.Failure<PipelineContext>(validCaseResult.Error);
+
+        if (!int.TryParse(caseResult.Value.CaseId.ToString(), out var caseId) ||
+            !int.TryParse(caseResult.Value.RadNumber, out var radNumber))
+        {
+            return Result.Failure<PipelineContext>(
+                new Error("Bizagi.InvalidData", "شناسه کیس یا شماره راد دریافتی از بیزاجی فاقد فرمت عددی معتبر است."));
+        }
+
+        return Result.Success(context with { CaseId = caseId, RadNumber = radNumber });
+    }
+
+    private async Task<Result<PipelineContext>> ExecuteParallelDatabaseUpdatesAsync(
+        PipelineContext context,
+        CancellationToken cancellationToken)
+    {
+        var cmd = context.Command;
+
+        var lcpUpdateTask = lcpExternalService.UpdateLcpRequestFacilityRadNumber(
+            new UpdateLcpRequestFacilityRadNumberDm(
+                cmd.LcpRequestFacilityIdCase,
+                context.CaseId,
+                context.CaseId),
+            cancellationToken);
+
+        var reqFacilityUpdateTask = requestFacilitySqlService.UpdateLcpRequestFacility(
+            new UpdateLcpRequestFacilityDm(
+                cmd.LcpRequestFacilityIdCase,
+                cmd.LcpRequestFacilityRadNumber,
+                context.CaseId,
+                context.RadNumber,
+                cmd.LcpRequestFacilityId,
+                cmd.GuidLcpRequestFacility),
+            cancellationToken);
+
+        var mappingTask = requestFacilitySqlService.MapLcpRequestFacilityToApprovalRequest(
+            new MapLcpRequestFacilityToApprovalRequestDm(
+                cmd.LcpRequestFacilityId,
+                context.CaseId,
+                cmd.LcpRequestFacilityIdCase),
+            cancellationToken);
+
+        await Task.WhenAll(
+            lcpUpdateTask,
+            reqFacilityUpdateTask,
+            mappingTask);
+
+        var results = new Result[]
+        {
+            lcpUpdateTask.Result,
+            reqFacilityUpdateTask.Result,
+            mappingTask.Result
+        };
+        var failedResult = results.FirstOrDefault(r => r.IsFailure);
+
+        return failedResult is not null
+            ? Result.Failure<PipelineContext>(failedResult.Error)
+            : Result.Success(context);
+    }
+
+    private static CreateApprovalRequestDto CreateFinalResponse(PipelineContext context)
+    {
+        return new CreateApprovalRequestDto(
+            context.CaseId,
+            context.RadNumber.ToString(),
+            DateTime.Now,
+            "فرایند با موفقیت ایجاد شد");
     }
 }

@@ -5,11 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using DPK.Mosavabat.Common.Consts.General;
-using DPK.Mosavabat.Common.Primitives; // فرض بر وجود کلاس‌های Result و Error
-using DPK.Mosavabat.Models.DataModels.ApprovalRequests;
+using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.Models.DataModels.RequestFacilities;
-using DPK.Mosavabat.Models.EntitiesDto.ApprovalRequests;
 using DPK.Mosavabat.Models.EntitiesDto.RequestFacilities;
 using DPK.Mosavabat.SqlBusinessServices.RequestFacilities.Contract;
 using Microsoft.Data.SqlClient;
@@ -27,7 +24,6 @@ public class RequestFacilitySqlService(
     private readonly string? _connectionString = configuration
         .GetConnectionString("MosavabatConnection");
 
-    // Wrapper برای مدیریت کانکشن، لاگینگ و هندلینگ خطاها
     private async Task<T> ExecuteWithLoggingAsync<T>(
         string commandText,
         object parameters,
@@ -95,8 +91,6 @@ public class RequestFacilitySqlService(
             return await connection.ExecuteAsync(command);
         }, cancellationToken);
 
-        // اگر آپدیت برای بیزنس حیاتی است و انجام نشدنش خطاست، می‌توان اینجا Failure برگرداند
-        // اما فعلاً طبق DTO فقط وضعیت را برمی‌گردانیم
         return new UpdateLcpRequestFacilityDto(rowsAffected > 0);
     }
 
@@ -125,40 +119,6 @@ public class RequestFacilitySqlService(
         }, cancellationToken);
 
         return new MapLcpRequestFacilityToApprovalRequestDto(rowsAffected > 0);
-    }
-
-    public async Task<Result<GetUsernameByBranchCodeDto>> GetUsernameByBranchCode(
-        GetUsernameByBranchCodeDm dm,
-        CancellationToken cancellationToken = default)
-    {
-        var commandText = dm.MosavabatClassName == MosavabatClassName.AgentRegistry
-            ? "[LCP].[FindBranchManagerOrSupervisor]"
-            : "[LCP].[FindFacilityManagerOrSupervisor]";
-
-        var parameters = new { branchCode = dm.BranchCode };
-
-        var result = await ExecuteWithLoggingAsync(
-            commandText,
-            parameters,
-            async (connection) =>
-            {
-                var command = new CommandDefinition(
-                    commandText: commandText,
-                    parameters: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    cancellationToken: cancellationToken
-                );
-
-                return await connection.ExecuteScalarAsync<GetUsernameByBranchCodeDto>(command);
-            }, cancellationToken);
-
-        if (result is null)
-        {
-            return Result.Failure<GetUsernameByBranchCodeDto>(
-                new Error("Sql.UserNotFound", $"کاربری برای کد شعبه {dm.BranchCode} یافت نشد."));
-        }
-
-        return result;
     }
 
     public async Task<Result<GetCollateralTypeIdDto>> GetCollateralTypeId(

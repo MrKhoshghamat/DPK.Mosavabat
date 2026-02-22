@@ -15,10 +15,6 @@ public interface IApprovalRequestSqlService
         GetBranchCodeByLcpRequestFacilityIdDm dm,
         CancellationToken cancellationToken = default);
 
-    Task<Result<GetUsernameByBranchCodeDto>> GetUsernameByBranchCode(
-        GetUsernameByBranchCodeDm dm,
-        CancellationToken cancellationToken = default);
-
     Task<Result<List<ApprovalRequestsLastStatusDto>>> GetRequestsLastStatuses(
         GetApprovalRequestsLastStatusDm dm,
         CancellationToken cancellationToken = default);

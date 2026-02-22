@@ -33,8 +33,14 @@
     <Folder Include="Features\AccountBalanceAverage\Endpoints\Contract\" />
     <Folder Include="Features\AccountBalanceAverage\Endpoints\Service\" />
     <Folder Include="Features\AccountBalanceAverage\UseCases\Queries\GetAccountBalanceAverage\" />
+    <Folder Include="Features\Agents\Endpoints\Contract\" />
+    <Folder Include="Features\Agents\Endpoints\Service\" />
+    <Folder Include="Features\Agents\UseCases\Commands\CreateAgent\" />
     <Folder Include="Features\ApprovalRequests\Endpoints\Contract\" />
     <Folder Include="Features\ApprovalRequests\UseCases\Commands\CreateApprovalRequest\" />
+    <Folder Include="Features\Contracts\Endpoints\Service\" />
+    <Folder Include="Features\Contracts\UseCases\Queries\GetContractFileLink\" />
+    <Folder Include="Features\Contracts\UseCases\Queries\GetApprovalContracts\" />
     <Folder Include="Features\CreditProcesses\UseCases\Commands\CalculateCustomerDebtBalance\" />
     <Folder Include="Features\CreditProcesses\UseCases\Queries\GetPaymentPermissions\" />
     <Folder Include="Features\CreditProcesses\UseCases\Queries\IsLcpRequest\" />

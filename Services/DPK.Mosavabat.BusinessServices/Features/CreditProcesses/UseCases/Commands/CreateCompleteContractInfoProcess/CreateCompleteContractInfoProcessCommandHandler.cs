@@ -8,8 +8,10 @@ using DPK.Mosavabat.ExternalServices.Bizagi.WorkFlowEngine;
 using DPK.Mosavabat.Models.Commands.CreditProcesses;
 using DPK.Mosavabat.Models.DataModels.Bizagi;
 using DPK.Mosavabat.Models.DataModels.CreditProcesses;
+using DPK.Mosavabat.Models.DataModels.Users;
 using DPK.Mosavabat.Models.EntitiesDto.CreditProcesses;
 using DPK.Mosavabat.SqlBusinessServices.CreditProcesses.Contract;
+using DPK.Mosavabat.SqlBusinessServices.Users.Contract;
 
 namespace DPK.Mosavabat.BusinessServices.Features.CreditProcesses.UseCases.Commands.CreateCompleteContractInfoProcess;
 
@@ -18,6 +20,7 @@ namespace DPK.Mosavabat.BusinessServices.Features.CreditProcesses.UseCases.Comma
 /// </summary>
 internal class CreateCompleteContractInfoProcessCommandHandler(
     ICreditProcessSqlService creditProcessSqlService,
+    IUserSqlService userSqlService,
     IWorkflowEngineService workflowEngineService)
     : ICommandHandler<
         CreateCompleteContractInfoProcessCommand,
@@ -68,12 +71,12 @@ internal class CreateCompleteContractInfoProcessCommandHandler(
     private async Task<Result<PipelineContext>> FetchResponsibleUserAsync(
         PipelineContext context, CancellationToken cancellationToken)
     {
-        var userDto = await creditProcessSqlService.FindBranchManagerOrSupervisor(
-            new FindBranchManagerOrSupervisorDm(int.Parse(context.BranchCode), MosavabatClassName.CompleteContractInfo),
+        var userDto = await userSqlService.GetUsernameByBranchCode(
+            new GetUsernameByBranchCodeDm(int.Parse(context.BranchCode), MosavabatClassName.CompleteContractInfo),
             cancellationToken);
 
-        return !string.IsNullOrEmpty(userDto.Username)
-            ? Result.Success(context with { Username = userDto.Username })
+        return !string.IsNullOrEmpty(userDto.Value.Username)
+            ? Result.Success(context with { Username = userDto.Value.Username })
             : Result.Failure<PipelineContext>(
                 new Error(
                     "UserNotFound",

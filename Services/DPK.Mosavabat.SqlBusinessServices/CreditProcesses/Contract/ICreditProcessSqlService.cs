@@ -42,10 +42,6 @@ public interface ICreditProcessSqlService
         GetBranchCodeByC13Dm dm,
         CancellationToken cancellationToken);
 
-    Task<FindBranchManagerOrSupervisorDto> FindBranchManagerOrSupervisor(
-        FindBranchManagerOrSupervisorDm dm,
-        CancellationToken cancellationToken);
-
     Task<GetAccNoByC13Dto> GetAccNoByC13(
         GetAccNoByC13Dm dm,
         CancellationToken cancellationToken);

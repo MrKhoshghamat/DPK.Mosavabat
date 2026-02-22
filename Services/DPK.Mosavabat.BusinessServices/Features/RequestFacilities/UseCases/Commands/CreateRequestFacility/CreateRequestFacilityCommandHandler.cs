@@ -8,11 +8,12 @@ using DPK.Mosavabat.Common.Extensions;
 using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.ExternalServices.Bizagi.WorkFlowEngine;
 using DPK.Mosavabat.Models.Commands.RequestFacilities;
-using DPK.Mosavabat.Models.DataModels.ApprovalRequests;
 using DPK.Mosavabat.Models.DataModels.Bizagi;
 using DPK.Mosavabat.Models.DataModels.RequestFacilities;
+using DPK.Mosavabat.Models.DataModels.Users;
 using DPK.Mosavabat.Models.EntitiesDto.RequestFacilities;
 using DPK.Mosavabat.SqlBusinessServices.RequestFacilities.Contract;
+using DPK.Mosavabat.SqlBusinessServices.Users.Contract;
 
 namespace DPK.Mosavabat.BusinessServices.Features.RequestFacilities.UseCases.Commands.CreateRequestFacility;
 
@@ -21,6 +22,7 @@ namespace DPK.Mosavabat.BusinessServices.Features.RequestFacilities.UseCases.Com
 /// </summary>
 internal sealed class CreateRequestFacilityCommandHandler(
     IRequestFacilitySqlService requestFacilitySqlService,
+    IUserSqlService userSqlService,
     IWorkflowEngineService workflowEngineService,
     IMapper mapper)
     : ICommandHandler<
@@ -54,15 +56,11 @@ internal sealed class CreateRequestFacilityCommandHandler(
             .Map(CreateFinalResponse);
     }
 
-    // =================================================================================
-    // PIPELINE STEPS
-    // =================================================================================
-
     private async Task<Result<PipelineContext>> FetchUsernameAsync(
         PipelineContext context,
         CancellationToken cancellationToken)
     {
-        var usernameResult = await requestFacilitySqlService.GetUsernameByBranchCode(
+        var usernameResult = await userSqlService.GetUsernameByBranchCode(
             new GetUsernameByBranchCodeDm(
                 int.Parse(context.Command.BranchCode),
                 MosavabatClassName.LcpRequestFacility),

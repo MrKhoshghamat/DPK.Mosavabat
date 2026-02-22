@@ -25,7 +25,9 @@
     <Folder Include="EntitiesDto\Payam\" />
     <Folder Include="Queries\Lcp\" />
     <Folder Include="Queries\AccountBalanceAverage\" />
+    <Folder Include="Queries\Contracts\" />
     <Folder Include="ViewModels\ApprovalRequests\" />
+    <Folder Include="ViewModels\Agents\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Dapper;
-using DPK.Mosavabat.Common.Consts.General;
 using DPK.Mosavabat.Common.Primitives;
 using DPK.Mosavabat.Models.DataModels.ApprovalRequests;
 using DPK.Mosavabat.Models.EntitiesDto.ApprovalRequests;
@@ -63,7 +62,6 @@ public class ApprovalRequestSqlService(
                 logger.LogError(ex,
                     "SQL Error in {OperationName} after {ElapsedMilliseconds} ms. Command: {CommandText}, Parameters: {@Parameters}",
                     operationName, sw.ElapsedMilliseconds, commandText, parameters);
-
                 throw;
             }
         }
@@ -83,63 +81,20 @@ public class ApprovalRequestSqlService(
             commandText,
             parameters,
             async (connection) =>
-            {
-                var command = new CommandDefinition(
-                    commandText: commandText,
-                    parameters: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    cancellationToken: cancellationToken
-                );
-
-                var result = await connection
-                    .ExecuteScalarAsync<GetBranchCodeByLcpRequestFacilityIdDto>(command);
-
-                if (result is null)
-                {
-                    return Result.Failure<GetBranchCodeByLcpRequestFacilityIdDto>(
-                        new Error("Sql.NotFound", $"Branch code not found for FacilityId: {dm.IdLcpRequestFacility}"));
-                }
-
-                return Result.Success(result);
-            }, cancellationToken);
-    }
-
-    public async Task<Result<GetUsernameByBranchCodeDto>> GetUsernameByBranchCode(
-        GetUsernameByBranchCodeDm dm,
-        CancellationToken cancellationToken = default)
-    {
-        var commandText = dm.MosavabatClassName == MosavabatClassName.AgentRegistry
-            ? "[LCP].[FindBranchManagerOrSupervisor]"
-            : "[LCP].[FindFacilityManagerOrSupervisor]";
-
-        var parameters = new
         {
-            branchCode = dm.BranchCode
-        };
+            var command = new CommandDefinition(
+                commandText: commandText,
+                parameters: parameters,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: cancellationToken
+            );
 
-        return await ExecuteWithLoggingAsync(
-            commandText,
-            parameters,
-            async (connection) =>
-            {
-                var command = new CommandDefinition(
-                    commandText: commandText,
-                    parameters: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    cancellationToken: cancellationToken
-                );
+            var result = await connection
+                .ExecuteScalarAsync<GetBranchCodeByLcpRequestFacilityIdDto>(
+                    command);
 
-                var result = await connection
-                    .ExecuteScalarAsync<GetUsernameByBranchCodeDto>(command);
-
-                if (result is null)
-                {
-                    return Result.Failure<GetUsernameByBranchCodeDto>(
-                        new Error("Sql.NotFound", $"User not found for BranchCode: {dm.BranchCode}"));
-                }
-
-                return Result.Success(result);
-            }, cancellationToken);
+            return result!;
+        }, cancellationToken);
     }
 
     public async Task<Result<List<ApprovalRequestsLastStatusDto>>> GetRequestsLastStatuses(
@@ -165,19 +120,20 @@ public class ApprovalRequestSqlService(
             commandText,
             parameters,
             async (connection) =>
-            {
-                var command = new CommandDefinition(
-                    commandText: commandText,
-                    parameters: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    cancellationToken: cancellationToken
-                );
+        {
+            var command = new CommandDefinition(
+                commandText: commandText,
+                parameters: parameters,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: cancellationToken
+            );
 
-                var result = await connection
-                    .QueryAsync<ApprovalRequestsLastStatusDto>(command);
+            var result = await connection
+                .QueryAsync<ApprovalRequestsLastStatusDto>(
+                    command);
 
-                return Result.Success(result.ToList());
-            }, cancellationToken);
+            return result.ToList();
+        }, cancellationToken);
     }
 
     public async Task<Result<IsExistFacilitySubTypeCodeInGroupCreditPackageDto>> IsExistFacilitySubTypeCodeInGroupCreditPackage(
@@ -194,25 +150,20 @@ public class ApprovalRequestSqlService(
             commandText,
             parameters,
             async (connection) =>
-            {
-                var command = new CommandDefinition(
-                    commandText: commandText,
-                    parameters: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    cancellationToken: cancellationToken
-                );
+        {
+            var command = new CommandDefinition(
+                commandText: commandText,
+                parameters: parameters,
+                commandType: CommandType.StoredProcedure,
+                cancellationToken: cancellationToken
+            );
 
-                var result = await connection
-                    .ExecuteScalarAsync<IsExistFacilitySubTypeCodeInGroupCreditPackageDto>(command);
+            var result = await connection
+                .ExecuteScalarAsync<IsExistFacilitySubTypeCodeInGroupCreditPackageDto>(
+                    command);
 
-                if (result is null)
-                {
-                    return Result.Failure<IsExistFacilitySubTypeCodeInGroupCreditPackageDto>(
-                        new Error("Sql.NotFound", "Facility SubType Code check returned no result."));
-                }
-
-                return Result.Success(result);
-            }, cancellationToken);
+            return result!;
+        }, cancellationToken);
     }
 
     public async Task<Result<List<ApprovalRequestStatusDto>>> GetApprovalRequestStatuses(
@@ -239,9 +190,10 @@ public class ApprovalRequestSqlService(
                 );
 
                 var result = await connection
-                    .QueryAsync<ApprovalRequestStatusDto>(command);
+                    .QueryAsync<ApprovalRequestStatusDto>(
+                        command);
 
-                return Result.Success(result.ToList());
+                return result.ToList();
             }, cancellationToken);
     }
 }

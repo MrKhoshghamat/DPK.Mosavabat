@@ -246,30 +246,6 @@ public class CreditProcessSqlService(
         }, cancellationToken);
     }
 
-    public async Task<FindBranchManagerOrSupervisorDto> FindBranchManagerOrSupervisor(
-        FindBranchManagerOrSupervisorDm dm,
-        CancellationToken cancellationToken)
-    {
-        var commandText = dm.MosavabatClassName == MosavabatClassName.AgentRegistry
-            ? "[LCP].[FindBranchManagerOrSupervisor]"
-            : "[LCP].[FindFacilityManagerOrSupervisor]";
-
-        var parameters = new { dm.BranchCode };
-
-        return await ExecuteWithLoggingAsync(commandText, parameters, async (connection) =>
-        {
-            var command = new CommandDefinition(
-                commandText: commandText,
-                parameters: parameters,
-                commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken
-            );
-
-            var result = await connection.ExecuteScalarAsync<FindBranchManagerOrSupervisorDto>(command);
-            return result!;
-        }, cancellationToken);
-    }
-
     public async Task<GetAccNoByC13Dto> GetAccNoByC13(
         GetAccNoByC13Dm dm,
         CancellationToken cancellationToken)

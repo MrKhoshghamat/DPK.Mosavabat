@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using DPK.Foundation.Dependency;
 using DPK.Mosavabat.Common.Primitives;
-using DPK.Mosavabat.Models.DataModels.ApprovalRequests;
 using DPK.Mosavabat.Models.DataModels.RequestFacilities;
-using DPK.Mosavabat.Models.EntitiesDto.ApprovalRequests;
 using DPK.Mosavabat.Models.EntitiesDto.RequestFacilities;
 
 namespace DPK.Mosavabat.SqlBusinessServices.RequestFacilities.Contract;
@@ -19,10 +17,6 @@ public interface IRequestFacilitySqlService
     Task<Result<MapLcpRequestFacilityToApprovalRequestDto>> MapLcpRequestFacilityToApprovalRequest(
         MapLcpRequestFacilityToApprovalRequestDm dm,
         CancellationToken cancellationToken);
-
-    Task<Result<GetUsernameByBranchCodeDto>> GetUsernameByBranchCode(
-        GetUsernameByBranchCodeDm dm,
-        CancellationToken cancellationToken = default);
 
     Task<Result<GetCollateralTypeIdDto>> GetCollateralTypeId(
         GetCollateralTypeIdDm dm,
