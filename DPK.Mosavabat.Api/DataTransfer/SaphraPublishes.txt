@@ -1,0 +1,13 @@
+Serevr : 192.168.245.86
+
+Core -> 192.168.245.86:82
+https://sc.dpkharazmi.com/ProductCollection/f078c896-71dc-4229-a526-a720ace3f82e/_apis/build/builds/12937/artifacts?artifactName=Saphra-Core-Services&api-version=6.0&%24format=zip
+#1.0.1-4-alpha Final Publish
+
+Approval -> 192.168.245.86:84
+https://sc.dpkharazmi.com/ProductCollection/f078c896-71dc-4229-a526-a720ace3f82e/_apis/build/builds/12939/artifacts?artifactName=Saphra-Approval-Services&api-version=6.0&%24format=zip
+#0.0.1-7-alpha Final Publish
+
+AuthorityLimitation -> 192.168.245.86:83
+https://sc.dpkharazmi.com/ProductCollection/f078c896-71dc-4229-a526-a720ace3f82e/_apis/build/builds/12941/artifacts?artifactName=Saphra-AuthorityLimitation-Services&api-version=6.0&%24format=zip
+#1.0.1-15-alpha Merged PR 7084: Publish

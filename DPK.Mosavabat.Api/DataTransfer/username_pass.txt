@@ -1,0 +1,32 @@
+firstname : LCP
+lastname  : DPK 
+username: lcp_dpk
+pass    : fkq7gV$jZX
+role    : LegalCustomerPortalAdmin
+
+firstname : LMS
+lastname  : DW
+username: lms_dw
+pass    : x#a6SzRy$5
+role    : LoanManagementSystemAdmin
+
+firstname : Bizagi
+lastname  : DPK
+username: bizagi_dpk
+pass    : nbU%RQyh7H
+role    : BizagiAdmin
+
+firstname : Mosavabat
+lastname  : DPK
+username: mosavabat_dpk
+pass    : YV7HC@wej3
+role    : MosavabatAdmin
+
+firstname : Admin
+lastname  : DPK
+username: admin_dpk
+pass    : YV7HC@wej3
+role    : DpkAdmin
+
+
+

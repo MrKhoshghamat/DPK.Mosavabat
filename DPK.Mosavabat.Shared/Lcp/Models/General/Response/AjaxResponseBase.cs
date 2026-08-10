@@ -1,0 +1,1 @@
+﻿namespace DPK.Mosavabat.Shared.Lcp.Models.General.Response;

@@ -328,3 +328,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/DPK.Mosavabat.Presentation/DPK.Mosavabat.Presentation.xml
+/DPK.Mosavabat.Api/InternalLogs/internallog.txt
+/DPK.Mosavabat.Api/nlog.config
+/DPK.Mosavabat.Api/appsettings.json

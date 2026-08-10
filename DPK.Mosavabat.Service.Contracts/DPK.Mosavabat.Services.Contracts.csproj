@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Lcp\**" />
+    <EmbeddedResource Remove="Lcp\**" />
+    <None Remove="Lcp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DPK.Mosavabat.Entities\DPK.Mosavabat.Entities.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.Shared\DPK.Mosavabat.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

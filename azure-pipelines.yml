@@ -1,0 +1,234 @@
+resources:
+  - repo: self
+#Iman Ansari
+
+pool:
+  name: WinAgent
+variables:
+- group: Information
+#- group: Bank
+#- group: Credential
+- name: Build.Version.Full
+  value : '$(Version.MajorMinorBuild).$(Build.Version.Revision)-$(VersionPostFix)'
+- name: BuildConfiguration
+  value : 'Release /p:Version=$(Build.BuildNumber)'
+stages:
+- stage :
+  jobs:
+    - job : GetSemVer
+      displayName: Get Semantic Version 
+      timeoutInMinutes: 25
+      workspace:
+        clean: all
+      
+      steps:
+      - task: projectversionasvariable@1
+        displayName: 'Get Project Version'
+        inputs:
+          path: 'DPK.Mosavabat.Api/DPK.Mosavabat.Api.csproj'
+          
+          
+      - powershell: |
+          $version = '$(Version.MajorMinorBuild)'
+          echo "version: "
+          echo $version
+          echo "##vso[task.setvariable variable=version;isOutput=true]$version"      
+        displayName: Set Version Variable
+        name: App
+    - job: SetVersion
+      displayName: Set Build Number
+      dependsOn: GetSemVer
+      timeoutInMinutes: 15
+      continueOnError: false
+      variables:
+        appVersion: $[ dependencies.GetSemVer.outputs['App.version'] ]
+        buildIncrement: $[counter(variables['appVersion'], 0)]
+        buildVersion: "$(appVersion)-$(buildIncrement)"
+      steps:
+      - powershell: |
+          switch ("$(Build.SourceBranch)"){
+          "refs/heads/master" { $VersionPostFix = "" }
+          "refs/heads/test" { $VersionPostFix = "-beta" }
+          "refs/heads/develop" { $VersionPostFix = "-alpha" }
+          Default {$VersionPostFix = "-SNAPSHOT"}
+          }
+          Write-Host "appVersion: $(appVersion)"
+          echo "##vso[build.updatebuildnumber]$(buildVersion)$VersionPostFix"
+          Write-Host $(Build.BuildNumber)
+        displayName: 'Set Version to BuildNumber'
+      
+      - powershell: |
+              switch ("$(Build.SourceBranch)"){
+                {($_ -eq  "refs/heads/test") -or ($_ -eq  "refs/heads/develop") -or ($_ -eq  "refs/heads/master")} {
+                                 Write-Host "##vso[task.setvariable variable=fullbuild;isOutput=true]true"
+                                 
+                                }
+              }      
+        displayName: Set build or Pull request condition for next job.
+        name: APPP
+      - task: MagicChunks@2
+        displayName: 'Set Version'
+        inputs:
+          sourcePath: 'DPK.Mosavabat.Api/DPK.Mosavabat.Api.csproj'
+          fileType: Xml
+          transformations: |  
+            {
+              "Project/PropertyGroup/Version": '$(Build.BuildNumber)'
+            }
+    - job : BuildDatabaseWebApi
+      dependsOn: SetVersion
+      displayName: Database & Web Api Build
+      condition: succeeded()
+      variables:
+        buildvar: $[ dependencies.SetVersion.outputs['APPP.fullbuild'] ]     
+      steps:
+      - powershell: |
+            if ("true" -eq "$(buildvar)" )
+            {
+              Write-Host "##vso[task.logissue type=warning] If you encounter this warning which is why pipeline has been run as a full build!"
+            }
+            else 
+            {
+              Write-Host "##vso[task.logissue type=warning] If you encounter this warning which is why pipeline has been run as a pull request!"
+            }
+            switch ("$(Build.SourceBranch)"){
+
+            "refs/heads/Develop" {
+                                   Write-Host "##vso[task.setvariable variable=BuildMode;]Develop"
+                                   Write-Host "##vso[task.setvariable variable=PublishMode;]Develop"
+                                 }
+            }
+        displayName : Report condition
+
+
+      - powershell: |
+              switch ("$(Build.SourceBranch)"){
+                {($_ -eq "refs/heads/test")} {
+                                 Write-Host "##vso[task.setvariable variable=settag;]true"
+                                }
+              }
+        displayName: Set TagVersion condition.
+
+      - powershell: |
+              switch ("$(Build.SourceBranch)"){
+                {($_ -eq "refs/heads/master")} {
+                                 Write-Host "##vso[task.setvariable variable=setcopy;]true"
+                                }
+              }
+        displayName: Set Copy changes files condition.
+       
+
+      - powershell: |
+          switch ("$(Build.SourceBranch)"){
+          "refs/heads/test" {
+                              Write-Host "##vso[task.setvariable variable=SqlServer;]$env:SQLSERVERTEST"  
+                              Write-Host "##vso[task.setvariable variable=DatabaseName;]$env:DATABASENAME"
+                              Write-Host "##vso[task.setvariable variable=OwnerSqlUserName;]$env:OWNERSQLUSERNAME"
+                              Write-Host "##vso[task.setvariable variable=OwnerSqlPassword;]$env:OWNERSQLPASSWORD"
+                              Write-Host "##vso[task.setvariable variable=AllowAny;]$env:ALLOWANYINSIDE"
+                              Write-Host "##vso[task.setvariable variable=UseSwagger;]$env:USESWAGGERINSIDE"
+                              Write-Host "##vso[task.setvariable variable=WebUrl;]$env:APIURLTEST"
+                              Write-Host "##vso[task.setvariable variable=WebUrl2;]$env:APIURLTEST2"                                                             
+                              Write-Host "##vso[task.setvariable variable=AuthUrl;]$env:AUTHURLTEST"
+                              Write-Host "##vso[task.setvariable variable=ElasticUrl;]$env:ELASTICSEARCHENDPOINT"
+                              Write-Host "##vso[task.setvariable variable=BuildMode;]test"
+                              Write-Host "##vso[task.setvariable variable=PublishMode]test"
+                              Write-Host "##vso[task.setvariable variable=Databname;]$env:DATABNAMETEST"
+                              Write-Host "##vso[task.setvariable variable=Worgins;]$env:WORGINSTEST"  
+
+                              $envName1 = "$(ProjectName)"
+                              $lower1 = $envName1.ToLower()
+                              Write-Host "##vso[task.setvariable variable=ProjectNamelower;]$lower1"
+
+                            }
+
+          "refs/heads/Master"  {
+                                 Write-Host "##vso[task.setvariable variable=AllowAny;]$env:ALLOWANYBANK"
+                                 Write-Host "##vso[task.setvariable variable=UseSwagger;]$env:USESWAGGERBANK"
+                                 Write-Host "##vso[task.setvariable variable=BuildMode;]Master"
+                                 Write-Host "##vso[task.setvariable variable=PublishMode;]Master"
+                                 Write-Host "##vso[task.setvariable variable=Databname;]$env:DATANAMEMASTER" 
+                                 Write-Host "##vso[task.setvariable variable=Worgins;]$env:WORGINSMASTER"                               
+
+                                 $envName1 = "$(ProjectName)"
+                                 $lower1 = $envName1.ToLower()
+                                 Write-Host "##vso[task.setvariable variable=ProjectNamelower;]$lower1"
+
+
+                               }   
+
+          Default {
+                    Write-Host "##vso[task.setvariable variable=SqlServer;]$env:SQLSERVERDEV"  
+                    Write-Host "##vso[task.setvariable variable=DatabaseName;]$env:DATABASENAME"
+                    Write-Host "##vso[task.setvariable variable=OwnerSqlUserName;]$env:OWNERSQLUSERNAMEDEVUI"
+                    Write-Host "##vso[task.setvariable variable=OwnerSqlPassword;]$env:OWNERSQLPASSWORDDEVUI"
+                    Write-Host "##vso[task.setvariable variable=AllowAny;]$env:ALLOWANYINSIDE"
+                    Write-Host "##vso[task.setvariable variable=UseSwagger;]$env:USESWAGGERINSIDE"
+                    Write-Host "##vso[task.setvariable variable=WebUrl;]$env:APIURLDEV"
+                    Write-Host "##vso[task.setvariable variable=WebUrl2;]$env:APIURLDEV2"  
+                    Write-Host "##vso[task.setvariable variable=AuthUrl;]$env:AUTHURLDEV"
+                    Write-Host "##vso[task.setvariable variable=ElasticUrl;]$env:ELASTICSEARCHENDPOINT"
+                    Write-Host "##vso[task.setvariable variable=Databname;]$env:DATANAMEDEV"
+                    Write-Host "##vso[task.setvariable variable=Worgins;]$env:WORGINSDEV"
+
+                    $envName1 = "$(ProjectName)"
+                    $lower1 = $envName1.ToLower()
+                    Write-Host "##vso[task.setvariable variable=ProjectNamelower;]$lower1"
+
+                  }
+          }
+        displayName : Set json file
+      
+                
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: 'DPK.Mosavabat.Api/DPK.Mosavabat.Api.csproj'
+          feedsToUse: config
+          nugetConfigPath: NuGet.Config
+
+          
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: 'DPK.Mosavabat.Api/DPK.Mosavabat.Api.csproj'
+          arguments: '--configuration $(BuildConfiguration) --no-restore' 
+
+
+      - task: DotNetCoreCLI@2
+        displayName: Publish
+        condition: and(succeeded(), eq(variables['buildvar'], 'true'))
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: 'DPK.Mosavabat.Api/DPK.Mosavabat.Api.csproj'
+          arguments: '-c Release -o $(Build.StagingDirectory)/ci-build --no-build /p:Version=$(Build.BuildNumber)'
+          zipAfterPublish: false
+          modifyOutputPath: false
+
+
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifacts'
+        condition: and(succeeded(), eq(variables['buildvar'], 'true'))
+        inputs:
+          ArtifactName: '$(ProjectName)'
+
+    - job: Clean
+      workspace:
+        clean: all     
+      dependsOn:
+      - GetSemVer
+      - SetVersion
+      - BuildDatabaseWebApi
+      condition: |
+        and
+        (
+          in(dependencies.GetSemVer.result, 'Succeeded', 'SucceededWithIssues', 'Skipped','canceled','Failed'),
+          in(dependencies.SetVersion.result, 'Succeeded', 'SucceededWithIssues', 'Skipped','canceled','Failed'),
+          in(dependencies.BuildDatabaseWebApi.result, 'Succeeded', 'SucceededWithIssues', 'Skipped','canceled','Failed')
+        )
+      steps:
+      - checkout: none
+      - task: PostBuildCleanup@3  

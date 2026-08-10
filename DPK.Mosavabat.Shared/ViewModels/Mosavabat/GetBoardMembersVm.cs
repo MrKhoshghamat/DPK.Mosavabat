@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DPK.Mosavabat.Shared.ViewModels.Mosavabat
+{
+    public class GetBoardMembersVm
+    {
+        public string CustomerNumbers { get; set; }
+    }
+}

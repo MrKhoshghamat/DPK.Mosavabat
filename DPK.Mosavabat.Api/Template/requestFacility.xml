@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="LCP_RequestFacility">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" name="Description" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="RequestDate" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="LegalName" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="CustomerNo" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="GUID" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="CaseId" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="AccountNo" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="BranchCode" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="RequestNo" type="xs:string" />
+				<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+				<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Files">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Files">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="1" name="Title" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="FileLink" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+										<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Collaterals">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Collateral">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="1" name="CollateralType">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="1" name="LCP_CollateralGroup">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element minOccurs="0" maxOccurs="1" name="Code" type="xs:string" />
+															</xs:sequence>
+															<xs:attribute form="unqualified" name="entityName" type="xs:string" />
+														</xs:complexType>
+													</xs:element>
+													<xs:element minOccurs="0" maxOccurs="1" name="Code" type="xs:string" />
+												</xs:sequence>
+												<xs:attribute form="unqualified" name="entityName" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" maxOccurs="1" name="Description" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Amount" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+										<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Guarantors">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_Guarantor">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="1" name="GuarantorType" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LastName" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Description" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Country" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="NationalCode" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Nationality" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LegalGuarantorType" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="FirstName" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+										<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_SubjectFacilitys">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_SubjectFacility">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="1" name="FacilityGroup">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="1" name="Code" type="xs:integer" />
+												</xs:sequence>
+												<xs:attribute form="unqualified" name="entityName" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" maxOccurs="1" name="SubContractType">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="1" name="ContractTemplateCode" type="xs:integer" />
+												</xs:sequence>
+												<xs:attribute form="unqualified" name="entityName" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" maxOccurs="1" name="Description" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="Amount" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="ContractPeriod" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="ContractPeriodType" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LcpSubjectFacilitiesId" type="xs:integer" />
+										<xs:element minOccurs="0" maxOccurs="1" name="SubjectContract" type="xs:string" />
+										<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+										<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+										<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_ContractDocument">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="unbounded" name="LCP_ContractDocument">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element minOccurs="0" maxOccurs="1" name="DueDate" type="xs:dateTime" />
+																<xs:element minOccurs="0" maxOccurs="1" name="PaymentAmount" type="xs:decimal" />
+																<xs:element minOccurs="0" maxOccurs="1" name="DocumentAmount" type="xs:decimal" />
+																<xs:element minOccurs="0" maxOccurs="1" name="SerialNumber" type="xs:string" />
+																<xs:element minOccurs="0" maxOccurs="1" name="CommittedBankName" type="xs:string" />
+																<xs:element minOccurs="0" maxOccurs="1" name="LcpRequestDocumentId" type="xs:integer" />
+																<xs:element minOccurs="0" maxOccurs="1" name="LcpId" type="xs:int" />
+																<xs:element minOccurs="0" maxOccurs="1" name="IsDeleted" type="xs:boolean" />
+																<xs:element minOccurs="0" maxOccurs="1" name="DocumentType">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element minOccurs="0" maxOccurs="1" name="DocumentCode" type="xs:integer" />
+																		</xs:sequence>
+																		<xs:attribute form="unqualified" name="entityName" type="xs:string" />
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

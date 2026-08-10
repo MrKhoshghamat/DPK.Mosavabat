@@ -1,0 +1,335 @@
+﻿<Entities>
+	<LCP_RequestFacility key=\"4951\">
+		<Description></Description>
+		<RequestDate>8/14/2024 8:19:04 PM</RequestDate>
+		<LegalName>کرمان موتور</LegalName>
+		<CustomerNo>299727</CustomerNo>
+		<GUID>d6093903-af78-4742-9b72-59e43f024dc9</GUID>
+		<CaseId>40302</CaseId>
+		<AccountNo>0102972303012</AccountNo>
+		<BranchCode>4214</BranchCode>
+		<RequestNo>140305478693346</RequestNo>
+		<LcpId>11</LcpId>
+		<IsDeleted>False</IsDeleted>
+		<LCP_SubjectFacilitys>
+			<LCP_SubjectFacility key=\"5801\">
+				<Description> 452 </Description>
+				<Amount>5000000000.00</Amount>
+				<ContractPeriod>24</ContractPeriod>
+				<ContractPeriodType>سالانه</ContractPeriodType>
+				<LcpSubjectFacilitiesId>187</LcpSubjectFacilitiesId>
+				<SubjectContract> 42 </SubjectContract>
+				<LcpId>55</LcpId>
+				<IsDeleted>False</IsDeleted>
+				<FacilityGroup entityName=\"FacilityGroup\" key=\"11\">
+					<Code>70</Code>
+				</FacilityGroup>
+				<SubContractType entityName=\"ContractTemplate\" key=\"1\">
+					<ContractTemplateCode>1</ContractTemplateCode>
+				</SubContractType>
+				<LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2751\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2752\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2851\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2852\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2853\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2854\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2855\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2856\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2857\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2858\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2859\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2860\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2861\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2862\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2863\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2864\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2865\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2866\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2867\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2868\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2869\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2870\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2871\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2872\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2873\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2874\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2875\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2876\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2877\">
+						<DueDate>2024-08-21T00:00:00</DueDate>
+						<PaymentAmount>500000000.0000</PaymentAmount>
+						<DocumentAmount>500000000.0000</DocumentAmount>
+						<SerialNumber>45654654</SerialNumber>
+						<CommittedBankName>Mellat</CommittedBankName>
+						<LcpRequestDocumentId>134</LcpRequestDocumentId>
+						<LcpId>77</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+					<LCP_ContractDocument key=\"2878\">
+						<DueDate>2024-08-18T00:00:00</DueDate>
+						<PaymentAmount>700000000.0000</PaymentAmount>
+						<DocumentAmount>8000000000.0000</DocumentAmount>
+						<SerialNumber>423424</SerialNumber>
+						<CommittedBankName>Saderat</CommittedBankName>
+						<LcpRequestDocumentId>135</LcpRequestDocumentId>
+						<LcpId>88</LcpId>
+						<IsDeleted>False</IsDeleted>
+					</LCP_ContractDocument>
+				</LCP_ContractDocument>
+			</LCP_SubjectFacility>
+		</LCP_SubjectFacilitys>
+	</LCP_RequestFacility>
+</Entities>

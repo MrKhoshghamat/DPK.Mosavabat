@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BizAgiWSParam>
+	<domain>domain</domain>
+	<userName>admon</userName>
+	<cases>
+		<case>
+			<radNumber>8951</radNumber>
+			<abortReason>Invalid case</abortReason>
+		</case>
+		<case>
+			<radNumber>9001</radNumber>
+			<abortReason>Test case</abortReason>
+		</case>
+	</cases>
+</BizAgiWSParam>

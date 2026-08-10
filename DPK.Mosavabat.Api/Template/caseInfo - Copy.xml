@@ -1,0 +1,26 @@
+﻿<BizAgiWSParam>
+	<Entities>
+		<LCP_RequestFacility key="4655">
+			<Description></Description>
+			<RequestDate>8/5/2024 7:33:07 PM</RequestDate>
+			<LegalName>حسین احمديه</LegalName>
+			<CustomerNo>299727</CustomerNo>
+			<GUID>6ee95cc0-cb32-477b-bdb5-e1915cd85e93</GUID>
+			<CaseId>39861</CaseId>
+			<AccountNo>0102972303012</AccountNo>
+			<BranchCode>4214</BranchCode>
+			<RequestNo>140305418501775</RequestNo>
+			<LCP_Files>
+				<LCP_Files>
+					<Title>خلاصه اطلاعات 2</Title>
+					<Name>903XjJFuF</Name>
+					<FileLink>https: //filemgmtapi.bsi.ir/api/Service/Mosavabat/GetFile?token=7FIB86RSQk6R1F3gQWBaxU7Xr3YvAkDOtznl8SmPA8Wj5FHvGT9M58wIVTLSiae9uOJZ5wKzvsrPoWT5kQyXug%3d%3d</FileLink>
+				</LCP_Files>
+			</LCP_Files>
+			<LCP_Collaterals></LCP_Collaterals>
+			<LCP_Guarantors></LCP_Guarantors>
+			<LCP_SubjectFacilitys></LCP_SubjectFacilitys>
+		</LCP_RequestFacility>
+	</Entities>
+</BizAgiWSParam>
+
