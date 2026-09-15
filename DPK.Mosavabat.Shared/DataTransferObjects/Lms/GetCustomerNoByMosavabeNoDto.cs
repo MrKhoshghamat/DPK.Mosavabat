@@ -2,5 +2,5 @@
 
 public class GetCustomerNoByMosavabeNoDto
 {
-    public string CustomerNo { get; set; }
+    public string? CustomerNo { get; set; }
 }

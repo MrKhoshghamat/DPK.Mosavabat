@@ -6,6 +6,7 @@ using DPK.Mosavabat.Shared.DataModels.CreditProcesses.PaymentPermission;
 using DPK.Mosavabat.Shared.DataModels.Lms;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.PaymentPermission;
 using Microsoft.Extensions.Options;
+using System.Globalization;
 
 namespace DPK.Mosavabat.Services.CreditProcesses;
 
@@ -13,7 +14,7 @@ public class ContractTransactionService : IContractTransactionService
 {
     private const string NormalIndicator = "0";
     private const string ReversedIndicator = "1";
-    private const string ReceivedStartDate = "050503";
+    //private const string ReceivedStartDate = "050528";
 
     private readonly TransactionSettings _transactionSettings;
 
@@ -29,7 +30,7 @@ public class ContractTransactionService : IContractTransactionService
     {
         var settledLoanIds = GetSettledLoanIds(dataModel.LoanBills).ToHashSet();
 
-        dataModel.Contracts.RemoveAll(contract =>
+        dataModel.Contracts?.RemoveAll(contract =>
             settledLoanIds.Contains(contract.FacilityNo.ToString()));
 
         return new RemoveSettleContractsDto
@@ -53,31 +54,181 @@ public class ContractTransactionService : IContractTransactionService
         };
     }
 
-    /// <summary>
-    /// محاسبه جمع مبالغ تراکنش های وصولی قراردادها
-    /// </summary>
-    public GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(GetReceivedContractsDataModel dataModel)
-    {
-        var todayFormattedDate = DateTime.Now.ToFormattedPersianDate(DateFormat.TwoDigitYear);
+    #region Public Methods (Overloads)
 
-        var amount = dataModel.LoanBills
-            .Select(loanBill => loanBill.Transactions
+    /// <summary>
+    /// محاسبه جمع مبالغ تراکنش‌های وصولی بر اساس لیست مصوبات (GetMosavabeContractsDto)
+    /// </summary>
+    public GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(
+        GetReceivedContractsDataModel dataModel,
+        List<GetMosavabeContractsDto>? mosavabeContracts)
+    {
+        if (mosavabeContracts == null || !mosavabeContracts.Any())
+            return new GetReceivedContractsDto { Amount = "0" };
+
+        var contractRules = mosavabeContracts
+            .Where(c => !string.IsNullOrWhiteSpace(c.C13))
+            .Select(c => (ContractId: c.C13.Trim(), c.DateUpdate, c.TimeUpdate));
+
+        return CalculateReceivedTransactionsCore(dataModel, contractRules);
+    }
+
+    /// <summary>
+    /// محاسبه جمع مبالغ تراکنش‌های وصولی بر اساس تسهیلات جاری مشتری (GetCustomerCurrentFacilityDto)
+    /// </summary>
+    public GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(
+        GetReceivedContractsDataModel dataModel,
+        List<GetCustomerCurrentFacilityDto>? customerCurrentFacilities)
+    {
+        if (customerCurrentFacilities == null || !customerCurrentFacilities.Any())
+            return new GetReceivedContractsDto { Amount = "0" };
+
+        var contractRules = customerCurrentFacilities
+            .Select(f => (ContractId: f.FacilityNo.ToString(), f.DateUpdate, f.TimeUpdate));
+
+        return CalculateReceivedTransactionsCore(dataModel, contractRules);
+    }
+
+    #endregion
+
+    #region Core Calculation Engine
+
+    /// <summary>
+    /// متد هسته محاسبات مشترک جهت فیلتر و جمع مبالغ تراکنش‌ها در بازه اختصاصی هر قرارداد
+    /// </summary>
+    private GetReceivedContractsDto CalculateReceivedTransactionsCore(
+        GetReceivedContractsDataModel dataModel,
+        IEnumerable<(string ContractId, int DateUpdate, int TimeUpdate)>? contractRules)
+    {
+        if (!dataModel.LoanBills.Any() || contractRules == null)
+        {
+            return new GetReceivedContractsDto { Amount = "0" };
+        }
+
+        var rulesMap = contractRules
+            .GroupBy(r => r.ContractId, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        var nowKey = GetCurrentPersianDateTimeKey();
+
+        long totalAmount = 0;
+
+        foreach (var loanBill in dataModel.LoanBills.Where(loanBill => !string.IsNullOrWhiteSpace(loanBill.LoanId)))
+        {
+            if (!rulesMap.TryGetValue(loanBill.LoanId.Trim(), out var rule))
+                continue;
+
+            var startKey = CreateDateTimeKey(rule.DateUpdate, rule.TimeUpdate);
+
+            if (!loanBill.Transactions.Any())
+                continue;
+
+            var billTransactionsSum = loanBill.Transactions
                 .Where(t =>
-                    IsInDateRange(t.PaymentDate, ReceivedStartDate, todayFormattedDate) &&
+                    IsWithinDateTimeRange(t.PaymentDate, t.PaymentTime, startKey, nowKey) &&
                     HasRequiredDescription(t) &&
                     IsNormalTransaction(t) &&
                     MatchesByCodeOrDescription(
                         t,
                         _transactionSettings.Received.Codes,
                         _transactionSettings.Received.Descriptions))
-                .Sum(ParseAmount))
-            .Sum();
+                .Sum(ParseAmount);
+
+            totalAmount += billTransactionsSum;
+        }
 
         return new GetReceivedContractsDto
         {
-            Amount = amount.ToString()
+            Amount = totalAmount.ToString()
         };
     }
+
+    #endregion
+
+    #region Date & Time Helpers
+
+    /// <summary>
+    /// ایجاد کلید عددی 12 رقمی (yyyyMMddHHmm) از مقادیر DateUpdate و TimeUpdate
+    /// </summary>
+    private static long CreateDateTimeKey(int dateUpdate, int timeUpdate)
+    {
+        return (dateUpdate * 10000L) + timeUpdate;
+    }
+
+    /// <summary>
+    /// دریافت تاریخ و زمان لحظه‌ای سیستم به صورت کلید عددی شمسی 12 رقمی yyyyMMddHHmm
+    /// </summary>
+    private static long GetCurrentPersianDateTimeKey()
+    {
+        var pc = new PersianCalendar();
+        var now = DateTime.Now;
+
+        var year = pc.GetYear(now);
+        var month = pc.GetMonth(now);
+        var day = pc.GetDayOfMonth(now);
+        var hour = pc.GetHour(now);
+        var minute = pc.GetMinute(now);
+
+        return (year * 100000000L) +
+               (month * 1000000L) +
+               (day * 10000L) +
+               (hour * 100L) +
+               minute;
+    }
+
+    /// <summary>
+    /// بررسی اینکه آیا تراکنش در بازه زمانی [startKey, endKey] قرار دارد یا خیر
+    /// </summary>
+    private static bool IsWithinDateTimeRange(string paymentDate, string paymentTime, long startKey, long endKey)
+    {
+        var transKey = ParseTransactionDateTimeKey(paymentDate, paymentTime);
+        if (!transKey.HasValue)
+            return false;
+
+        return transKey.Value >= startKey && transKey.Value <= endKey;
+    }
+
+    /// <summary>
+    /// تبدیل رشته تاریخ و زمان تراکنش به عدد استاندارد 12 رقمی yyyyMMddHHmm
+    /// </summary>
+    private static long? ParseTransactionDateTimeKey(string paymentDate, string paymentTime)
+    {
+        if (string.IsNullOrWhiteSpace(paymentDate))
+            return null;
+
+        var dateDigits = new string(paymentDate.Where(char.IsDigit).ToArray());
+
+        if (dateDigits.Length == 6)
+        {
+            dateDigits = "14" + dateDigits;
+        }
+
+        if (dateDigits.Length != 8)
+            return null;
+
+        var timeDigits = string.IsNullOrWhiteSpace(paymentTime)
+            ? "0000"
+            : new string(paymentTime.Where(char.IsDigit).ToArray());
+
+        switch (timeDigits.Length)
+        {
+            case < 4:
+                timeDigits = timeDigits.PadLeft(4, '0');
+                break;
+            case > 4:
+                timeDigits = timeDigits[..4];
+                break;
+        }
+
+        if (long.TryParse(dateDigits + timeDigits, out var fullKey))
+        {
+            return fullKey;
+        }
+
+        return null;
+    }
+
+    #endregion
 
     /// <summary>
     /// محاسبه جمع مبالغ تراکنش های پرداختی قراردادها
@@ -114,7 +265,7 @@ public class ContractTransactionService : IContractTransactionService
             {
                 var amount = loanBill.Transactions
                     .Where(t =>
-                        IsInDateRange(t.PaymentDate, ReceivedStartDate, todayFormattedDate) &&
+                        IsSameDate(t.PaymentDate, todayFormattedDate) &&
                         HasRequiredDescription(t) &&
                         IsNormalTransaction(t) &&
                         MatchesByCodeOrDescription(
@@ -190,12 +341,12 @@ public class ContractTransactionService : IContractTransactionService
                string.Equals(value, targetDate, StringComparison.Ordinal);
     }
 
-    private static bool IsInDateRange(string? value, string fromDate, string toDate)
-    {
-        return !string.IsNullOrWhiteSpace(value) &&
-               string.Compare(value, fromDate, StringComparison.Ordinal) >= 0 &&
-               string.Compare(value, toDate, StringComparison.Ordinal) <= 0;
-    }
+    //private static bool IsInDateRange(string? value, string fromDate, string toDate)
+    //{
+    //    return !string.IsNullOrWhiteSpace(value) &&
+    //           string.Compare(value, fromDate, StringComparison.Ordinal) >= 0 &&
+    //           string.Compare(value, toDate, StringComparison.Ordinal) <= 0;
+    //}
 
     private static long CalculateNetAmount(IEnumerable<TransactionDm> transactions)
     {

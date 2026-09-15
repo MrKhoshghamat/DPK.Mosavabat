@@ -76,7 +76,7 @@ public class ProcessLoanBillJobScopedService
             // === STEP 2: Call external service ===
             //step = "CallExternalService";
             //_logger.Debug($"Processing LoanId {loanId} - Step: {step}");
-            var loanBill = _mapper.Map<GetLoanBillDto>(await CallExternalServiceWithCircuitBreakerAndRetry_v2(request.LoanId));
+            var loanBill = _mapper.Map<GetLoanBillDto>(await CallExternalServiceWithCircuitBreakerAndRetry_v2(request.LoanId, request.DateUpdate));
             loanBill.LoanId = request.LoanId;
 
             // === STEP 3: Save loan bill data ===
@@ -253,7 +253,7 @@ public class ProcessLoanBillJobScopedService
         }
     }
 
-    private async Task<GetLoanContractsAllStatementDto> CallExternalServiceWithCircuitBreakerAndRetry_v2(string loanId)
+    private async Task<GetLoanContractsAllStatementDto> CallExternalServiceWithCircuitBreakerAndRetry_v2(string loanId, int startDate)
     {
         //_logger.Debug($"External service call for LoanId {loanId} - Step: {step}");
 
@@ -286,7 +286,7 @@ public class ProcessLoanBillJobScopedService
                 //_logger.Debug($"Making HTTP call to external service for LoanId {loanId} at {callStart} with cancellation token : {cancellationToken}");
 
                 var response = await _loanExternalService.GetLoanContractsAllStatement(
-                    new GetLoanContractsAllStatementVm() { LoanId = loanId },
+                    new GetLoanContractsAllStatementVm() { LoanId = loanId, StartDate = startDate },
                     cancellationToken
                 );
 
@@ -343,6 +343,8 @@ public class ProcessLoanBillJobScopedService
             {
                 LoanId = request.LoanId,
                 CustomerNo = request.CustomerNo,
+                DateUpdate = request.DateUpdate,
+                TimeUpdate = request.TimeUpdate,
                 JsonData = JsonConvert.SerializeObject(loanBill),
                 CreatedAt = iranNow,
                 UpdatedAt = iranNow

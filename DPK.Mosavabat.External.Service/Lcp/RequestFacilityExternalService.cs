@@ -2,6 +2,7 @@
 using DPK.Mosavabat.External.Services.Contracts.Lcp;
 using DPK.Mosavabat.Shared.EntitiesDto.Lcp;
 using DPK.Mosavabat.Shared.ViewModels.Lcp;
+using DPK.Mosavabat.Shared.ViewModels.Mosavabat.Contract;
 using Newtonsoft.Json;
 
 namespace DPK.Mosavabat.External.Services.Lcp;

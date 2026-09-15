@@ -9,7 +9,7 @@ public class CreatePaymentPermissionDataModel
     public long CustomerNonCashPrice { get; set; }
     public string? Description { get; set; }
     public long FeeAmount { get; set; }
-    public DateTime BaratDueDate { get; set; }
+    public DateTime BaratDueDate { get; set; } = DateTime.Now;
     public PayGuarantorsDataModel Guarantors { get; set; }
     public PayCollateralsDataModel Collaterals { get; set; }
     public PayBaratFactorsDataModel Factors { get; set; }

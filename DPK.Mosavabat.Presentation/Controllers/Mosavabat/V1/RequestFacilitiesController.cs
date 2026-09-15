@@ -11,6 +11,7 @@ using DPK.Mosavabat.Shared.ViewModels.Mosavabat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.Annotations;
 using static System.Int32;
 
@@ -43,7 +44,7 @@ public class RequestFacilitiesController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(Roles = "LegalCustomerPortalAdmin")]
+    //[Authorize(Roles = "LegalCustomerPortalAdmin")]
     [ApiExplorerSettings(GroupName = "for-lcp-v1")]
     [SwaggerOperation(Tags = new[] { "Request Facilities" })]
     public async Task<IActionResult> Create(RequestFacilityUpdateDataModel dataModel, CancellationToken cancellationToken = default)
@@ -165,14 +166,13 @@ public class RequestFacilitiesController : ControllerBase
             },
             cancellationToken);
 
-        await _requestFacilityService.LcpRequestFacilityAbortCase(
-            viewModel.CaseId,
-            cancellationToken);
+        var lcpRequestFacilityAbortCaseVm = _mapper.Map<LcpRequestFacilityAbortCaseVm>(viewModel);
+        await _requestFacilityService.LcpRequestFacilityAbortCase(lcpRequestFacilityAbortCaseVm, cancellationToken);
 
         return !result.IsRemoved ?
             StatusCode(500, new
             {
-                message = result.ErrorMessage ?? "در عملیات حذف نماینده از کارتابل مشکلی رخ داده است"
+                message = result.ErrorMessage ?? "در عملیات حذف درخواست از کارتابل مشکلی رخ داده است"
             }) : Ok(result);
     }
 
@@ -193,6 +193,20 @@ public class RequestFacilitiesController : ControllerBase
     {
         _logger.Trace(JsonConvert.SerializeObject(dataModel));
         var response = await _requestFacilityService.CalculateRequestFacilityUnusedBalance(dataModel);
+        if (response.Amount  == null)
+        {
+            return Ok(new AjaxResponseBase<string>
+            {
+                Result = null,
+                Success = false,
+                Error = new ErrorInfo
+                {
+                    Code = 404,
+                    Message = "درخواست یافت نشد"
+                }
+            });
+
+        }
         return Ok(CreateResponse(response));
     }
 
@@ -217,24 +231,94 @@ public class RequestFacilitiesController : ControllerBase
         _logger.Trace(JsonConvert.SerializeObject(vm));
 
         var response = await _requestFacilityService.SendApprovalLetter(vm, cancellationToken);
-        var error = CheckError(response.Response);
 
-        // اگر پیام خطا فارسی بود، مستقیم برگردان
-        if (!string.IsNullOrEmpty(response.Response) &&
-            response.Response != "true" &&
-            response.Response != "false" &&
-            response.Response.Length > 5)
+        if (string.IsNullOrWhiteSpace(response.Response))
         {
             return Ok(CreateResponse<string>(error: new ErrorInfo
             {
-                Code = 0,
-                Message = response.Response
+                Code = -1,
+                Message = "پاسخی از سرویس دریافت نشد."
             }));
         }
 
-        return error != null
-            ? Ok(CreateResponse<string>(error: error))
-            : Ok(CreateResponse(response.Response == "1"));
+        var rawResponse = response.Response.Trim();
+
+        if (rawResponse.StartsWith("{") && rawResponse.EndsWith("}"))
+        {
+            try
+            {
+                var parsedObj = JObject.Parse(rawResponse);
+                bool isSuccess = parsedObj["success"]?.Value<bool>() ?? false;
+
+                if (isSuccess)
+                {
+                    // مقدار result (در اینجا guid برگردانده شده) را در قالب موفق برمی‌گردانیم
+                    var resultValue = parsedObj["result"]?.ToString();
+                    return Ok(CreateResponse(result: resultValue));
+                }
+                else
+                {
+                    // استخراج متن خطا از آبجکت JSON در صورت عدم موفقیت
+                    var errorObj = parsedObj["error"];
+                    var errorMessage = errorObj?["message"]?.ToString()
+                                       ?? errorObj?["details"]?.ToString()
+                                       ?? rawResponse;
+
+                    return Ok(CreateResponse<string>(error: new ErrorInfo
+                    {
+                        Code = errorObj?["code"]?.Value<int>() ?? 0,
+                        Message = errorMessage
+                    }));
+                }
+            }
+            catch (JsonException)
+            {
+                // در صورت بروز خطا در Parse، روال عادی پایین ادامه می‌یابد
+            }
+        }
+
+        var error = CheckError(rawResponse);
+        if (error != null)
+        {
+            return Ok(CreateResponse<string>(error: error));
+        }
+
+        if (rawResponse.Equals("true", StringComparison.OrdinalIgnoreCase) || rawResponse == "1")
+        {
+            return Ok(CreateResponse(result: "true"));
+        }
+
+        return Ok(CreateResponse<string>(error: new ErrorInfo
+        {
+            Code = 0,
+            Message = rawResponse
+        }));
+    }
+
+
+    [HttpPost]
+    [ApiExplorerSettings(GroupName = "for-lcp-v1")]
+    [SwaggerOperation(Tags = new[] { "Request Facilities" })]
+    public async Task<IActionResult> GetMosavabeExpireDate(GetMosavabeExpireDateDataModel dataModel)
+    {
+        _logger.Trace(JsonConvert.SerializeObject(dataModel));
+        var viewModel = _mapper.Map<GetMosavabeExpireDateVm>(dataModel);
+        var response = await _requestFacilityService.GetMosavabeExpireDate(viewModel);
+        if (response.ExpireDate == null)
+        {
+            return Ok(new AjaxResponseBase<string>
+            {
+                Result = null,
+                Success = false,
+                Error = new ErrorInfo
+                {
+                    Code = 404,
+                    Message = "درخواست یافت نشد"
+                }
+            });
+
+        }
+        return Ok(CreateResponse(response));
     }
 
     // ساخت پاسخ

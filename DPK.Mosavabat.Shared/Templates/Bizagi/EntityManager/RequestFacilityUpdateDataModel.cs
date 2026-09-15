@@ -27,6 +27,6 @@ public class RequestFacilityUpdateDataModel
     [XmlElement(ElementName = "LCP_ReqFacilityStatuses")] public RequestFacilityStatusesDataModel RequestFacilityStatuses { get; set; }
     [XmlElement(ElementName = "SummarizeDifference")] public string? SummarizeDifference { get; set; }
     [XmlElement(ElementName = "LCP_EditHistoryLogs")] public LcpHistoryLogsDataModel? LcpHistoryLogs { get; set; }
-    [XmlElement(ElementName = "CreditScore")] public float? CreditScore { get; set; }
-    [XmlElement(ElementName = "CreditRank")] public string? CreditRank { get; set; }
+    //[XmlIgnore] public MosavabatLegalRankingDataModel? MosavabatLegalRanking { get; set; }
+    //[XmlElement(ElementName = "LCP_CustomerRanks")] public LcpCustomerRanksDataModel? LcpCustomerRanks  { get; set; } = default;
 }

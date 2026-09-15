@@ -2,7 +2,6 @@
 using DPK.Mosavabat.External.Services.Contracts.Lcp;
 using DPK.Mosavabat.Shared.DataModels.Lcp;
 using DPK.Mosavabat.Shared.DataModels.Lms;
-using DPK.Mosavabat.Shared.EntitiesDto.ApiService;
 using DPK.Mosavabat.Shared.EntitiesDto.Lcp;
 using DPK.Mosavabat.Shared.Lcp.Models;
 using DPK.Mosavabat.Shared.ViewModels.ApiService;
@@ -12,6 +11,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net;
 using Microsoft.Extensions.Options;
+using DPK.Mosavabat.Shared.ViewModels.Mosavabat.Contract;
 
 namespace DPK.Mosavabat.External.Services.Lcp;
 
@@ -212,5 +212,23 @@ public class ExternalServiceProvider : IExternalServiceProvider
         var apiResponse = await ApiService(apiServiceVm.ApiUrl, apiServiceVm.HttpMethod, apiServiceVm.RequestData);
         _logger.Trace(JsonConvert.SerializeObject(apiResponse));
         return new TicketDto() { Response = apiResponse.Result };
+    }
+
+    public async Task<ProcessIssuancePaymentDto> DiscussionPaymentPermission(DiscussionPaymentPermissionVm viewModel, CancellationToken cancellationToken)
+    {
+        var apiUrl = _lcpAdminBaseUrl + "Service/PaymentPermission/DiscussionPaymentPermission";
+
+        var apiServiceVm = new ApiServiceVm<DiscussionPaymentPermissionVm>()
+        {
+            ApiUrl = apiUrl,
+            HttpMethod = HttpMethod.Post,
+            RequestData = viewModel
+        };
+
+        var apiResponse = await ApiService(apiServiceVm.ApiUrl, apiServiceVm.HttpMethod, apiServiceVm.RequestData);
+        var deserializedResponse = JsonConvert.DeserializeObject<ProcessIssuancePaymentDto>(apiResponse.Result);
+        _logger.Trace(JsonConvert.SerializeObject(apiResponse));
+
+        return deserializedResponse;
     }
 }

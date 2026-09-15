@@ -1153,70 +1153,73 @@ public class CreditProcessesController : ControllerBase
         return Ok(CreateResponse(response.Result));
     }
 
-    [HttpPost]
+    [HttpPost("/api/mosavabat/[controller]/[action]")]
     [ApiExplorerSettings(GroupName = "in-mosavabat-v1")]
     [SwaggerOperation(Tags = new[] { "CreditProcesses" })]
-    public async Task<IActionResult> Create(CreatePaymentPermissionDataModel dataModel)
+    public async Task<IActionResult> Create([FromBody] CreatePaymentPermissionDataModel dataModel)
     {
-        //جستجوی مشخصات درخواست 
-        var requestFacilityDetails = await _creditProcessesDatabaseService.GetRequestFacilityDetails(new GetRequestFacilityDetailsVm { CaseId = dataModel.RequestFacilityCaseId });
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(kvp => kvp.Value.Errors.Count > 0)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage));
+            // put a breakpoint here and inspect `errors` in the debugger
+        }
+        var requestFacilityDetails = await _creditProcessesDatabaseService
+            .GetRequestFacilityDetails(new GetRequestFacilityDetailsVm { CaseId = dataModel.RequestFacilityCaseId });
 
         if (requestFacilityDetails.MosavabeNo == 0)
             return Ok(new AjaxResponseBase<MosavabatResponseDataModel?>
             {
                 Success = false,
-                Error = new ErrorInfo
-                {
-                    Code = 404,
-                    Message = "درخواست تسهیلاتی با caseId وارد شده وجود ندارد."
-                }
+                Error = new ErrorInfo { Code = 404, Message = "درخواست تسهیلاتی با caseId وارد شده وجود ندارد." }
             });
 
-        // جستجوی کاربر
         var userName = await _userDatabase.GetUserName(
-            requestFacilityDetails.BranchCode,MosavabatClassName.LCP_IssuancePayment);
+            requestFacilityDetails.BranchCode, MosavabatClassName.LCP_IssuancePayment);
 
-        if (userName != null)
+        if (userName is null)
+            return Problem("کاربر مرتبط با این شعبه یافت نشد.");
+
+        var userId = await _userDatabase.GetUserId(userName);
+
+        var model = MapToCreateIssuancePaymentModel(dataModel, requestFacilityDetails, userId, userName);
+
+        var result = await _lmsService.CreateIssuancePayment(model);
+
+        return Ok(CreateResponse(new AjaxResponseBase<MosavabatResponseDataModel?>
         {
-            var userId = await _userDatabase.GetUserId(userName);
-
-            var model = new CreateIssuancePaymentPermissionDataModel
-            {
-                UserId = userId,
-                UserName = userName,
-                MosavabeNo = requestFacilityDetails.MosavabeNo,
-                Customer = requestFacilityDetails.Customer,
-                BranchId = requestFacilityDetails.BranchId,
-                ContractAmount = dataModel.ContractAmount,
-                BankSharePrice = dataModel.BankSharePrice,
-                CustomerCashPrice = dataModel.CustomerCashPrice,
-                CustomerNonCashPrice = dataModel.CustomerNonCashPrice,
-                Guarantors = dataModel.Guarantors,
-                Collaterals = dataModel.Collaterals,
-                Factors = dataModel.Factors,
-                Beneficiaries = dataModel.Beneficiaries,
-                CreditRank = dataModel.CreditRank,
-                CreditScore = dataModel.CreditScore,
-                LcpId = dataModel.LcpId,
-                Description = dataModel.Description,
-                BaratDueDate = dataModel.BaratDueDate,
-                FeeAmount = dataModel.FeeAmount
-            };
-
-            var result = await _lmsService.CreateIssuancePayment(model);
-
-            var response = new AjaxResponseBase<MosavabatResponseDataModel?>
-            {
-                Result = result,
-                Success = result != null
-            };
-
-            return Ok(CreateResponse(response));
-        }
-
-        return Problem();
+            Result = result,
+            Success = result != null
+        }));
     }
 
+    private static CreateIssuancePaymentPermissionDataModel MapToCreateIssuancePaymentModel(
+        CreatePaymentPermissionDataModel src,
+        GetRequestFacilityDetailsDto facility,
+        int userId,
+        string userName) => new()
+        {
+            UserId = userId,
+            UserName = userName,
+            MosavabeNo = facility.MosavabeNo,
+            Customer = facility.Customer,
+            BranchId = facility.BranchId,
+            ContractAmount = src.ContractAmount,
+            BankSharePrice = src.BankSharePrice,
+            CustomerCashPrice = src.CustomerCashPrice,
+            CustomerNonCashPrice = src.CustomerNonCashPrice,
+            Guarantors = src.Guarantors ?? new PayGuarantorsDataModel { Guarantors = new() },
+            Collaterals = src.Collaterals ?? new PayCollateralsDataModel { Collaterals = new() },
+            Factors = src.Factors ?? new PayBaratFactorsDataModel { Factors = new() },
+            Beneficiaries = src.Beneficiaries ?? new PayBaratBeneficiariesDataModel { Beneficiaries = new() },
+            CreditRank = src.CreditRank,
+            CreditScore = src.CreditScore,
+            LcpId = src.LcpId.ToString(),
+            Description = src.Description,
+            BaratDueDate = src.BaratDueDate,
+            FeeAmount = src.FeeAmount
+        };
 
     // بررسی خطای برگشت داده شده از سمت دیتا بیس 
     private ErrorInfo? CheckError(string? result)

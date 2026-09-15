@@ -330,5 +330,6 @@ public static class ServiceExtensions
     public static void ConfigureRelatedPersonsServices(this IServiceCollection services) => services.AddScoped<IRelatedPersonsDatabaseService, RelatedPersonsDatabaseService>();
     public static void ConfigureBoardMemberService(this IServiceCollection services) => services.AddScoped<IBoardMemberService, BoardMemberService>();
     public static void ConfigureBoardMemberDatabaseService(this IServiceCollection services) => services.AddScoped<IBoardMemberDataBaseService, BoardMemberDataBaseService>();
+    public static void ConfigurationContractGroupDatabaseService(this IServiceCollection services) => services.AddScoped<IContractGroupDatabaseService, ContractGroupDatabaseService>();
 
 }

@@ -2,5 +2,5 @@
 
 public class GetMosavabeNoByCaseIdDto
 {
-    public string MosavabeNumber { get; set; }
+    public string? MosavabeNumber { get; set; }
 }

@@ -10,6 +10,7 @@ namespace DPK.Mosavabat.Shared.Enums.LCP
         {
             EDictionary = new Dictionary<Errors, string>
         {
+            { Errors.Code404, "درخواست يافت نشد" },
             { Errors.Code1103, "مصوبه يافت نشد" },
             { Errors.Code1106, "مصوبه منقضی شده است" },
             { Errors.Code1113, "مصوبه سر رسید شده است" },

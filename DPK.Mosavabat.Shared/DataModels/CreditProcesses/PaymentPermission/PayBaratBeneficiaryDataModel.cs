@@ -9,6 +9,6 @@ public class PayBaratBeneficiaryDataModel
     public string Name { get; set; }
     public string NationalCode { get; set; }
     public string LastName { get; set; }
-    public string LcpId { get; set; }
+    public int LcpId { get; set; }
     public string Iban { get; set; }
 }

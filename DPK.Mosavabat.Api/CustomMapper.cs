@@ -20,6 +20,8 @@ using PaymentPermissionIssuanceControlDto = DPK.Mosavabat.Shared.EntitiesDto.Cre
 using DPK.Mosavabat.Shared.DataModels.Mosavabat.General.Supervisor;
 using DPK.Mosavabat.Shared.ViewModels.Mosavabat.General.Supervisor;
 using DPK.Mosavabat.Shared.EntitiesDto.Mosavabat;
+using DPK.Mosavabat.Shared.DataModels.Lcp;
+using DPK.Mosavabat.Shared.ViewModels.Lcp;
 
 namespace DPK.Mosavabat.Api
 {
@@ -180,7 +182,9 @@ namespace DPK.Mosavabat.Api
             CreateMap<RegisterPaymentPermissionExceptionReasonVm, RegisterPaymentPermissionExceptionReasonsDataModel>().ReverseMap();
             CreateMap<GetPaymentPermissionExceptionReasonsVm, GetPaymentPermissionExceptionReasonsDataModel>().ReverseMap();
             CreateMap<CalculateRequestFacilityUnusedBalanceDto,CalculateApprovalRequestUnusedBalanceDto>().ReverseMap();
-
+            CreateMap<GetMosavabeExpireDateVm, GetMosavabeExpireDateDataModel>().ReverseMap();
+            CreateMap<DiscussionPaymentPermissionVm, ProcessIssuancePaymentDataModel>().ReverseMap();
+            CreateMap<LcpRequestFacilityAbortCaseVm, RemoveLcpRequestFromCartableVm>().ReverseMap();
         }
     }
 }

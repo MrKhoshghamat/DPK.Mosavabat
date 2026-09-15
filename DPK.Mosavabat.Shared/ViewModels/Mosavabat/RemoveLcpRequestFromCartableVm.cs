@@ -3,4 +3,5 @@
 public class RemoveLcpRequestFromCartableVm
 {
     public int CaseId { get; set; }
+    public int RequestType { get; set; }
 }

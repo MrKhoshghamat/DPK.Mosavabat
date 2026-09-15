@@ -2,5 +2,5 @@
 
 public class RemoveSettleContractsDto
 {
-    public List<GetCustomerCurrentFacilityDto> Contracts { get; set; }
+    public List<GetCustomerCurrentFacilityDto>? Contracts { get; set; }
 }

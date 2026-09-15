@@ -28,6 +28,7 @@
     <ProjectReference Include="..\DPK.Mosavabat.Contracts\DPK.Mosavabat.Contracts.csproj" />
     <ProjectReference Include="..\DPK.Mosavabat.Database.Services.Contracts\DPK.Mosavabat.Database.Services.Contracts.csproj" />
     <ProjectReference Include="..\DPK.Mosavabat.External.Service.Contracts\DPK.Mosavabat.External.Services.Contracts.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.External.Service\DPK.Mosavabat.External.Services.csproj" />
     <ProjectReference Include="..\DPK.Mosavabat.Service.Contracts\DPK.Mosavabat.Services.Contracts.csproj" />
   </ItemGroup>
 

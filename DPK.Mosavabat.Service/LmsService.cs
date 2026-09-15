@@ -164,7 +164,7 @@ namespace DPK.Mosavabat.Services
                     FirstName = g.FirstName,
                     LastName = g.LastName,
                     GuarantorType = g.GuarantorType,
-                    LcpId = g.LcpId,
+                    LcpId = g.LcpId.ToString(),
                     NationalCode = g.NationalCode
                 });
             }
@@ -182,7 +182,7 @@ namespace DPK.Mosavabat.Services
                     CollateralType = c.CollateralType,
                     CoverPercent = c.CoverPercent,
                     Description = c.Description,
-                    LcpId = c.LcpId
+                    LcpId = c.LcpId.ToString()
                 });
             }
         }
@@ -209,7 +209,7 @@ namespace DPK.Mosavabat.Services
             {
                 dest.Beneficiaries.Beneficiaries.Add(new PayBaratBeneficiary
                 {
-                    LcpId = b.LcpId,
+                    LcpId = b.LcpId.ToString(),
                     BeneficiaryType = b.BeneficiaryType,
                     Iban = b.Iban,
                     LastName = b.LastName,
@@ -228,7 +228,7 @@ namespace DPK.Mosavabat.Services
             var xmlDocument = new XmlDocument();
 
             if (userName is null)
-                return xmlDocument;   // empty doc — engine will handle / reject
+                return xmlDocument;
 
             var standardModel = BizagiHelpers.CreateStandardModelForBizagi(model, userName, entityId);
             var data = BizagiHelpers.ConvertModelToXmlMosavabat(standardModel, entityId);

@@ -706,7 +706,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             return new GetCustomerNoByMosavabeNoDto()
             {
-                CustomerNo = result.Result.ToString()
+                CustomerNo = result?.Result == null ? null : result.Result.ToString()
             };
         }
 

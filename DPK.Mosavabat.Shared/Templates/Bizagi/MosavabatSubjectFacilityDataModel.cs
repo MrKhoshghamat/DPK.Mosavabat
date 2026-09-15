@@ -25,6 +25,9 @@ public class MosavabatSubjectFacilityDataModel
     [XmlIgnore]
     public string ContractType { get; set; }
 
+    [XmlElement(ElementName = "ContractGroup")]
+    public string? ContractGroup { get; set; }
+
     [XmlElement(ElementName = "SubContractType")]
     public string? SubContractType { get; set; }
 

@@ -26,11 +26,12 @@ public interface IRequestFacilityDatabaseService : IMainDatabaseService
     Task<GetRadNumberByCaseIdDto> GetRadNumberByCaseId(GetRadNumberByCaseIdVm viewModel, CancellationToken cancellationToken = default);
     Task<GetUserNameByCaseIdDto> GetUserNameByCaseId(GetUserNameByCaseIdVm viewModel, CancellationToken cancellationToken = default);
     Task<GetUserIdByUserNameDto> GetUserIdByUserName(GetUserIdByUserNameVm viewModel, CancellationToken cancellationToken = default);
-    Task LcpRequestFacilityAbortCase(int caseId, CancellationToken cancellationToken);
+    Task LcpRequestFacilityAbortCase(LcpRequestFacilityAbortCaseVm viewModel, CancellationToken cancellationToken);
     Task<CheckCustomerAccountExistsDto> CheckCustomerAccountExistsAsync(CheckCustomerAccountExistsDm dataModel, CancellationToken cancellationToken);
     Task<GetCustomerRankDto> GetCustomerRank(int lcpRequestFacilityId, CancellationToken cancellationToken);
     Task<List<GetCustomerDebtDetailsDto>> GetCustomerDebtDetails(GetCustomerDebtDetailsDataModel dataModel, CancellationToken cancellationToken);
     Task<GetMosavabeNoByCaseIdDto> GetMosavabeNoByCaseId(GetMosavabeNoByCaseIdDataModel dataModel, CancellationToken cancellationToken = default);
     Task<PaymentPermissionIssuanceControlForLcpDto> PaymentPermissionIssuanceControlForLcp(PaymentPermissionIssuanceControlForLcpDM dataModel, CancellationToken cancellationToken = default);
+    Task<GetMosavabeExpireDateDto> GetMosavabeExpireDate(GetMosavabeExpireDateVm viewModel, CancellationToken cancellationToken = default);
 
 }

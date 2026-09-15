@@ -8,4 +8,6 @@ public class GetCustomerCurrentFacilityDto
     public long CurrentInstallmentBalance { get; set; }
     public long NonCurrentInstallmentBalance { get; set; }
     public long TotalDebtBalance { get; set; }
+    public int DateUpdate { get; set; }
+    public int TimeUpdate { get; set; }
 }

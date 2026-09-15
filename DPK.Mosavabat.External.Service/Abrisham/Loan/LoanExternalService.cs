@@ -142,6 +142,7 @@ namespace DPK.Mosavabat.External.Services.Abrisham.Loan
             var loanContractsAllStatementVm = _mapper.Map<LoanContractsAllStatementVM>(viewModel);
             loanContractsAllStatementVm.ConfirmFlag = "Y";
             loanContractsAllStatementVm.SubContractNumber = "0";
+            loanContractsAllStatementVm.EndDate = DateTime.Now.ToFormattedPersianDate(DateFormat.FourDigitYear);
 
             var response = await _adanicAbrishamService.LoanContractsAllStatementAsync(
                 loanContractsAllStatementVm,

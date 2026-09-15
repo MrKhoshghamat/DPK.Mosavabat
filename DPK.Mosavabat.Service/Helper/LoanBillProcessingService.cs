@@ -95,7 +95,9 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                 IsCompleted = false,
                 IsProcessing = false,
                 CreatedAt = iranNow,
-                RetryCount = 0
+                RetryCount = 0,
+                DateUpdate = f.DateUpdate,
+                TimeUpdate = f.TimeUpdate
             }).ToList();
 
         await _loanBillRequestRepository.AddRangeAsync(requests, cancellationToken);
@@ -154,7 +156,9 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                 IsCompleted = false,
                 IsProcessing = false,
                 CreatedAt = iranNow,
-                RetryCount = 0
+                RetryCount = 0,
+                DateUpdate = f.DateUpdate,
+                TimeUpdate = f.TimeUpdate,
             }).ToList();
 
         await _loanBillRequestRepository.AddRangeAsync(requests, cancellationToken);
@@ -213,14 +217,16 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                 IsCompleted = false,
                 IsProcessing = false,
                 CreatedAt = iranNow,
-                RetryCount = 0
+                RetryCount = 0,
+                DateUpdate = f.DateUpdate,
+                TimeUpdate = f.TimeUpdate
             }).ToList();
 
         await _loanBillRequestRepository.AddRangeAsync(requests, cancellationToken);
         await _loanBillRequestRepository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<(List<GetMosavabeContractsDto>, List<GetLoanBillDto>)> GetProcessedContractsByMosavabeNo(
+    public async Task<(List<GetMosavabeContractsDto>?, List<GetLoanBillDto>)> GetProcessedContractsByMosavabeNo(
         string mosavabeNo,
         CancellationToken cancellationToken)
     {
@@ -228,7 +234,7 @@ public class LoanBillProcessingService : ILoanBillProcessingService
 
         if (_cache.TryGetValue(cacheKey, out var cachedResult))
         {
-            return ((List<GetMosavabeContractsDto>, List<GetLoanBillDto>))cachedResult;
+            return ((List<GetMosavabeContractsDto>?, List<GetLoanBillDto>))cachedResult;
         }
 
         var facilities = await _creditProcessesDatabaseService
@@ -258,7 +264,7 @@ public class LoanBillProcessingService : ILoanBillProcessingService
         return result!;
     }
 
-    public async Task<(List<GetCustomerCurrentFacilityDto>, List<GetLoanBillDto>)> GetProcessedContractsByCustomerNo(
+    public async Task<(List<GetCustomerCurrentFacilityDto>?, List<GetLoanBillDto>)> GetProcessedContractsByCustomerNo(
         string customerNo,
         CancellationToken cancellationToken)
     {
@@ -266,7 +272,7 @@ public class LoanBillProcessingService : ILoanBillProcessingService
 
         if (_cache.TryGetValue(cacheKey, out var cachedResult))
         {
-            return ((List<GetCustomerCurrentFacilityDto>, List<GetLoanBillDto>))cachedResult;
+            return ((List<GetCustomerCurrentFacilityDto>?, List<GetLoanBillDto>))cachedResult;
         }
 
         var facilities = await _creditProcessesDatabaseService

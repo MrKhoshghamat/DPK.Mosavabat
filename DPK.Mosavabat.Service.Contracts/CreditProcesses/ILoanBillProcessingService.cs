@@ -19,10 +19,10 @@ public interface ILoanBillProcessingService
         string customerNo,
         CancellationToken cancellationToken);
 
-    Task<(List<GetMosavabeContractsDto>, List<GetLoanBillDto>)> GetProcessedContractsByMosavabeNo(string mosavabeNo,
+    Task<(List<GetMosavabeContractsDto>?, List<GetLoanBillDto>)> GetProcessedContractsByMosavabeNo(string mosavabeNo,
         CancellationToken cancellationToken);
 
-    Task<(List<GetCustomerCurrentFacilityDto>, List<GetLoanBillDto>)> GetProcessedContractsByCustomerNo(
+    Task<(List<GetCustomerCurrentFacilityDto>?, List<GetLoanBillDto>)> GetProcessedContractsByCustomerNo(
         string customerNo,
         CancellationToken cancellationToken);
 

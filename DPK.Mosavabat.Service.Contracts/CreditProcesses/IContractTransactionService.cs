@@ -26,7 +26,12 @@ public interface IContractTransactionService
     /// <summary>
     /// محاسبه جمع مبالغ تراکنش های وصولی قراردادها
     /// </summary>
-    GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(GetReceivedContractsDataModel dataModel);
+    GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(GetReceivedContractsDataModel dataModel, List<GetMosavabeContractsDto>? mosavabeContracts);
+
+    /// <summary>
+    /// محاسبه جمع مبالغ تراکنش های وصولی قراردادها
+    /// </summary>
+    GetReceivedContractsDto GetDailyReceivedContractsTransactionsAmounts(GetReceivedContractsDataModel dataModel, List<GetCustomerCurrentFacilityDto>? customerCurrentFacilities);
 
     /// <summary>
     /// محاسبه جمع مبالغ تراکنش های پرداختی قراردادها

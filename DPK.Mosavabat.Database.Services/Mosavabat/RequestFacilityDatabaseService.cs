@@ -305,11 +305,12 @@ public class RequestFacilityDatabaseService : MainDatabaseService, IRequestFacil
         };
     }
 
-    public async Task LcpRequestFacilityAbortCase(int caseId, CancellationToken cancellationToken)
+    public async Task LcpRequestFacilityAbortCase(LcpRequestFacilityAbortCaseVm viewModel, CancellationToken cancellationToken)
     {
         var parameters = new List<SqlParameter>
         {
-            new("@caseId", SqlDbType.Int) {Value = caseId}
+            new("@caseId", SqlDbType.Int) {Value = viewModel.CaseId},
+            new("@requestType", SqlDbType.Int) {Value = viewModel.RequestType}
         };
 
         var result = await ExecuteNonQueryAsync(new ExecuteNonQueryAsyncVm()
@@ -402,7 +403,7 @@ public class RequestFacilityDatabaseService : MainDatabaseService, IRequestFacil
 
         return new GetMosavabeNoByCaseIdDto()
         {
-            MosavabeNumber = result.Result.ToString()
+            MosavabeNumber = result?.Result == null ? null : result?.Result.ToString()
         };
     }
 
@@ -429,6 +430,29 @@ public class RequestFacilityDatabaseService : MainDatabaseService, IRequestFacil
         return new PaymentPermissionIssuanceControlForLcpDto()
         {
             Result = result.Result!.ToString()
+        };
+    }
+
+    public async Task<GetMosavabeExpireDateDto> GetMosavabeExpireDate(GetMosavabeExpireDateVm viewModel, CancellationToken cancellationToken = default)
+    {
+        var parameters = new List<SqlParameter>()
+        {
+            new("@CaseId", SqlDbType.NVarChar) {Value = viewModel.CaseId},
+        };
+
+        var result = await ExecuteReaderAsync(new ExecuteReaderAsyncVm()
+        {
+            ConnectionString = DevProviderConnectionString,
+            StoredProcedureName = "[LCP].[GetMosavabeExpireDate]",
+            Parameters = parameters
+        }, cancellationToken);
+
+        _logger.Trace(JsonConvert.SerializeObject(result));
+
+        return new GetMosavabeExpireDateDto()
+        {
+            ExpireDate = result?.Result == null ? null : Convert.ToDateTime(result?.Result),
+            SarresidDate = result?.Column2 == null ? null : Convert.ToDateTime(result?.Column2)
         };
     }
 }

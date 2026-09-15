@@ -6,5 +6,5 @@ namespace DPK.Mosavabat.Shared.DataModels.CreditProcesses.PaymentPermission;
 public class RemoveSettleContractsDataModel
 {
     public List<GetLoanBillDm> LoanBills { get; set; }
-    public List<GetCustomerCurrentFacilityDto> Contracts { get; set; }
+    public List<GetCustomerCurrentFacilityDto>? Contracts { get; set; }
 }

@@ -12,5 +12,5 @@ public class PayBaratFactor
     public string FactorId { get; set; }
 
     [XmlElement(ElementName = "LcpId")]
-    public string LcpId { get; set; }
+    public int LcpId { get; set; }
 }

@@ -15,6 +15,14 @@ public class GuarantorUpdateDataModel
     [XmlElement(ElementName = "Nationality")] public string Nationality { get; set; }
     [XmlElement(ElementName = "LcpId")] public long LcpId { get; set; }
     [XmlElement(ElementName = "IsDeleted")] public bool IsDeleted { get; set; }
-    [XmlElement(ElementName = "CreditRank")] public string? CreditRank { get; set; }
-    [XmlElement(ElementName = "CreditScore")] public float? CreditScore { get; set; }
+    //[XmlElement(ElementName = "LCP_GuarantorRanks")] public LcpGuarantorRanksDataModel? GuarantorRanks { get; set; } = default;
+    /// <summary>
+    /// اگر حقیقی باشد
+    /// </summary>
+    //[XmlIgnore] public ModavabatRankingDataModel? IranianRanking { get; set; }
+    /// <summary>
+    /// اگر حقوقی باشد
+    /// </summary>
+    //[XmlIgnore] public MosavabatLegalRankingDataModel? MosavabatLegalRanking { get; set; }
+
 }

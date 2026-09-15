@@ -35,9 +35,10 @@ public interface IRequestFacilityService
     Task<GetRadNumberByCaseIdDto> GetRadNumberByCaseId(GetRadNumberByCaseIdVm viewModel, CancellationToken cancellationToken = default);
     Task<GetUserNameByCaseIdDto> GetUserNameByCaseId(GetUserNameByCaseIdVm viewModel, CancellationToken cancellationToken = default);
     Task<GetUserIdByUserNameDto> GetUserIdByUserName(GetUserIdByUserNameVm viewModel, CancellationToken cancellationToken = default);
-    Task LcpRequestFacilityAbortCase(int caseId, CancellationToken cancellationToken);
+    Task LcpRequestFacilityAbortCase(LcpRequestFacilityAbortCaseVm viewModel, CancellationToken cancellationToken);
     Task<List<GetCustomerDebtDetailsDto>> GetCustomerDebtDetails(GetCustomerDebtDetailsDataModel dataModel, CancellationToken cancellationToken = default);
     Task<CalculateRequestFacilityUnusedBalanceDto> CalculateRequestFacilityUnusedBalance(CalculateRequestFacilityUnusedBalanceDataModel dataModel , CancellationToken cancellationToken = default);
     Task<PaymentPermissionIssuanceControlForLcpDto> PaymentPermissionIssuanceControlForLcp(PaymentPermissionIssuanceControlForLcpDataModel dataModel, CancellationToken cancellationToken = default);
     Task<SendApprovalLetterDto> SendApprovalLetter(SendApprovalLetterVm vm, CancellationToken cancellationToken = default);
+    Task<GetMosavabeExpireDateDto> GetMosavabeExpireDate(GetMosavabeExpireDateVm viewModel, CancellationToken cancellationToken = default);
 }

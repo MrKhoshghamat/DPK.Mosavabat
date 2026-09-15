@@ -193,7 +193,8 @@ public class CreditProcessesService : ICreditProcessService
             new GetReceivedContractsDataModel()
             {
                 LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2)
-            }).Amount;
+            },
+            contracts.Item1).Amount;
 
         var approvalRequestUnusedBalanceDto =
             await _creditProcessesDatabaseService.CalculateApprovalRequestUnusedBalance(viewModel, cancellationToken);
@@ -308,7 +309,8 @@ public class CreditProcessesService : ICreditProcessService
             new GetReceivedContractsDataModel()
             {
                 LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2)
-            }).Amount;
+            },
+            contracts.Item1).Amount;
 
         return new AggregateDailyCustomerPaymentDto
         {

@@ -55,7 +55,7 @@ namespace DPK.Mosavabat.Database.Services.Database
 
             var dto = new ExecuteReaderAsyncDto
             {
-                Result = 0,
+                Result = null,
                 Column2 = null,
                 Column3 = null,
                 Column4 = null

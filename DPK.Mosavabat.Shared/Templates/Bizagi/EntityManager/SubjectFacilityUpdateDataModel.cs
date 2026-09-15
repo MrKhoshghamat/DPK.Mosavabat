@@ -12,6 +12,7 @@ public class SubjectFacilityUpdateDataModel
     [XmlElement(ElementName = "Description")] public string Description { get; set; }
     [XmlElement(ElementName = "SubjectContract")] public string SubjectContract { get; set; }
     [XmlIgnore] public string ContractType { get; set; }
+    [XmlElement] public string? ContractGroup { get; set; }
     [XmlElement(ElementName = "SubContractType")] public string? SubContractType { get; set; }
     //public MosavabatSubContractTypeDataModel SubContractType { get; set; }
     [XmlElement(ElementName = "FacilityGroup")] public string FacilityGroup { get; set; }

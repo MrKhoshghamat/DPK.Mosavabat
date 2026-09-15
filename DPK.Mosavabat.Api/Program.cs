@@ -58,6 +58,7 @@ builder.Services.ConfigureMosavabatUserDatabaseServices();
 builder.Services.ConfigureMosavabatApprovalRequestDatabaseServices();
 builder.Services.ConfigureMosavabatAccountBalanceAverageDatabaseServices();
 builder.Services.ConfigureBoardMemberDatabaseService();
+builder.Services.ConfigurationContractGroupDatabaseService();
 
 
 builder.Services.ConfigureFacilityGroupDatabaseServices();

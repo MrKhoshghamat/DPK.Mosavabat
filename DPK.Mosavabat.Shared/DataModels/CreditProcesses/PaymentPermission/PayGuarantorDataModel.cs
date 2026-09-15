@@ -8,7 +8,7 @@ public class PayGuarantorDataModel
     public string Country { get; set; }
     public string NationalCode { get; set; }
     public string Nationality { get; set; }
-    public string LcpId { get; set; }
+    public int LcpId { get; set; }
     public string FirstName { get; set; }
     public string? CreditRank { get; set; }
     public float? CreditScore { get; set; }

@@ -55,6 +55,7 @@ public class RequestFacilityService : IRequestFacilityService
     private readonly IContractTransactionService _contractTransactionService;
     private readonly ICreditProcessService _creditProcessService;
     private readonly ICreditProcessesDatabaseService _creditProcessesDatabaseService;
+    private readonly IContractGroupDatabaseService _contractGroupDatabaseService;
     private readonly ILcpServiceProxy _proxy;
     private readonly IMapper _mapper;
 
@@ -79,6 +80,7 @@ public class RequestFacilityService : IRequestFacilityService
         IContractTransactionService contractTransactionService,
         ICreditProcessService creditProcessService,
         ICreditProcessesDatabaseService creditProcessesDatabaseService,
+        IContractGroupDatabaseService contractGroupDatabaseService,
         IMapper mapper,
         ILcpServiceProxy proxy
         )
@@ -103,6 +105,7 @@ public class RequestFacilityService : IRequestFacilityService
         _contractTransactionService = contractTransactionService;
         _creditProcessService = creditProcessService;
         _creditProcessesDatabaseService = creditProcessesDatabaseService;
+        _contractGroupDatabaseService  = contractGroupDatabaseService;
         _proxy = proxy;
         _mapper = mapper;
     }
@@ -362,14 +365,29 @@ public class RequestFacilityService : IRequestFacilityService
             }
         }
 
+
         // استخراج شناسه نوع قرارداد
         foreach (var requestDocument in requestFacility.SubjectFacilities.SubjectFacility)
         {
+            requestDocument.FacilityGroup = await _facilityGroupDatabase.ExtractFacilityGroupId(requestDocument.ContractType);
+
             if (requestDocument.SubContractType != null)
             {
                 requestDocument.SubContractType = await _subContractTypeDatabase.ExtractSubContractTypeId(requestDocument.SubContractType);
             }
-            requestDocument.FacilityGroup = await _facilityGroupDatabase.ExtractFacilityGroupId(requestDocument.ContractType);
+
+            if (requestDocument.ContractGroup != null)
+            {
+                requestDocument.ContractGroup = _contractGroupDatabaseService.ExtractContractGroupId(new ExtractContractGroupIdVm()
+                {
+                    ContractGroupCode = requestDocument.ContractGroup
+                }).Result?.ContractGroupId;
+
+                if (requestDocument.ContractGroup == "11" || requestDocument.ContractGroup == "12")
+                {
+                    requestDocument.FacilityGroup = "315";
+                }
+            }
         }
 
         foreach (var item in requestFacility.Collaterals.Collateral)
@@ -385,10 +403,88 @@ public class RequestFacilityService : IRequestFacilityService
             if (item != null)
             {
                 item.Amount = item.Amount.ToThousandSeparetedWithOutDecimals();
-                item.Description = Regex.Replace(item.Description, "&amp;nbsp;", "");
-                item.SubjectContract = Regex.Replace(item.SubjectContract, "&amp;nbsp;", "");
+                item.Description = Regex.Replace(item.Description, "&amp;nbsp;", " ");
+                item.SubjectContract = Regex.Replace(item.SubjectContract, "&amp;nbsp;", " ");
             }
         }
+
+        ////Fill Rank And Score
+        //if (requestFacility.MosavabatLegalRanking != null)
+        //{
+        //    var lcpCustomerRanksDataModel = new LcpCustomerRanksDataModel();
+        //    var datamodel = new LcpCustomerRankDataModel();
+
+        //    if (requestFacility.MosavabatLegalRanking.LocalRanking != null)
+        //    {
+        //        datamodel.CreditRank = requestFacility.MosavabatLegalRanking.LocalRanking.Symbol != null ? requestFacility.MosavabatLegalRanking.LocalRanking.Symbol.ToString() : null;
+        //        datamodel.CreditScore = requestFacility.MosavabatLegalRanking.LocalRanking.Score != null ? Convert.ToDecimal(requestFacility.MosavabatLegalRanking.LocalRanking.Score) : null;
+        //    }
+
+        //    if (requestFacility.MosavabatLegalRanking.IranianRanking != null)
+        //    {
+        //        datamodel.IranianRank = requestFacility.MosavabatLegalRanking.IranianRanking.Symbol != null ? requestFacility.MosavabatLegalRanking.IranianRanking.Symbol.ToString() : null;
+        //        datamodel.IranianScore = requestFacility.MosavabatLegalRanking.IranianRanking.Score != null ? Convert.ToDecimal(requestFacility.MosavabatLegalRanking.IranianRanking.Score) : null;
+        //    }
+
+        //    if (requestFacility.MosavabatLegalRanking.ExternalRanking != null)
+        //    {
+        //        datamodel.ExternalRankAssignDate = requestFacility.MosavabatLegalRanking.ExternalRanking.RateAssignDate != null ? Convert.ToDateTime(requestFacility.MosavabatLegalRanking.ExternalRanking.RateAssignDate) : null;
+        //        datamodel.ExternalRankExpireDate = requestFacility.MosavabatLegalRanking.ExternalRanking.RateExpireDate != null ? Convert.ToDateTime(requestFacility.MosavabatLegalRanking.ExternalRanking.RateExpireDate) : null;
+        //        datamodel.ExternalShortTermRank = requestFacility.MosavabatLegalRanking.ExternalRanking.ShortTermRateSymbol != null ? requestFacility.MosavabatLegalRanking.ExternalRanking.ShortTermRateSymbol.ToString() : null;
+        //        datamodel.ExternalScore = requestFacility.MosavabatLegalRanking.ExternalRanking.Score != null ? Convert.ToDecimal(requestFacility.MosavabatLegalRanking.ExternalRanking.Score) : null;
+        //        datamodel.ExternalRankFile = requestFacility.MosavabatLegalRanking.ExternalRanking.FileUrl != null ? requestFacility.MosavabatLegalRanking.ExternalRanking.FileUrl : null;
+        //        datamodel.ExternalLongTermRank = requestFacility.MosavabatLegalRanking.ExternalRanking.LongTermRateSymbol != null ? requestFacility.MosavabatLegalRanking.ExternalRanking.LongTermRateSymbol.ToString() : null;
+        //    }
+
+        //    lcpCustomerRanksDataModel.LcpCustomerRank.Add(datamodel);
+        //    requestFacility.LcpCustomerRanks = lcpCustomerRanksDataModel;
+
+        //}
+
+        //Fill Rank And Score In Guarantors
+        //if (requestFacility.Guarantors != null)
+        //{
+        //    foreach (var guarantor in requestFacility.Guarantors.Guarantor)
+        //    {
+        //        var guarantorRankDataModel = new LcpGuarantorRanksDataModel();
+        //        var dataModel = new LcpGuarantorRankDataModel();
+
+        //        if (guarantor.IranianRanking != null)
+        //        {
+        //            dataModel.IranianRank = guarantor.IranianRanking.Symbol != null ? guarantor.IranianRanking.Symbol.ToString() : null;
+        //            dataModel.IranianScore = guarantor.IranianRanking.Score != null ? Convert.ToDecimal(guarantor.IranianRanking.Score) : null;
+        //        }
+
+        //        if (guarantor.MosavabatLegalRanking != null)
+        //        {
+        //            if (guarantor.MosavabatLegalRanking.LocalRanking != null)
+        //            {
+        //                dataModel.CreditRank = guarantor.MosavabatLegalRanking.LocalRanking.Symbol != null ? guarantor.MosavabatLegalRanking.LocalRanking.Symbol.ToString() : null;
+        //                dataModel.CreditScore = guarantor.MosavabatLegalRanking.LocalRanking.Score != null ? Convert.ToDecimal(guarantor.MosavabatLegalRanking.LocalRanking.Score) : null;
+        //            }
+
+        //            if (guarantor.MosavabatLegalRanking.IranianRanking != null)
+        //            {
+        //                dataModel.IranianRank = guarantor.MosavabatLegalRanking.IranianRanking.Symbol != null ? guarantor.MosavabatLegalRanking.IranianRanking.Symbol.ToString() : null;
+        //                dataModel.IranianScore = guarantor.MosavabatLegalRanking.IranianRanking.Score != null ? Convert.ToDecimal(guarantor.MosavabatLegalRanking.IranianRanking.Score) : null;
+        //            }
+
+        //            if (guarantor.MosavabatLegalRanking.ExternalRanking != null)
+        //            {
+        //                dataModel.ExternalRankAssignDate = guarantor.MosavabatLegalRanking.ExternalRanking.RateAssignDate != null ? Convert.ToDateTime(guarantor.MosavabatLegalRanking.ExternalRanking.RateAssignDate) : null;
+        //                dataModel.ExternalRankExpireDate = guarantor.MosavabatLegalRanking.ExternalRanking.RateExpireDate != null ? Convert.ToDateTime(guarantor.MosavabatLegalRanking.ExternalRanking.RateExpireDate) : null;
+        //                dataModel.ExternalShortTermRank = guarantor.MosavabatLegalRanking.ExternalRanking.ShortTermRateSymbol != null ? guarantor.MosavabatLegalRanking.ExternalRanking.ToString() : null;
+        //                dataModel.ExternalScore = guarantor.MosavabatLegalRanking.ExternalRanking.Score != null ? Convert.ToDecimal(guarantor.MosavabatLegalRanking.ExternalRanking.Score) : null;
+        //                dataModel.ExternalRankFile = guarantor.MosavabatLegalRanking.ExternalRanking.FileUrl != null ? guarantor.MosavabatLegalRanking.ExternalRanking.FileUrl : null;
+        //                dataModel.ExternalLongTermRank = guarantor.MosavabatLegalRanking.ExternalRanking.LongTermRateSymbol != null ? guarantor.MosavabatLegalRanking.ExternalRanking.LongTermRateSymbol.ToString() : null;
+        //            }
+        //        }
+
+        //        guarantorRankDataModel.LcpGuarantorRank.Add(dataModel);
+        //        guarantor.GuarantorRanks = guarantorRankDataModel;
+        //    }
+        //}
+
 
         // اگر کاربر خالی بود یل تعریف نشده باشد
         if (string.IsNullOrEmpty(userName))
@@ -568,9 +664,9 @@ public class RequestFacilityService : IRequestFacilityService
         return await _requestFacilityDatabaseService.GetUserIdByUserName(viewModel, cancellationToken);
     }
 
-    public async Task LcpRequestFacilityAbortCase(int caseId, CancellationToken cancellationToken)
+    public async Task LcpRequestFacilityAbortCase(LcpRequestFacilityAbortCaseVm viewModel, CancellationToken cancellationToken)
     {
-        await _requestFacilityDatabaseService.LcpRequestFacilityAbortCase(caseId, cancellationToken);
+        await _requestFacilityDatabaseService.LcpRequestFacilityAbortCase(viewModel, cancellationToken);
     }
 
     public async Task<List<GetCustomerDebtDetailsDto>> GetCustomerDebtDetails(GetCustomerDebtDetailsDataModel dataModel, CancellationToken cancellationToken = default)
@@ -645,6 +741,13 @@ public class RequestFacilityService : IRequestFacilityService
                 CaseId = dataModel.CaseId.ToString(),
             });
 
+        if (getMosavabeNoByCaseIdDto.MosavabeNumber == null)
+            return new CalculateRequestFacilityUnusedBalanceDto()
+            { 
+                Amount = null,
+                RemainingContractsCount = null 
+            };
+
         var viewModel = new CalculateApprovalRequestUnusedBalanceVm()
         { 
             MosavabeNumber = getMosavabeNoByCaseIdDto.MosavabeNumber
@@ -662,11 +765,19 @@ public class RequestFacilityService : IRequestFacilityService
                 CaseId = dataModel.CaseId.ToString(),
             });
 
+        if (getMosavabeNoByCaseIdDto.MosavabeNumber == null)
+            return new PaymentPermissionIssuanceControlForLcpDto()
+            { Result = "404" };
+
         var getCustomerNoByMosavabeNoDto = await _creditProcessesDatabaseService
             .GetCustomerNoByMosavabeNo(new GetCustomerNoByMosavabeNoDataModel()
             {
                 MosavabeNo = getMosavabeNoByCaseIdDto.MosavabeNumber
             }, cancellationToken);
+
+        if (getCustomerNoByMosavabeNoDto.CustomerNo == null)
+            return new PaymentPermissionIssuanceControlForLcpDto()
+            { Result = "404" };
 
         var dm = new PaymentPermissionIssuanceControlForLcpDM()
         {
@@ -677,16 +788,14 @@ public class RequestFacilityService : IRequestFacilityService
         return await _requestFacilityDatabaseService.PaymentPermissionIssuanceControlForLcp(dm);
     }
 
+    public async Task<GetMosavabeExpireDateDto> GetMosavabeExpireDate(GetMosavabeExpireDateVm viewModel, CancellationToken cancellationToken = default)
+    {
+        return await _requestFacilityDatabaseService.GetMosavabeExpireDate(viewModel, cancellationToken);
+    }
+
     public async Task<SendApprovalLetterDto> SendApprovalLetter(SendApprovalLetterVm vm, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            return await _proxy.SendApprovalLetter(vm, cancellationToken);
-        }
-        catch (Exception ex)
-        {
 
-            throw;
-        }
+        return await _proxy.SendApprovalLetter(vm, cancellationToken);
     }
 }
