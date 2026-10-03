@@ -2,5 +2,5 @@
 
 public class GetAccNoByC13Dto
 {
-    public string AccNo { get; set; }
+    public string? AccNo { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using DPK.Mosavabat.Shared.DataModels.Lcp;
 using DPK.Mosavabat.Shared.DataModels.Mosavabat.Contract;
+using DPK.Mosavabat.Shared.Results;
 
 namespace DPK.Mosavabat.Database.Services.Contracts;
 
@@ -16,4 +17,7 @@ public interface IRequestFacilityDatabase : IMainDatabase
     Task<string?> UpdateContractFileLink(UpdateMorabeheContractFileLink updateMorabeheContractFileLink);
     // یررسی وجود شماره حساب مشتری در DevProvider
     Task<CustomerAccountNoDataModel> FindCustomerAccountNoDataModel(CustomerNoDataModel lcpRequestFacilityDataModel);
+    Task<LcpRequestFacilityLookupResult?> GetLcpRequestFacilityByGuidAsync(
+        string guid, CancellationToken ct = default);
 }
+

@@ -2,5 +2,5 @@
 
 public class GetSettledContractsDto
 {
-    public List<string> C13List { get; set; }
+    public List<string>? C13List { get; set; }
 }

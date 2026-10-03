@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DPK.Mosavabat.Entities\DPK.Mosavabat.Entities.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.Shared\DPK.Mosavabat.Shared.csproj" />
   </ItemGroup>
 
 </Project>

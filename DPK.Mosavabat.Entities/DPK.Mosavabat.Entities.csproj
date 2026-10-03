@@ -12,6 +12,11 @@
 
   <ItemGroup>
     <Folder Include="Models\LoanBill\" />
+    <Folder Include="Models\RequestFacilities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DPK.Mosavabat.Common\DPK.Mosavabat.Common.csproj" />
   </ItemGroup>
 
 </Project>

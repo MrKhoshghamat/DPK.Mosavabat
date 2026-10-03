@@ -44,6 +44,7 @@ using DPK.Mosavabat.Services.Mosavabat;
 using DPK.Mosavabat.Shared.DataModels.Lcp;
 using Quartz;
 using DPK.Mosavabat.Services.CreditProcesses;
+using DPK.Mosavabat.Shared.DataModels.Bsi;
 using CreditProcessesService = DPK.Mosavabat.Services.CreditProcesses.CreditProcessesService;
 
 namespace DPK.Mosavabat.Api.Extensions;
@@ -166,6 +167,12 @@ public static class ServiceExtensions
                 new OpenApiInfo
                 {
                     Title = "سرویس های ارایه شده توسط پرتال حقوقی مشتریان",
+                    Version = "v1"
+                });
+            s.SwaggerDoc("bsi-v1",
+                new OpenApiInfo
+                {
+                    Title = "سرویس های ارائه شده توسط بانک صادرات",
                     Version = "v1"
                 });
             s.SwaggerDoc("for-lcp-v1",
@@ -304,6 +311,7 @@ public static class ServiceExtensions
 
     public static void ConfigureLmsProxyServices(this IServiceCollection services) => services.AddScoped<ILmsServiceProxy, LmsServiceProxy>();
     public static void ConfigureLmsSetting(this IServiceCollection services, IConfiguration configuration) => services.Configure<LmsServiceSetting>(configuration.GetSection("LmsSetting"));
+    public static void ConfigureBsiSetting(this IServiceCollection services, IConfiguration configuration) => services.Configure<BsiServiceSetting>(configuration.GetSection("BsiSetting"));
     public static void ConfigureLcpServices(this IServiceCollection services) => services.AddScoped<ILcpService, LcpService>();
     public static void ConfigureLcpProxyServices(this IServiceCollection services) => services.AddScoped<ILcpServiceProxy, LcpServiceProxy>();
     public static void ConfigureLcpSetting(this IServiceCollection services, IConfiguration configuration) => services.Configure<LcpServiceSetting>(configuration.GetSection("LcpSetting"));

@@ -1,6 +1,7 @@
 ﻿using DPK.Mosavabat.Contracts;
 using DPK.Mosavabat.Database.Services.Contracts.CreditProcesses;
 using DPK.Mosavabat.Database.Services.Contracts.Mosavabat;
+using DPK.Mosavabat.Entities.Exceptions;
 using DPK.Mosavabat.Entities.Helper;
 using DPK.Mosavabat.Entities.Models.LoanBill;
 using DPK.Mosavabat.Services.Contracts.CreditProcesses;
@@ -49,6 +50,14 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                 {
                     MosavabeNo = mosavabeNo
                 }, cancellationToken);
+
+        var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
+
+        if (hasMissingUpdateInfo)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
 
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);
         var cutoffUtcTime = TimeZoneInfo.ConvertTimeToUtc(cutoffIranTime, IranTimeHelper.IranTimeZone);
@@ -114,6 +123,15 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                 CustomerNo = customerNo
             }, cancellationToken);
 
+
+        var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
+
+        if (hasMissingUpdateInfo)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
+
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);
 
         var existingRequests = await _loanBillRequestRepository
@@ -174,6 +192,14 @@ public class LoanBillProcessingService : ILoanBillProcessingService
             {
                 CustomerNumber = customerNo
             }, cancellationToken);
+
+        var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
+
+        if (hasMissingUpdateInfo)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
 
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);
 
@@ -375,7 +401,7 @@ public class LoanBillProcessingService : ILoanBillProcessingService
 
             var cutoffUtcTime = TimeZoneInfo
                 .ConvertTimeToUtc(
-                    cutoffIranTime, 
+                    cutoffIranTime,
                     IranTimeHelper.IranTimeZone);
 
             var isProcessing = await _loanBillRequestRepository

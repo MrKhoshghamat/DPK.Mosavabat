@@ -2,5 +2,5 @@
 
 public class GetC16ByC13Dto
 {
-    public string C16 { get; set; }
+    public string? C16 { get; set; }
 }

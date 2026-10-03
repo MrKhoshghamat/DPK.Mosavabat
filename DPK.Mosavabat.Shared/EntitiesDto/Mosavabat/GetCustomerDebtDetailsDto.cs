@@ -7,6 +7,6 @@ public class GetCustomerDebtDetailsDto
     public long TotalDebt { get; set; }
     public string AllocatedDate { get; set; }
     public string ContractType { get; set; }
-    public int DateUpdate { get; set; }
-    public int TimeUpdate { get; set; }
+    public int? DateUpdate { get; set; }
+    public int? TimeUpdate { get; set; }
 }

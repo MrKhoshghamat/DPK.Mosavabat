@@ -98,7 +98,7 @@ public class ContractTransactionService : IContractTransactionService
     /// </summary>
     private GetReceivedContractsDto CalculateReceivedTransactionsCore(
         GetReceivedContractsDataModel dataModel,
-        IEnumerable<(string ContractId, int DateUpdate, int TimeUpdate)>? contractRules)
+        IEnumerable<(string ContractId, int? DateUpdate, int? TimeUpdate)>? contractRules)
     {
         if (!dataModel.LoanBills.Any() || contractRules == null)
         {
@@ -150,9 +150,9 @@ public class ContractTransactionService : IContractTransactionService
     /// <summary>
     /// ایجاد کلید عددی 12 رقمی (yyyyMMddHHmm) از مقادیر DateUpdate و TimeUpdate
     /// </summary>
-    private static long CreateDateTimeKey(int dateUpdate, int timeUpdate)
+    private static long CreateDateTimeKey(int? dateUpdate, int? timeUpdate)
     {
-        return (dateUpdate * 10000L) + timeUpdate;
+        return (long)(dateUpdate * 10000L + timeUpdate)!;
     }
 
     /// <summary>

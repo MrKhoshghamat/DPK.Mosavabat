@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DPK.Mosavabat.Common.Idempotency;
 using DPK.Mosavabat.Contracts;
 using DPK.Mosavabat.Services.Contracts.Mosavabat;
+using DPK.Mosavabat.Services.Contracts.Submission;
 using DPK.Mosavabat.Shared.DataModels.General;
 using DPK.Mosavabat.Shared.DataModels.Mosavabat;
 using DPK.Mosavabat.Shared.Dictionaries.LCP;
@@ -8,7 +10,6 @@ using DPK.Mosavabat.Shared.Enums.LCP;
 using DPK.Mosavabat.Shared.Templates.Bizagi;
 using DPK.Mosavabat.Shared.Templates.Bizagi.EntityManager;
 using DPK.Mosavabat.Shared.ViewModels.Mosavabat;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,18 +25,23 @@ public class RequestFacilitiesController : ControllerBase
 {
     //private readonly IServiceManager _service;
     private readonly IRequestFacilityService _requestFacilityService;
+    private readonly Dictionary<Errors, string>? _errorsRepository;
+    private readonly ILcpRequestFacilitySubmissionService _submissionService;
     private readonly ILoggerManager _logger;
     private readonly IMapper _mapper;
-    private readonly Dictionary<Errors, string>? _errorsRepository;
+
+
 
     public RequestFacilitiesController(
         IRequestFacilityService requestFacilityService,
         ILoggerManager logger,
-        IMapper mapper)
+        IMapper mapper,
+        ILcpRequestFacilitySubmissionService submissionService)
     {
         _requestFacilityService = requestFacilityService;
         _logger = logger;
         _mapper = mapper;
+        _submissionService = submissionService;
         _errorsRepository = ErrorsDictionary.EDictionary;
     }
 
@@ -44,7 +50,6 @@ public class RequestFacilitiesController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    //[Authorize(Roles = "LegalCustomerPortalAdmin")]
     [ApiExplorerSettings(GroupName = "for-lcp-v1")]
     [SwaggerOperation(Tags = new[] { "Request Facilities" })]
     public async Task<IActionResult> Create(RequestFacilityUpdateDataModel dataModel, CancellationToken cancellationToken = default)
@@ -52,34 +57,48 @@ public class RequestFacilitiesController : ControllerBase
         _logger.Trace(JsonConvert.SerializeObject(dataModel));
 
         var accountCheckResult = await _requestFacilityService.CheckCustomerAccountExistsAsync(
-            new CheckCustomerAccountExistsDm { AccountNumber = dataModel.AccountNumber },
-            cancellationToken);
+            new CheckCustomerAccountExistsDm { AccountNumber = dataModel.AccountNumber }, cancellationToken);
 
         if (!accountCheckResult.Exists)
         {
             return Ok(new AjaxResponseBase<MosavabatResponseDataModel?>
             {
                 Success = false,
-                Error = new ErrorInfo
-                {
-                    Code = 404,
-                    Message = $"شماره حساب وارد شده ({dataModel.AccountNumber}) در سیستم یافت نشد. امکان ثبت درخواست وجود ندارد."
-                }
+                Error = new ErrorInfo { Code = 404, Message = $"شماره حساب وارد شده ({dataModel.AccountNumber}) در سیستم یافت نشد." }
             });
         }
 
-        // ۲. در صورت وجود شماره حساب، فرآیند اصلی ثبت تسهیلات ادامه می‌یابد
-        var result = await _requestFacilityService.RegisterRequestFacilityAsyncV2(dataModel);
-
-        var response = new AjaxResponseBase<MosavabatResponseDataModel?>
+        try
         {
-            Result = result,
-            Success = result != null
-        };
-
-        return Ok(response);
+            var result = await _submissionService.SubmitAsync(dataModel, cancellationToken);
+            return Ok(new AjaxResponseBase<MosavabatResponseDataModel?> { Result = result, Success = result != null });
+        }
+        catch (SubmissionInProgressException)
+        {
+            // درخواست قبلی هنوز در حال پردازشه - این یعنی دقیقاً همون سناریوی لاگ داره تکرار می‌شه
+            return Ok(new AjaxResponseBase<MosavabatResponseDataModel?>
+            {
+                Success = false,
+                Error = new ErrorInfo { Code = 409, Message = "درخواست مشابه در حال پردازش است. لطفاً چند لحظه صبر کنید." }
+            });
+        }
+        catch (SubmissionPendingReconciliationException)
+        {
+            return Ok(new AjaxResponseBase<MosavabatResponseDataModel?>
+            {
+                Success = false,
+                Error = new ErrorInfo { Code = 202, Message = "نتیجه درخواست هنوز مشخص نشده؛ لطفاً بعداً وضعیت را استعلام بگیرید." }
+            });
+        }
+        catch (SubmissionPayloadMismatchException)
+        {
+            return Ok(new AjaxResponseBase<MosavabatResponseDataModel?>
+            {
+                Success = false,
+                Error = new ErrorInfo { Code = 409, Message = "درخواستی با این شناسه قبلاً با اطلاعات متفاوت ثبت شده است." }
+            });
+        }
     }
-
 
     /// <summary>
     /// به روز رسانی وضعیت درخواست

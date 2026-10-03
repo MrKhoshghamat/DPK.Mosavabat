@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Diagnostics;
+using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
+using DPK.Mosavabat.Shared.ViewModels.CreditProcesses;
 using static System.Int32;
 using IContractService = DPK.Mosavabat.Services.Contracts.Mosavabat.IContractService;
 
@@ -1165,6 +1167,10 @@ public class CreditProcessesController : ControllerBase
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage));
             // put a breakpoint here and inspect `errors` in the debugger
         }
+
+        _logger.Trace(JsonConvert.SerializeObject("Run CreatePaymentPermission Service From MA"));
+        _logger.Trace(JsonConvert.SerializeObject(dataModel));
+
         var requestFacilityDetails = await _creditProcessesDatabaseService
             .GetRequestFacilityDetails(new GetRequestFacilityDetailsVm { CaseId = dataModel.RequestFacilityCaseId });
 
@@ -1187,11 +1193,13 @@ public class CreditProcessesController : ControllerBase
 
         var result = await _lmsService.CreateIssuancePayment(model);
 
-        return Ok(CreateResponse(new AjaxResponseBase<MosavabatResponseDataModel?>
+        var response = new AjaxResponseBase<MosavabatResponseDataModel?>
         {
             Result = result,
             Success = result != null
-        }));
+        };
+
+        return Ok(response);
     }
 
     private static CreateIssuancePaymentPermissionDataModel MapToCreateIssuancePaymentModel(
@@ -1220,6 +1228,34 @@ public class CreditProcessesController : ControllerBase
             BaratDueDate = src.BaratDueDate,
             FeeAmount = src.FeeAmount
         };
+
+    [HttpPost]
+    [ApiExplorerSettings(GroupName = "for-credit-v1")]
+    [SwaggerOperation(Tags = new[] { "CreditProcesses" })]
+    public async Task<IActionResult> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsVm vm, CancellationToken cancellationToken)
+    {
+        return await ExecuteWithLoggingAsync(
+            methodName: nameof(InsertCustomersDailyPayments),
+            payload: vm,
+            action: () => _creditProcessService.InsertCustomersDailyPayments(
+                _mapper.Map<InsertCustomersDailyPaymentsDm>(vm),
+                cancellationToken));
+    }
+
+    protected async Task<IActionResult> ExecuteWithLoggingAsync<TVm, TResult>(
+        string methodName,
+        TVm payload,
+        Func<Task<TResult>> action)
+    {
+        _logger.Trace($"Run {methodName} Service From MA | Payload: {JsonConvert.SerializeObject(payload)}");
+
+        var stopwatch = Stopwatch.StartNew();
+        var response = await action();
+        stopwatch.Stop();
+
+        _logger.Trace($"{methodName} Service Runtime: {stopwatch.ElapsedMilliseconds / 1000.0} Seconds");
+        return Ok(CreateResponse(response));
+    }
 
     // بررسی خطای برگشت داده شده از سمت دیتا بیس 
     private ErrorInfo? CheckError(string? result)

@@ -1,4 +1,5 @@
-﻿using DPK.Mosavabat.Shared.DataModels.Lms;
+﻿using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
+using DPK.Mosavabat.Shared.DataModels.Lms;
 using DPK.Mosavabat.Shared.DataTransferObjects.Lms;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.PaymentPermission;
 using DPK.Mosavabat.Shared.ViewModels.CreditProcesses;
@@ -45,11 +46,9 @@ namespace DPK.Mosavabat.Database.Services.Contracts.CreditProcesses
         public Task<GetCustomerNoByMosavabeNoDto> GetCustomerNoByMosavabeNo(GetCustomerNoByMosavabeNoDataModel dataModel, CancellationToken cancellationToken = default);
         public Task<List<GetMosavabeContractsDto>> GetMosavabeContracts(GetMosavabeContractsVm viewModel, CancellationToken cancellationToken);
         public Task<IsAllowedRecalculateAccountBalanceAverageDto> IsAllowedRecalculateAccountBalanceAverage(IsAllowedRecalculateAccountBalanceAverageVm viewModel, CancellationToken cancellationToken);
-        Task<List<ContractDebtDto>> GetContractsDebtAmounts(List<string> contractIds, CancellationToken cancellationToken);
+        Task<List<ContractDebtDto>> GetContractsDebtAmounts(List<string>? contractIds, CancellationToken cancellationToken);
         Task<GetRequestFacilityDetailsDto> GetRequestFacilityDetails(GetRequestFacilityDetailsVm viewModel, CancellationToken cancellationToken = default);
         Task<string?> UpdateCaseIdAndRadNumberInIssuancePayment(UpdateCaseIdAndRadNumberInIssuancePaymentVm viewModel, CancellationToken cancellationToken = default);
-
-        
-
+        Task<bool> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsDm dm, CancellationToken cancellationToken);
     }
 }

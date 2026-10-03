@@ -37,6 +37,9 @@ namespace DPK.Mosavabat.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DateUpdate")
+                        .HasColumnType("int");
+
                     b.Property<string>("JsonData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -44,6 +47,9 @@ namespace DPK.Mosavabat.Api.Migrations
                     b.Property<string>("LoanId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TimeUpdate")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -71,6 +77,9 @@ namespace DPK.Mosavabat.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DateUpdate")
+                        .HasColumnType("int");
+
                     b.Property<string>("ErrorMessage")
                         .HasColumnType("nvarchar(max)");
 
@@ -88,6 +97,9 @@ namespace DPK.Mosavabat.Api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeUpdate")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -193,6 +205,103 @@ namespace DPK.Mosavabat.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentPermissions");
+                });
+
+            modelBuilder.Entity("DPK.Mosavabat.Entities.Models.RequestFacilities.LcpRequestFacilitySubmission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<int>("AttemptCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<DateTime?>("BizagiCreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CaseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<string>("LastErrorCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastErrorMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<long>("LcpId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LeaseUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OwnerToken")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("PayloadHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(32)");
+
+                    b.Property<string>("ProcessType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("RadNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequestNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime?>("SendingAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SourceSystem")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status", "LeaseUntil")
+                        .HasDatabaseName("IX_LcpRequestFacilitySubmission_Recovery");
+
+                    b.HasIndex("SourceSystem", "ProcessType", "LcpId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_LcpRequestFacilitySubmission_BusinessKey");
+
+                    b.ToTable("LcpRequestFacilitySubmission", "dbo");
                 });
 
             modelBuilder.Entity("DPK.Mosavabat.Entities.Models.User", b =>
@@ -306,36 +415,36 @@ namespace DPK.Mosavabat.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "44633b7c-2584-45b7-87af-3e858b99c5d9",
-                            ConcurrencyStamp = "b4619340-f29c-4e58-a9b4-49d999a3c700",
+                            Id = "225ad253-6534-4b8d-9263-ff0a011ae715",
+                            ConcurrencyStamp = "4d452624-be9e-462a-a1d1-ef8de14878a9",
                             Name = "DpkAdmin",
                             NormalizedName = "DPKADMIN"
                         },
                         new
                         {
-                            Id = "a4dad091-ffd0-47ad-8e4c-25c549027dbc",
-                            ConcurrencyStamp = "84d7120f-a41a-48dc-a11b-e23c8c662af7",
+                            Id = "85742c2e-2e89-442f-a6e5-2fb1ef5b5fa6",
+                            ConcurrencyStamp = "35fbd554-91d3-48cd-b69c-0ee41c2b9de8",
                             Name = "LoanManagementSystemAdmin",
                             NormalizedName = "LOANMANAGEMENTSYSTEMADMIN"
                         },
                         new
                         {
-                            Id = "e62c32b3-e13f-4c87-ae13-dd6946f8d411",
-                            ConcurrencyStamp = "2b85c9c4-75aa-4b46-bea4-4b634df68d84",
+                            Id = "d3f12ebf-0c12-49f3-aae3-577c6fa73db9",
+                            ConcurrencyStamp = "2644b96e-9b2e-4873-9277-3724c10b9243",
                             Name = "LegalCustomerPortalAdmin",
                             NormalizedName = "LEGALCUSTOMERPORTALADMIN"
                         },
                         new
                         {
-                            Id = "f6c96609-1105-4b72-a4f5-205841960767",
-                            ConcurrencyStamp = "cd981210-05d0-41b8-b80a-97d4b10088e1",
+                            Id = "aadc51cf-bb76-4ab8-a1be-388ae74715f2",
+                            ConcurrencyStamp = "fd44cb2d-831d-4717-8541-09b1d2f08ed2",
                             Name = "BizagiAdmin",
                             NormalizedName = "BIZAGIADMIN"
                         },
                         new
                         {
-                            Id = "fa1d21ee-5062-4b77-b52c-ab1bacec8256",
-                            ConcurrencyStamp = "c5e23912-9b20-4c43-82f4-e99bea60b6eb",
+                            Id = "797924e3-a0b1-4922-9f81-36106b72e821",
+                            ConcurrencyStamp = "5a05cac9-3f13-4ea8-adfb-fd4ca06389ba",
                             Name = "MosavabatAdmin",
                             NormalizedName = "MOSAVABATADMIN"
                         });

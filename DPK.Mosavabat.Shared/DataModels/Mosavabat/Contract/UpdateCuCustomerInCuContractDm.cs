@@ -4,6 +4,6 @@
     {
         public int IdCu_Customer { get; set; }
         public string C13 { get; set; }
-        public string C16 { get; set; }
+        public string? C16 { get; set; }
     }
 }

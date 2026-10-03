@@ -2,6 +2,7 @@
 using DPK.Mosavabat.Contracts;
 using DPK.Mosavabat.Database.Services.Contracts.CreditProcesses;
 using DPK.Mosavabat.Database.Services.Database;
+using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
 using DPK.Mosavabat.Shared.DataModels.Lms;
 using DPK.Mosavabat.Shared.DataTransferObjects.Lms;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.PaymentPermission;
@@ -47,7 +48,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new PaymentPermissionIssuanceControlDto() { Result = result!.Result!.ToString() };
+            return new PaymentPermissionIssuanceControlDto() { Result = result.Result!.ToString() };
         }
 
         public async Task<CheckAndUpdateC13InPaymentPermissionDto?> CheckAndUpdateC13InPaymentPermission(CheckAndUpdateC13InPaymentPermissionVm viewModel,
@@ -73,7 +74,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new CheckAndUpdateC13InPaymentPermissionDto() { Result = result!.Result!.ToString() };
+            return new CheckAndUpdateC13InPaymentPermissionDto() { Result = result.Result!.ToString() };
         }
 
         public async Task<List<GetTermsAndConditionsApprovalRequestDto>?> GetTermsAndConditionsApprovalRequests(GetTermsAndConditionsApprovalRequestListVm viewModel,
@@ -120,7 +121,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new InsertPaymentPermissionDto() { Result = result!.Result!.ToString() };
+            return new InsertPaymentPermissionDto() { Result = result.Result!.ToString() };
         }
 
         public async Task<CalculateApprovalRequestUnusedBalanceDto?> CalculateApprovalRequestUnusedBalance(CalculateApprovalRequestUnusedBalanceVm viewModel,
@@ -140,7 +141,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new CalculateApprovalRequestUnusedBalanceDto() { Amount = result.Result!.ToString(), RemainingContractsCount = result.Column2! == null ? null : Convert.ToInt64(result.Column2!) };
+            return new CalculateApprovalRequestUnusedBalanceDto() { Amount = result.Result.ToString(), RemainingContractsCount = Convert.ToInt64(result.Column2!) };
         }
 
         public async Task<CalculateCustomerDebtBalanceDto?> CalculateCustomerDebtBalance(CalculateCustomerDebtBalanceVm viewModel, CancellationToken cancellationToken)
@@ -159,7 +160,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new CalculateCustomerDebtBalanceDto() { Result = result!.Result!.ToString() };
+            return new CalculateCustomerDebtBalanceDto() { Result = result.Result!.ToString() };
         }
 
         public async Task<UpdatePaymentPermissionDto?> UpdatePaymentPermission(UpdatePaymentPermissionVm viewModel, CancellationToken cancellationToken)
@@ -179,7 +180,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
             }, cancellationToken);
 
             _logger.Trace(JsonConvert.SerializeObject(result));
-            return new UpdatePaymentPermissionDto() { Result = result!.Result!.ToString() };
+            return new UpdatePaymentPermissionDto() { Result = result.Result!.ToString() };
         }
 
         public async Task<List<GetPaymentPermissionDto>?> GetPaymentPermissions(GetPaymentPermissionListVm viewModel, CancellationToken cancellationToken)
@@ -295,7 +296,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
             }, cancellationToken);
 
             _logger.Trace(JsonConvert.SerializeObject(result));
-            return new CheckExistActivePaymentPermissionDto() { Result = (bool)result!.Result };
+            return new CheckExistActivePaymentPermissionDto() { Result = (bool)result.Result! };
         }
 
         public async Task<List<GetCuContractDto>> GetCuContracts(GetCuContractsVm viewModel, CancellationToken cancellationToken)
@@ -334,7 +335,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new GetAccNoByC13Dto() { AccNo = result!.Result!.ToString() };
+            return new GetAccNoByC13Dto() { AccNo = result.Result!.ToString() };
         }
 
         public async Task<GetDateGByC13Dto> GetDateGByC13(GetDateGByC13Vm viewModel, CancellationToken cancellationToken = default)
@@ -353,7 +354,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new GetDateGByC13Dto() { Date_g = Convert.ToDateTime(result!.Result!) };
+            return new GetDateGByC13Dto() { Date_g = Convert.ToDateTime(result.Result!) };
         }
 
         public async Task<GetC16ByC13Dto> GetC16ByC13(GetC16ByC13Vm viewModel, CancellationToken cancellationToken = default)
@@ -372,7 +373,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new GetC16ByC13Dto() { C16 = result!.Result!.ToString() };
+            return new GetC16ByC13Dto() { C16 = result.Result!.ToString() };
         }
 
         public async Task<CalculateLiveApprovalRequestsAmountsSumDto> CalculateLiveApprovalRequestsAmountsSum(CalculateLiveApprovalRequestsAmountsSumVm viewModel, CancellationToken cancellationToken = default)
@@ -391,7 +392,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new CalculateLiveApprovalRequestsAmountsSumDto() { ApprovalSubjectsAmountsSum = Convert.ToInt64(result!.Result!) };
+            return new CalculateLiveApprovalRequestsAmountsSumDto() { ApprovalSubjectsAmountsSum = Convert.ToInt64(result.Result!) };
         }
 
         public async Task<GetBranchCodeByC13Dto> GetBranchCodeByC13(GetBranchCodeByC13Vm viewModel, CancellationToken cancellationToken = default)
@@ -410,7 +411,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new GetBranchCodeByC13Dto() { BranchCode = result!.Result!.ToString() };
+            return new GetBranchCodeByC13Dto() { BranchCode = result.Result!.ToString() };
         }
 
         public async Task<GetLiveApprovalRequestsAmountsSumDto> GetLiveApprovalRequestsAmountsSum(GetLiveApprovalRequestsAmountsSumVm viewModel, CancellationToken cancellationToken = default)
@@ -430,7 +431,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new GetLiveApprovalRequestsAmountsSumDto() { ApprovalSubjectsAmountsSum = Convert.ToInt64(result!.Result!) };
+            return new GetLiveApprovalRequestsAmountsSumDto() { ApprovalSubjectsAmountsSum = Convert.ToInt64(result.Result!) };
         }
 
         public Task<GetLiveApprovalRequestsDto> CalculateLiveApprovalRequestsAmountsSum(GetLiveApprovalRequestsVm viewModel, CancellationToken cancellationToken = default)
@@ -454,7 +455,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new CalculateDailyPaidContractsAmountsSumDto() { DailyPaidContractsAmountsSum = Convert.ToInt64(result!.Result!) };
+            return new CalculateDailyPaidContractsAmountsSumDto() { DailyPaidContractsAmountsSum = Convert.ToInt64(result.Result!) };
         }
 
         public async Task<IsLcpRequestDto> IsLcpRequest(IsLcpRequestVm viewModel, CancellationToken cancellationToken = default)
@@ -473,7 +474,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             _logger.Trace(JsonConvert.SerializeObject(result));
 
-            return new IsLcpRequestDto() { IsLcpRequest = Convert.ToBoolean(result!.Result!) };
+            return new IsLcpRequestDto() { IsLcpRequest = Convert.ToBoolean(result.Result!) };
         }
 
         public async Task<List<GetListOfExceptionPayReasonDto>> GetListOfExceptionPayReason(GetListOfExceptionPayReasonVM viewModel, CancellationToken cancellationToken)
@@ -684,7 +685,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
             {
                 ApprovalRequestId = Convert.ToInt32(result.Result),
                 CaseId = Convert.ToInt32(result.Column2),
-                RadNumber = result.Column3 == null ? null : result.Column3.ToString()
+                RadNumber = result.Column3?.ToString()
             };
         }
 
@@ -706,7 +707,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             return new GetCustomerNoByMosavabeNoDto()
             {
-                CustomerNo = result?.Result == null ? null : result.Result.ToString()
+                CustomerNo = result.Result?.ToString()
             };
         }
 
@@ -747,7 +748,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
             return new IsAllowedRecalculateAccountBalanceAverageDto() { IsAllowed = Convert.ToBoolean(result.Result) };
         }
 
-        public async Task<List<ContractDebtDto>> GetContractsDebtAmounts(List<string> contractIds, CancellationToken cancellationToken)
+        public async Task<List<ContractDebtDto>> GetContractsDebtAmounts(List<string>? contractIds, CancellationToken cancellationToken)
         {
             if (contractIds == null || !contractIds.Any())
             {
@@ -758,7 +759,7 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             var parameters = new List<SqlParameter>
             {
-                new("@ContractIdsList", SqlDbType.NVarChar) 
+                new("@ContractIdsList", SqlDbType.NVarChar)
                 {
                     Value = commaSeparatedIds
                 }
@@ -795,10 +796,10 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
 
             return new GetRequestFacilityDetailsDto()
             {
-                BranchCode = Convert.ToInt32(result?.Result),
-                BranchId = Convert.ToInt32(result?.Column2),
-                Customer =  Convert.ToString(result?.Column3),
-                MosavabeNo = Convert.ToInt32(result?.Column4)
+                BranchCode = Convert.ToInt32(result.Result),
+                BranchId = Convert.ToInt32(result.Column2),
+                Customer = Convert.ToString(result.Column3),
+                MosavabeNo = Convert.ToInt32(result.Column4)
             };
         }
 
@@ -822,5 +823,34 @@ namespace DPK.Mosavabat.Database.Services.CreditProcesses
             return rowsAffected.ToString();
 
         }
+
+        public async Task<bool> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsDm dm, CancellationToken cancellationToken)
+        {
+            var parameters = new List<SqlParameter>
+            {
+                CreateParameter("@branchCode", SqlDbType.Int, dm.BranchCode),
+                CreateParameter("@regionCode", SqlDbType.VarChar, dm.RegionCode),
+                CreateParameter("@customerNo", SqlDbType.VarChar, dm.CustomerNo),
+                CreateParameter("@customerType", SqlDbType.Int, dm.CustomerType),
+                CreateParameter("@client", SqlDbType.VarChar, dm.Client),
+                CreateParameter("@contractType", SqlDbType.Int, dm.ContractType),
+                CreateParameter("@subContractType", SqlDbType.Int, dm.SubContractType),
+                CreateParameter("@c13", SqlDbType.VarChar, dm.C13),
+                CreateParameter("@c16", SqlDbType.VarChar, dm.C16)
+            };
+
+            var rowsAffected = await ExecuteNonQueryAsync(new ExecuteNonQueryAsyncVm
+            {
+                ConnectionString = DevProviderConnectionString,
+                StoredProcedureName = "[CP].[InsertCustomersDailyPayments]",
+                Parameters = parameters
+            }, cancellationToken);
+
+            _logger.Trace($"InsertCustomersDailyPayments | RowsAffected: {rowsAffected}");
+            return Convert.ToBoolean(rowsAffected);
+        }
+
+        private static SqlParameter CreateParameter(string name, SqlDbType type, object? value)
+            => new(name, type) { Value = value ?? DBNull.Value };
     }
 }

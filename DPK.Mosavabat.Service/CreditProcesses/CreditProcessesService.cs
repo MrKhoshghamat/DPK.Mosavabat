@@ -14,6 +14,7 @@ using AutoMapper;
 using DPK.Mosavabat.Shared.DataModels.CreditProcesses.PaymentPermission;
 using DPK.Mosavabat.External.Services.Contracts.Abrisham.Loan;
 using DPK.Mosavabat.Shared.DataModels.Abrisham.Loan;
+using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
 using DPK.Mosavabat.Shared.DataTransferObjects.Lms;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.Abrisham.Loan;
 using DPK.Mosavabat.Shared.ViewModels.Abrisham.Loan;
@@ -160,14 +161,17 @@ public class CreditProcessesService : ICreditProcessService
         var mosavabeNo = viewModel.MosavabeNumber;
 
         // Step 1: Initiate background processing
-        await _loanBillProcessingService.InitiateLoanBillProcessing(customerNo, mosavabeNo, cancellationToken);
+        if (customerNo != null)
+        {
+            await _loanBillProcessingService.InitiateLoanBillProcessing(customerNo, mosavabeNo, cancellationToken);
 
-        // Step 2: Wait briefly for processing to complete (max 20 seconds)
-        await _loanBillProcessingService
-            .WaitForProcessingToCompleteOrTimeout(
-                customerNo,
-                TimeSpan.FromSeconds(20),
-                cancellationToken);
+            // Step 2: Wait briefly for processing to complete (max 20 seconds)
+            await _loanBillProcessingService
+                .WaitForProcessingToCompleteOrTimeout(
+                    customerNo,
+                    TimeSpan.FromSeconds(20),
+                    cancellationToken);
+        }
 
         // Step 3: Get results (from cache or DB)
         var cacheKey = $"ProcessedContractsByMosavabeNo_{mosavabeNo}";
@@ -491,5 +495,11 @@ public class CreditProcessesService : ICreditProcessService
     {
         _logger.Trace(JsonConvert.SerializeObject(viewModel));
         return await _creditProcessesDatabaseService.IsAllowedRecalculateAccountBalanceAverage(viewModel, cancellationToken);
+    }
+
+    public async Task<bool> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsDm dm, CancellationToken cancellationToken)
+    {
+        _logger.Trace($"InsertCustomersDailyPayments | CustomerNo: {dm.CustomerNo}, C13: {dm.C13}, C16: {dm.C16}");
+        return await _creditProcessesDatabaseService.InsertCustomersDailyPayments(dm, cancellationToken);
     }
 }

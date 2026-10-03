@@ -441,7 +441,7 @@ public class RequestFacilityService : IRequestFacilityService
 
         //}
 
-        //Fill Rank And Score In Guarantors
+        ////Fill Rank And Score In Guarantors
         //if (requestFacility.Guarantors != null)
         //{
         //    foreach (var guarantor in requestFacility.Guarantors.Guarantor)

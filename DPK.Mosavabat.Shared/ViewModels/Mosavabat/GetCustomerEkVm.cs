@@ -2,5 +2,5 @@
 
 public class GetCustomerEkVm
 {
-    public string AccountNo { get; set; }
+    public string? AccountNo { get; set; }
 }

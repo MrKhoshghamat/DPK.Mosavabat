@@ -14,7 +14,7 @@ public class RequestFacilityUpdateDataModel
     [XmlElement(ElementName = "AccountNo")] public string AccountNumber { get; set; }
     [XmlElement(ElementName = "LCP_Collaterals")] public CollateralsUpdateDataModel? Collaterals { get; set; }
     [XmlElement(ElementName = "LCP_Guarantors")] public GuarantorsUpdateDataModel? Guarantors { get; set; }
-    [XmlElement(ElementName = "PAY_BaratBeneficiaries")] public PayBaratBeneficiaries Beneficiaries { get; set; }
+    [XmlElement(ElementName = "LCP_BaratBeneficiaries")] public LCPBaratBeneficiariesDataModel? BillOfExchanges { get; set; }
     [XmlElement(ElementName = "LCP_RFStatus")] public StatusUpdateDataModel RequestFacilityStatus { get; set; }
     [XmlElement(ElementName = "LCP_SubjectFacilitys")] public SubjectFacilitysUpdateDataModel? SubjectFacilities { get; set; }
     [XmlElement(ElementName = "RequestDate")] public string RequestDate { get; set; }

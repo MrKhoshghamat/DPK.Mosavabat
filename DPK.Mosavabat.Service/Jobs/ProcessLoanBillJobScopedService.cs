@@ -39,7 +39,7 @@ public class ProcessLoanBillJobScopedService
             .CircuitBreakerAsync(
                 exceptionsAllowedBeforeBreaking: 3,
                 durationOfBreak: TimeSpan.FromMinutes(1),
-                onBreak: (ex, _) =>
+                onBreak: (_, _) =>
                 {
                     //_logger.Warn($"Circuit breaker opened due to {ex.Message}");
                 },
@@ -56,7 +56,7 @@ public class ProcessLoanBillJobScopedService
     public async Task ProcessSingleLoanBillAsync(LoanBillRequest request)
     {
         //var loanId = request.LoanId;
-        var step = "Started";
+        const string step = "Started";
         //_logger.Debug($"Processing LoanId {loanId} - Step: {step}");
 
         using var processCts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
@@ -129,7 +129,7 @@ public class ProcessLoanBillJobScopedService
             await _loanBillRequestRepository.UpdateAsync(request, CancellationToken.None);
             await _loanBillRequestRepository.SaveChangesAsync(CancellationToken.None);
         }
-        catch (Exception ex) when (!(ex is OperationCanceledException))
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             //_logger.Error($"Failed to process LoanId {loanId} at step '{step}'. Error: {ex.Message}");
 
@@ -176,84 +176,13 @@ public class ProcessLoanBillJobScopedService
                 await _loanBillDataRepository.SaveChangesAsync(CancellationToken.None);
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //_logger.Error($"Error during cleanup of old LoanBillData records | exception message : {ex.Message}");
         }
     }
 
-    private async Task<GetLoanBillDto> CallExternalServiceWithCircuitBreakerAndRetry(string loanId)
-    {
-        var step = "Start";
-        //_logger.Debug($"External service call for LoanId {loanId} - Step: {step}");
-
-        var retryPolicy = Policy
-            .Handle<Exception>(ex => !(ex is OperationCanceledException))
-            .Or<TimeoutException>()
-            .WaitAndRetryAsync(
-                retryCount: 2,
-                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5 * Math.Pow(2, retryAttempt)),
-                onRetry: (_, timespan, retryCount, _) =>
-                {
-                    //_logger.Warn(
-                    //    $"Retry {retryCount}/2 for LoanId {loanId} after {timespan.TotalSeconds}s"
-                    //);
-                });
-
-        var policyWrap = Policy.WrapAsync(_circuitBreakerPolicy, retryPolicy);
-
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-
-        try
-        {
-            step = "ExecutePolicy";
-            //_logger.Debug($"External service call for LoanId {loanId} - Step: {step}");
-
-            return await policyWrap.ExecuteAsync(async (cancellationToken) =>
-            {
-                step = "CallingExternalService";
-                //_logger.Debug($"External service call for LoanId {loanId} - Step: {step} with cancellation token : {cancellationToken}");
-
-                var callStart = DateTime.Now;
-                //_logger.Debug($"Making HTTP call to external service for LoanId {loanId} at {callStart} with cancellation token : {cancellationToken}");
-
-                var response = await _loanExternalService.GetLoanBill(
-                    new GetLoanBillVm() { LoanId = loanId },
-                    cts.Token
-                );
-
-                var callEnd = DateTime.Now;
-
-                //_logger.Debug($"External service call for LoanId {loanId} succeeded in {(callEnd - callStart).TotalMilliseconds}ms");
-
-                step = "MappingResponse";
-                //_logger.Debug($"External service call for LoanId {loanId} - Step: {step}");
-
-                var mappedDto = _mapper.Map<GetLoanBillDto>(response);
-                //_logger.Debug($"Successfully mapped response for LoanId {loanId}");
-
-                return mappedDto;
-            }, cts.Token);
-        }
-        catch (OperationCanceledException) when (cts.Token.IsCancellationRequested)
-        {
-            //_logger.Error($"External service call for LoanId {loanId} TIMED OUT after 60 seconds at step '{step}'");
-
-            throw;
-        }
-        catch (BrokenCircuitException ex)
-        {
-            //_logger.Error($"Circuit breaker is OPEN for LoanId {loanId}. Skipping call. | exception message : {ex.Message}");
-            throw;
-        }
-        catch (Exception ex)
-        {
-            //_logger.Error($"External service call for LoanId {loanId} FAILED at step '{step}' after retries | exception message : {ex.Message}");
-            throw;
-        }
-    }
-
-    private async Task<GetLoanContractsAllStatementDto> CallExternalServiceWithCircuitBreakerAndRetry_v2(string loanId, int startDate)
+    private async Task<GetLoanContractsAllStatementDto> CallExternalServiceWithCircuitBreakerAndRetry_v2(string loanId, int? startDate)
     {
         //_logger.Debug($"External service call for LoanId {loanId} - Step: {step}");
 
@@ -263,7 +192,7 @@ public class ProcessLoanBillJobScopedService
             .WaitAndRetryAsync(
                 retryCount: 2,
                 sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(5 * Math.Pow(2, retryAttempt)),
-                onRetry: (_, timespan, retryCount, _) =>
+                onRetry: (_, _, _, _) =>
                 {
                     //_logger.Warn(
                     //    $"Retry {retryCount}/2 for LoanId {loanId} after {timespan.TotalSeconds}s"
@@ -282,7 +211,6 @@ public class ProcessLoanBillJobScopedService
             {
                 //_logger.Debug($"External service call for LoanId {loanId} - Step: {step} with cancellation token : {cancellationToken}");
 
-                var callStart = DateTime.Now;
                 //_logger.Debug($"Making HTTP call to external service for LoanId {loanId} at {callStart} with cancellation token : {cancellationToken}");
 
                 var response = await _loanExternalService.GetLoanContractsAllStatement(
@@ -293,8 +221,6 @@ public class ProcessLoanBillJobScopedService
                 response.TransactionInformationDtos = response.TransactionInformationDtos
                     .Where(x => !string.IsNullOrWhiteSpace(x.Description1))
                     .ToList();
-
-                var callEnd = DateTime.Now;
 
                 //_logger.Debug($"External service call for LoanId {loanId} succeeded in {(callEnd - callStart).TotalMilliseconds}ms");
 
@@ -310,16 +236,6 @@ public class ProcessLoanBillJobScopedService
         {
             //_logger.Error($"External service call for LoanId {loanId} TIMED OUT after 60 seconds at step '{step}'");
 
-            throw;
-        }
-        catch (BrokenCircuitException ex)
-        {
-            //_logger.Error($"Circuit breaker is OPEN for LoanId {loanId}. Skipping call. | exception message : {ex.Message}");
-            throw;
-        }
-        catch (Exception ex)
-        {
-            //_logger.Error($"External service call for LoanId {loanId} FAILED at step '{step}' after retries | exception message : {ex.Message}");
             throw;
         }
     }
@@ -345,34 +261,6 @@ public class ProcessLoanBillJobScopedService
                 CustomerNo = request.CustomerNo,
                 DateUpdate = request.DateUpdate,
                 TimeUpdate = request.TimeUpdate,
-                JsonData = JsonConvert.SerializeObject(loanBill),
-                CreatedAt = iranNow,
-                UpdatedAt = iranNow
-            };
-
-            await _loanBillDataRepository.CreateAsync(loanBillData);
-        }
-    }
-
-    private async Task SaveLoanBillData(LoanBillRequest request, GetLoanContractsAllStatementDto loanBill)
-    {
-        var iranNow = IranTimeHelper.ToIranTimeNow();
-
-        var existing = await _loanBillDataRepository
-            .GetByLoanIdAsync(request.LoanId, CancellationToken.None);
-
-        if (existing != null)
-        {
-            existing.JsonData = JsonConvert.SerializeObject(loanBill);
-            existing.UpdatedAt = iranNow;
-            await _loanBillDataRepository.UpdateAsync(existing);
-        }
-        else
-        {
-            var loanBillData = new LoanBillData
-            {
-                LoanId = request.LoanId,
-                CustomerNo = request.CustomerNo,
                 JsonData = JsonConvert.SerializeObject(loanBill),
                 CreatedAt = iranNow,
                 UpdatedAt = iranNow

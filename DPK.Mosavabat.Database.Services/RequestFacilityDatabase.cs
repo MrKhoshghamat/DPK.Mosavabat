@@ -6,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Data;
+using DPK.Mosavabat.Shared.Results;
 
 namespace DPK.Mosavabat.Database.Services;
 
@@ -109,5 +110,20 @@ public class RequestFacilityDatabase : MainDatabase, IRequestFacilityDatabase
         {
             DevProviderCustomerCount = Convert.ToInt32(response)
         };
+    }
+
+    public async Task<LcpRequestFacilityLookupResult?> GetLcpRequestFacilityByGuidAsync(string guid, CancellationToken ct = default)
+    {
+        var parameters = new List<SqlParameter>
+        {
+            new("@GUID", SqlDbType.NVarChar, 50) { Value = Guid.Parse(guid) }
+        };
+
+        var results = await ExecuteAsListAsync<LcpRequestFacilityLookupResult>(
+            DevProviderConnectionString, "dbo.usp_GetLcpRequestFacilityByGuid", parameters);
+
+        _logger.Trace(JsonConvert.SerializeObject(results));
+
+        return results?.FirstOrDefault();
     }
 }

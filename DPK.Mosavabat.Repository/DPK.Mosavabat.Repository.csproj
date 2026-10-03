@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,8 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DPK.Mosavabat.Common\DPK.Mosavabat.Common.csproj" />
     <ProjectReference Include="..\DPK.Mosavabat.Contracts\DPK.Mosavabat.Contracts.csproj" />
     <ProjectReference Include="..\DPK.Mosavabat.Entities\DPK.Mosavabat.Entities.csproj" />
+    <ProjectReference Include="..\DPK.Mosavabat.Service.Contracts\DPK.Mosavabat.Services.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

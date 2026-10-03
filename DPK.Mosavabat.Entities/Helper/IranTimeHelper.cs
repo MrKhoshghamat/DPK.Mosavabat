@@ -15,6 +15,6 @@ public static class IranTimeHelper
 
     public static DateTime ToIranTimeNow()
     {
-        return ToIranTime(DateTime.UtcNow);
+        return ToIranTime(DateTime.Now);
     }
 }

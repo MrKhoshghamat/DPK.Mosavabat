@@ -2,6 +2,10 @@
 using DPK.Mosavabat.Contracts;
 using DPK.Mosavabat.Presentation;
 using DPK.Mosavabat.Presentation.ActionFilters;
+using DPK.Mosavabat.Repository;
+using DPK.Mosavabat.Services.Contracts.Submission;
+using DPK.Mosavabat.Services.Jobs;
+using DPK.Mosavabat.Services.Submission;
 using DPK.Mosavabat.Shared.DataModels.Abrisham.Loan;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +17,17 @@ using CustomMapper = DPK.Mosavabat.Api.CustomMapper;
 var builder = WebApplication.CreateBuilder(args);
 
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+
+
+builder.Services
+    .AddScoped<ILcpRequestFacilitySubmissionRepository,
+    LcpRequestFacilitySubmissionRepository>();
+
+builder.Services
+    .AddScoped<ILcpRequestFacilitySubmissionService,
+    LcpRequestFacilitySubmissionService>();
+
+builder.Services.AddHostedService<SubmissionReconciliationHostedService>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -94,6 +109,9 @@ builder.Services.ConfigureLmsSetting(builder.Configuration);
 builder.Services.ConfigureLcpServices();
 builder.Services.ConfigureLcpProxyServices();
 builder.Services.ConfigureLcpSetting(builder.Configuration);
+
+// Bsi
+builder.Services.ConfigureBsiSetting(builder.Configuration);
 
 // Abrisham | ابریشم
 builder.Services.ConfigureLoanExternalService(builder.Configuration);

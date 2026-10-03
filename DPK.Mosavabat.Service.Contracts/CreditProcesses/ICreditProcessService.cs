@@ -1,4 +1,4 @@
-﻿using DPK.Mosavabat.Shared.DataTransferObjects;
+﻿using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
 using DPK.Mosavabat.Shared.DataTransferObjects.Lms;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.Abrisham.Loan;
 using DPK.Mosavabat.Shared.EntitiesDto.CreditProcesses.PaymentPermission;
@@ -36,5 +36,6 @@ namespace DPK.Mosavabat.Services.Contracts.CreditProcesses
         public Task<GetSubjectTypeDto> GetSubjectType(GetSubjectTypeVm viewModel, CancellationToken cancellationToken = default);
         public Task<GetApprovalRequestInfoDto> GetApprovalRequestInfo(GetApprovalRequestInfoVm viewModel, CancellationToken cancellationToken = default);
         public Task<IsAllowedRecalculateAccountBalanceAverageDto> IsAllowedRecalculateAccountBalanceAverage(IsAllowedRecalculateAccountBalanceAverageVm viewModel, CancellationToken cancellationToken = default);
+        Task<bool> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsDm dm, CancellationToken cancellationToken);
     }
 }

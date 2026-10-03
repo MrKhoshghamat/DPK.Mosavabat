@@ -2,5 +2,5 @@
 
 public class GetBranchCodeByC13Dto
 {
-    public string BranchCode { get; set; }
+    public string? BranchCode { get; set; }
 }
