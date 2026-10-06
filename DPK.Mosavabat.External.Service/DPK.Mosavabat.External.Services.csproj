@@ -10,12 +10,11 @@
     <PackageReference Include="DPK.UseAdanicAbrishamService" Version="1.3.22" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="114.0.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.1" />
     <PackageReference Include="System.ServiceModel.Security" Version="4.8.1" />
-	    </ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DPK.Mosavabat.Contracts\DPK.Mosavabat.Contracts.csproj" />

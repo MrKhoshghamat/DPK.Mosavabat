@@ -22,6 +22,7 @@ using DPK.Mosavabat.Shared.ViewModels.Mosavabat.General.Supervisor;
 using DPK.Mosavabat.Shared.EntitiesDto.Mosavabat;
 using DPK.Mosavabat.Shared.DataModels.Lcp;
 using DPK.Mosavabat.Shared.ViewModels.Lcp;
+using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
 
 namespace DPK.Mosavabat.Api
 {
@@ -185,6 +186,7 @@ namespace DPK.Mosavabat.Api
             CreateMap<GetMosavabeExpireDateVm, GetMosavabeExpireDateDataModel>().ReverseMap();
             CreateMap<DiscussionPaymentPermissionVm, ProcessIssuancePaymentDataModel>().ReverseMap();
             CreateMap<LcpRequestFacilityAbortCaseVm, RemoveLcpRequestFromCartableVm>().ReverseMap();
+            CreateMap<InsertCustomersDailyPaymentsDm, InsertCustomersDailyPaymentsVm>().ReverseMap();
         }
     }
 }

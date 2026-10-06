@@ -50,5 +50,6 @@ namespace DPK.Mosavabat.Database.Services.Contracts.CreditProcesses
         Task<GetRequestFacilityDetailsDto> GetRequestFacilityDetails(GetRequestFacilityDetailsVm viewModel, CancellationToken cancellationToken = default);
         Task<string?> UpdateCaseIdAndRadNumberInIssuancePayment(UpdateCaseIdAndRadNumberInIssuancePaymentVm viewModel, CancellationToken cancellationToken = default);
         Task<bool> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsDm dm, CancellationToken cancellationToken);
+        Task<bool> HasRecordTashilatVaziat(CancellationToken cancellationToken);
     }
 }

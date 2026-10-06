@@ -44,6 +44,13 @@ public class LoanBillProcessingService : ILoanBillProcessingService
         string mosavabeNo,
         CancellationToken cancellationToken)
     {
+        var hasRecord = await _creditProcessesDatabaseService.HasRecordTashilatVaziat(cancellationToken);
+
+        if (!hasRecord)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
+
         var facilities = await _creditProcessesDatabaseService
             .GetMosavabeContracts(
                 new GetMosavabeContractsVm()
@@ -51,12 +58,15 @@ public class LoanBillProcessingService : ILoanBillProcessingService
                     MosavabeNo = mosavabeNo
                 }, cancellationToken);
 
-        var hasMissingUpdateInfo = facilities
-            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
-
-        if (hasMissingUpdateInfo)
+        if (facilities.Count > 0)
         {
-            throw new LoanBillDataNotReadyException();
+            var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is 0 && f.TimeUpdate is 0);
+
+            if (hasMissingUpdateInfo)
+            {
+                throw new LoanBillDataNotReadyException();
+            }
         }
 
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);
@@ -117,19 +127,28 @@ public class LoanBillProcessingService : ILoanBillProcessingService
         string customerNo,
         CancellationToken cancellationToken)
     {
+        var hasRecord = await _creditProcessesDatabaseService.HasRecordTashilatVaziat(cancellationToken);
+
+        if (!hasRecord)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
+
         var facilities = await _creditProcessesDatabaseService
             .GetCustomerCurrentFacilities(new GetCustomerCurrentFacilitiesVm()
             {
                 CustomerNo = customerNo
             }, cancellationToken);
 
-
-        var hasMissingUpdateInfo = facilities
-            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
-
-        if (hasMissingUpdateInfo)
+        if (facilities.Count > 0)
         {
-            throw new LoanBillDataNotReadyException();
+            var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is 0 && f.TimeUpdate is 0);
+
+            if (hasMissingUpdateInfo)
+            {
+                throw new LoanBillDataNotReadyException();
+            }
         }
 
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);
@@ -187,18 +206,28 @@ public class LoanBillProcessingService : ILoanBillProcessingService
         string customerNo,
         CancellationToken cancellationToken)
     {
+        var hasRecord = await _creditProcessesDatabaseService.HasRecordTashilatVaziat(cancellationToken);
+
+        if (!hasRecord)
+        {
+            throw new LoanBillDataNotReadyException();
+        }
+
         var facilities = await _requestFacilityDatabaseService
             .GetCustomerDebtDetails(new GetCustomerDebtDetailsDataModel()
             {
                 CustomerNumber = customerNo
             }, cancellationToken);
 
-        var hasMissingUpdateInfo = facilities
-            .Any(f => f.DateUpdate is null or 0 && f.TimeUpdate is null or 0);
-
-        if (hasMissingUpdateInfo)
+        if (facilities.Count > 0)
         {
-            throw new LoanBillDataNotReadyException();
+            var hasMissingUpdateInfo = facilities
+            .Any(f => f.DateUpdate is 0 && f.TimeUpdate is 0);
+
+            if (hasMissingUpdateInfo)
+            {
+                throw new LoanBillDataNotReadyException();
+            }
         }
 
         var cutoffIranTime = IranTimeHelper.ToIranTimeNow().AddMinutes(-10);

@@ -24,6 +24,9 @@ using DPK.Mosavabat.Shared.DataModels.CreditProcesses.CustomersDailyPayments;
 using DPK.Mosavabat.Shared.ViewModels.CreditProcesses;
 using static System.Int32;
 using IContractService = DPK.Mosavabat.Services.Contracts.Mosavabat.IContractService;
+using Microsoft.AspNetCore.Http;
+using System.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DPK.Mosavabat.Presentation.Controllers.CreditProcesses.V1;
 
@@ -1229,17 +1232,53 @@ public class CreditProcessesController : ControllerBase
             FeeAmount = src.FeeAmount
         };
 
-    [HttpPost]
+    [HttpPost()]
     [ApiExplorerSettings(GroupName = "for-credit-v1")]
-    [SwaggerOperation(Tags = new[] { "CreditProcesses" })]
-    public async Task<IActionResult> InsertCustomersDailyPayments(InsertCustomersDailyPaymentsVm vm, CancellationToken cancellationToken)
+    [SwaggerOperation(
+    Summary = "ثبت پرداختی‌های روز مشتری",
+    Description = "درج پرداخت روزانه بر اساس کلید یکتای C13 و C16",
+    Tags = new[] { "CreditProcesses" })]
+    [ProducesResponseType(typeof(AjaxResponseBase<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AjaxResponseBase<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(AjaxResponseBase<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(AjaxResponseBase<object>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> InsertCustomersDailyPayments(
+    [FromBody] InsertCustomersDailyPaymentsVm vm,
+    CancellationToken cancellationToken)
     {
-        return await ExecuteWithLoggingAsync(
-            methodName: nameof(InsertCustomersDailyPayments),
-            payload: vm,
-            action: () => _creditProcessService.InsertCustomersDailyPayments(
-                _mapper.Map<InsertCustomersDailyPaymentsDm>(vm),
-                cancellationToken));
+        if (!ModelState.IsValid)
+        {
+            var firstError = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage;
+            return BadRequest(CreateResponse<object>(
+                result: null,
+                error: new ErrorInfo { Code = 400, Message = firstError ?? "داده‌های ورودی معتبر نیستند." }));
+        }
+
+        try
+        {
+            return await ExecuteWithLoggingAsync(
+                methodName: nameof(InsertCustomersDailyPayments),
+                payload: vm,
+                action: async () =>
+                {
+                    var dm = _mapper.Map<InsertCustomersDailyPaymentsDm>(vm);
+                    return await _creditProcessService.InsertCustomersDailyPayments(dm, cancellationToken);
+                });
+        }
+        catch (SqlException ex) when (ex.Number == 50003)
+        {
+            _logger.Warn($"Duplicate payment submission: C13={vm.C13}, C16={vm.C16}");
+            return Conflict(CreateResponse<object>(
+                result: null,
+                error: new ErrorInfo { Code = 50003, Message = "رکورد تکراری است؛ ترکیب C13 و C16 قبلاً ثبت شده است." }));
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Error in {nameof(InsertCustomersDailyPayments)}: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, CreateResponse<object>(
+                result: null,
+                error: new ErrorInfo { Code = 500, Message = "خطای داخلی سرور در پردازش درخواست." }));
+        }
     }
 
     protected async Task<IActionResult> ExecuteWithLoggingAsync<TVm, TResult>(

@@ -11,4 +11,5 @@ public class InsertCustomersDailyPaymentsDm
     public int SubContractType { get; set; }
     public string? C13 { get; set; }
     public string? C16 { get; set; }
+    public long ContractAmount { get; set; }
 }

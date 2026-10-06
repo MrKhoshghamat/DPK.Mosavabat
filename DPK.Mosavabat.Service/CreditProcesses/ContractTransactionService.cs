@@ -98,7 +98,7 @@ public class ContractTransactionService : IContractTransactionService
     /// </summary>
     private GetReceivedContractsDto CalculateReceivedTransactionsCore(
         GetReceivedContractsDataModel dataModel,
-        IEnumerable<(string ContractId, int? DateUpdate, int? TimeUpdate)>? contractRules)
+        IEnumerable<(string ContractId, int DateUpdate, int TimeUpdate)>? contractRules)
     {
         if (!dataModel.LoanBills.Any() || contractRules == null)
         {

@@ -110,9 +110,6 @@ builder.Services.ConfigureLcpServices();
 builder.Services.ConfigureLcpProxyServices();
 builder.Services.ConfigureLcpSetting(builder.Configuration);
 
-// Bsi
-builder.Services.ConfigureBsiSetting(builder.Configuration);
-
 // Abrisham | ابریشم
 builder.Services.ConfigureLoanExternalService(builder.Configuration);
 

@@ -146,72 +146,83 @@ public class CreditProcessesService : ICreditProcessService
         return new CreateCompleteContractInfoProcessDto() { MosavabatResponseDataModel = response };
     }
 
-    public async Task<CalculateApprovalRequestUnusedBalanceDto?> CalculateApprovalRequestUnusedBalance(CalculateApprovalRequestUnusedBalanceVm viewModel,
+    public async Task<CalculateApprovalRequestUnusedBalanceDto?> CalculateApprovalRequestUnusedBalance(
+        CalculateApprovalRequestUnusedBalanceVm viewModel,
         CancellationToken cancellationToken = default)
     {
         _logger.Trace(JsonConvert.SerializeObject(viewModel));
 
-        var getCustomerNoByMosavabeNoDto = await _creditProcessesDatabaseService
-            .GetCustomerNoByMosavabeNo(new GetCustomerNoByMosavabeNoDataModel()
+        var getCustomerNoByMosavabeNoDto = await _creditProcessesDatabaseService.GetCustomerNoByMosavabeNo(
+            new GetCustomerNoByMosavabeNoDataModel
             {
                 MosavabeNo = viewModel.MosavabeNumber
-            }, cancellationToken);
+            },
+            cancellationToken);
 
         var customerNo = getCustomerNoByMosavabeNoDto.CustomerNo;
         var mosavabeNo = viewModel.MosavabeNumber;
 
-        // Step 1: Initiate background processing
-        if (customerNo != null)
+        if (!string.IsNullOrWhiteSpace(customerNo))
         {
-            await _loanBillProcessingService.InitiateLoanBillProcessing(customerNo, mosavabeNo, cancellationToken);
+            await _loanBillProcessingService.InitiateLoanBillProcessing(customerNo,
+                mosavabeNo,
+                cancellationToken);
 
-            // Step 2: Wait briefly for processing to complete (max 20 seconds)
-            await _loanBillProcessingService
-                .WaitForProcessingToCompleteOrTimeout(
-                    customerNo,
-                    TimeSpan.FromSeconds(20),
-                    cancellationToken);
+            await _loanBillProcessingService.WaitForProcessingToCompleteOrTimeout(customerNo,
+                TimeSpan.FromSeconds(20),
+                cancellationToken);
         }
 
-        // Step 3: Get results (from cache or DB)
         var cacheKey = $"ProcessedContractsByMosavabeNo_{mosavabeNo}";
-        var cached = _loanBillProcessingService
-            .TryGetFromCacheByMosavabeNo(cacheKey, cancellationToken);
-
-        var contracts = cached ?? await _loanBillProcessingService
-            .GetProcessedContractsByMosavabeNo(mosavabeNo, cancellationToken);
-
-        // Step 3: Compute result directly (same logic as before)
-        var settledContracts = _contractTransactionService.GetSettledContracts(new GetSettledContractsDataModel()
-        {
-            LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2)
-        }).C13List;
-
-        var getContractDebtAmountsDto = await _creditProcessesDatabaseService.GetContractsDebtAmounts(
-            settledContracts,
+        var cached = _loanBillProcessingService.TryGetFromCacheByMosavabeNo(cacheKey,
             cancellationToken);
 
-        var settledContractsAmountsSum = getContractDebtAmountsDto.Select(x => x.DebtAmount).Sum();
+        var contracts = cached ??
+                        await _loanBillProcessingService.GetProcessedContractsByMosavabeNo(mosavabeNo,
+                            cancellationToken);
 
-        var dailyReceivedAmountsSum = _contractTransactionService.GetDailyReceivedContractsTransactionsAmounts(
-            new GetReceivedContractsDataModel()
-            {
-                LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2)
-            },
-            contracts.Item1).Amount;
+        var settledContractsResult = _contractTransactionService.GetSettledContracts(new GetSettledContractsDataModel
+        {
+            LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2)
+        });
+
+        var settledC13List = settledContractsResult.C13List?.Distinct()
+                                 .ToList() ??
+                             new List<string>();
+
+        var getContractDebtAmountsDto =
+            await _creditProcessesDatabaseService.GetContractsDebtAmounts(settledC13List,
+                cancellationToken);
+
+        var settledContractsAmountsSum = getContractDebtAmountsDto.Select(x => x.DebtAmount)
+            .Sum();
+
+        var dailyReceivedAmountsSum = _contractTransactionService
+            .GetDailyReceivedContractsTransactionsAmounts(
+                new GetReceivedContractsDataModel
+                {
+                    LoanBills = _mapper.Map<List<GetLoanBillDm>>(contracts.Item2),
+                },
+                contracts.Item1)
+            .Amount;
 
         var approvalRequestUnusedBalanceDto =
-            await _creditProcessesDatabaseService.CalculateApprovalRequestUnusedBalance(viewModel, cancellationToken);
+            await _creditProcessesDatabaseService.CalculateApprovalRequestUnusedBalance(
+                new CalculateApprovalRequestUnusedBalanceVm
+                {
+                    MosavabeNumber = mosavabeNo,
+                    SettledC13List = settledC13List
+                },
+                cancellationToken);
 
-        var finalCalculation =
-            Convert.ToInt64(approvalRequestUnusedBalanceDto!.Amount) +
-            settledContractsAmountsSum +
-            Convert.ToInt64(dailyReceivedAmountsSum);
+        var finalCalculation = Convert.ToInt64(approvalRequestUnusedBalanceDto?.Amount) +
+                               settledContractsAmountsSum +
+                               Convert.ToInt64(dailyReceivedAmountsSum);
 
-        approvalRequestUnusedBalanceDto.Amount = finalCalculation.ToString();
-
+        approvalRequestUnusedBalanceDto!.Amount = finalCalculation.ToString();
         return approvalRequestUnusedBalanceDto;
     }
+
 
     public async Task<CreateViolationInvestigationProcessDto?> CreateViolationInvestigationProcess(CreateViolationInvestigationProcessVm viewModel,
         CancellationToken cancellationToken = default)
@@ -374,7 +385,7 @@ public class CreditProcessesService : ICreditProcessService
                 cancellationToken);
 
         // Step 5: Calculate final result
-        var totalCurrentDebtAmount = contracts.Item1
+        var totalCurrentDebtAmount = contracts!.Item1!
                                          .Sum(facility => facility.TotalDebtBalance) +
                                      long.Parse(dailyPaidAmounts) +
                                      dailyPaidContractsAmountsSumDto.DailyPaidContractsAmountsSum -

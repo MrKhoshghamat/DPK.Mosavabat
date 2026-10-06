@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Tvps\" />
 		<Folder Include="Results\" />
 		<Folder Include="Validation\Lcp\" />
 		<Folder Include="Validation\Mosavabat\" />
